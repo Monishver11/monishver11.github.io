@@ -22,11 +22,11 @@ A heartfelt thank you to everyone who has supported me, continues to support me,
 
 The focus here is on the **theoretical aspects** of machine learning rather than programming. Why? Because understanding theory forms the critical intuition that separates a beginner randomly trying things from an expert who knows exactly where to focus for impactful results. While I consider myself a beginner, I’m determined to keep learning, growing, and sharing insights along the way.
 
-Since **mathematics forms the backbone** of machine learning and much of computer science, I’ll ensure no critical details are overlooked. For challenging or abstract concepts, I’ll include **analogies** to help you remember them more easily. For key topics, expect to see discussions about their **real-world applications**, **industry relevance**, and **tips and tricks** that can significantly boost performance, along with the reasoning behind why they work.
+Since **mathematics forms the backbone** of machine learning and much of computer science, I’ll ensure no critical details are overlooked. For challenging or abstract concepts, I’ll include **analogies** to help you remember them more easily. For key topics, expect to see discussions about their real-world applications, **industry relevance**, and **tips and tricks** that can significantly boost performance, along with the reasoning behind why they work.
 
 While the focus is theoretical, I won’t leave you hanging! I’ll include **code snippets** and **programming references** for topics where information isn’t easily accessible online or through tools like ChatGPT
 
-If you’re someone with undergraduate-level knowledge in mathematics and programming, you’ll find this series accessible. While topics like **convex optimization** or **Lagrangians** might not be covered in standard undergraduate curricula, don’t worry—I’ll explain them in detail as we go along.
+If you’re someone with undergraduate-level knowledge in mathematics and programming, you’ll find this series accessible. While topics like Convex optimization or Lagrangians might not be covered in standard undergraduate curricula, don’t worry—I’ll explain them in detail as we go along.
 
 #### **Attention to Detail and Collaboration**
 
