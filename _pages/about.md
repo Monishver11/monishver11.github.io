@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: Hello there, and welcome!
 
 profile:
   align: right
@@ -11,11 +11,11 @@ profile:
   more_info: >
     <p>At Bull Hill Full Loop, Hudson Highlands State Park Preserve, New York</p>
 news: true # includes a list of news items
-selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true # includes social icons at the bottom of the page
+#selected_papers: true # includes a list of papers marked as "selected={true}"
+#social: true # includes social icons at the bottom of the page
 ---
 
-I am currently pursuing my master’s degree in Computer Science at the Courant Institute of Mathematical Sciences, New York University. Before this, I worked as a Data Engineer at IBM in India for two years. My aspiration is to become a `Machine Learning Engineer/Researcher`, and this blog is my digital garden—a space to reflect, document my journey, and share insights. It’s meant not just for me but also for anyone navigating a similar path or aspiring to achieve the same goal. For more context, check out the next section (_Motivation_).
+A quick intro: I’m a graduate student in Computer Science at the Courant Institute of Mathematical Sciences, New York University. Before this, I worked as a Data Engineer at IBM in India for two years. My aspiration is to become a `Machine Learning Engineer/Researcher`, and this blog is my digital garden—a space to reflect, document my journey, and share insights. It’s meant not just for me but also for anyone navigating a similar path or aspiring to achieve the same goal. For more context, check out the next section (_Motivation_).
 
 On a personal note, I’m still discovering who I am. As an `INFJ` (if you know, you know), I value introspection, meaningful connections, and a sense of purpose. While most of my posts will delve into technical topics, I promise to keep things focused—no unnecessary drama here! :)
 
