@@ -9,9 +9,7 @@ profile:
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p>55 Jordan Avenue </p>
-    <p>Jersey City, New Jersey</p>
-    <p>NJ - 07306</p>
+    <p>At Bull Hill Full Loop, Hudson Highlands State Park Preserve, New York</p>
 news: true # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
