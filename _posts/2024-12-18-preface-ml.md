@@ -12,13 +12,13 @@ toc:
   sidebar: left
 ---
 
-##### Welcome to My Machine Learning Blog Series!
+##### **Welcome to My Machine Learning Blog Series!**
 
-This blog series draws inspiration from my machine learning course at NYU—a graduate-level adventure designed to explore concepts deeply and build a strong foundation from scratch. A solid grasp of the fundamentals is essential for mastering advanced topics and making meaningful progress. The course was initially designed by **Prof. David Rosenburg** and later adapted by **Prof. He He**, **Tal Linzen**, and others. I had the privilege of learning under **Prof. Mengye Ren**, whose teaching and structured content have greatly influenced this blog series.
+This blog series draws inspiration from my machine learning course at NYU—a graduate-level adventure designed to explore concepts deeply and build a strong foundation from scratch. A solid grasp of the fundamentals is essential for mastering advanced topics and making meaningful progress. The course was initially designed by [Prof. David Rosenburg](https://scholar.google.com/citations?user=YsHFgSAAAAAJ&hl=en) and later adapted by **Prof. He He**, **Tal Linzen**, and others. I had the privilege of learning under [Prof. Mengye Ren](https://mengyeren.com/), whose teaching and structured content have greatly influenced this blog series.
 
 A heartfelt thank you to everyone who has supported me, continues to support me, or will support me in the future. I’m incredibly grateful for all the experiences that have brought me to this point in my journey.
 
-##### What to Expect in This Blog Series
+##### **What to Expect in This Blog Series**
 
 The focus here is on the **theoretical aspects** of machine learning rather than programming. Why? Because understanding theory forms the critical intuition that separates a beginner randomly trying things from an expert who knows exactly where to focus for impactful results. While I consider myself a beginner, I’m determined to keep learning, growing, and sharing insights along the way.
 
@@ -28,11 +28,11 @@ While the focus is theoretical, I won’t leave you hanging! I’ll include **co
 
 If you’re someone with undergraduate-level knowledge in mathematics and programming, you’ll find this series accessible. While topics like **convex optimization** or **Lagrangians** might not be covered in standard undergraduate curricula, don’t worry—I’ll explain them in detail as we go along.
 
-##### Attention to Detail and Collaboration
+##### **Attention to Detail and Collaboration**
 
 Every blog post will include a list of **references** I’ve read or used while preparing the content. I plan to thoroughly review each post multiple times before publishing, incorporating feedback from classmates and my professor to ensure accuracy. If you spot any mistakes, please don’t hesitate to reach out—I’d be thrilled to correct them and keep this content as reliable as possible.
 
-##### A Lifelong Learning Project
+##### **A Lifelong Learning Project**
 
 This blog series is more than just a project—it’s a lifelong commitment. My goal is to gradually evolve this resource as I publish posts one by one. I’ll strive to remain consistent and ensure this series not only serves as a learning resource but also inspires more people to dive into machine learning and contribute to the community.
 
