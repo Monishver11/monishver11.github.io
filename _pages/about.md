@@ -10,7 +10,7 @@ profile:
   image_circular: false # crops the image to make it circular
   more_info:
     <p>At Bull Hill Full Loop, Hudson Highlands State Park Preserve, New York</p>
-news: true # includes a list of news items
+news: false # includes a list of news items
 #selected_papers: true # includes a list of papers marked as "selected={true}"
 #social: true # includes social icons at the bottom of the page
 ---
@@ -19,7 +19,7 @@ A quick intro: I’m a graduate student in Computer Science at the Courant Insti
 
 On a personal note, I’m still discovering who I am. As an `INFJ` (if you know, you know), I value introspection, meaningful connections, and a sense of purpose. While most of my posts will delve into technical topics, I promise to keep things focused—no unnecessary drama here! :)
 
-I find satisfaction in making/seeing others happy and accomplishing goals after long, challenging journeys, even though those moments of triumph can be fleeting at times. Nevertheless, it is essential for continued growth in life. Beyond this, I cherish deep conversations and spending time with loved ones. My interests are broad, and I approach life with an open and curious mind.
+I find satisfaction in making/seeing others happy and accomplishing goals after long, challenging journeys, even though those moments of triumph can be fleeting at times. Nevertheless, it is essential for continued growth in life. Beyond this, I cherish deep conversations and spending time with loved ones. My interests are broad, and I approach life with an open and curious mind. Off the academic path, I’m an avid lawn tennis player with a deep passion for art. You can check out my creations on IG: @knotted.arts.
 
 This blog is also my way of reaching out, adding value to others lives, and fostering meaningful connections. If any of this resonates with you, don’t hesitate to reach out—I’d love to chat! At the end of the day, we only have one life. Let’s focus on the journey ahead, let go of regrets and worries, and invest in building meaningful relationships and memories.
 
