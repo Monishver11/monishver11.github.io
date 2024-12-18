@@ -27,8 +27,6 @@ This blog is also my way of reaching out, adding value to others lives, and fost
 
 - **Building Foundations**: To develop a strong understanding of machine learning through `first principles`.
 - **Tracking Progress**: To document my journey as a way to reflect, revise, and measure growth.
-- **Sharing Insights**: To consolidate scattered knowledge into one place, making it more accessible and helpful for others on similar paths.
-- **Creating Knowledge**: To contribute to the ML community by sharing intuitive explanations that may resonate better than those from experts, especially for beginners or peers.
 - **Simplifying Complexity**: To make intricate concepts in machine learning more approachable, enabling others to form intuition and engage deeply with the field.
 - **Problem-Solving**: To focus on understanding and tackling challenges, as `problem-solving` in ML requires clarity of thought and creativity.
 - **Collaboration**: To connect and work with brilliant minds while embracing the fulfilling challenge of mastering machine learning.
