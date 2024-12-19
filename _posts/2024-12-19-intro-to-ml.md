@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Introduction to ML
+title: Introduction to Machine Learning(ML)
 date: 2024-12-19 15:44:00-0400
 featured: true
 description: An easy guide to machine learning, its applications, and how it connects to AI and human learning.
@@ -49,7 +49,7 @@ Machine learning is particularly valuable when:
    - **Input**: Patient symptoms (e.g., fever, cough)
    - **Output**: Diagnosis (e.g., flu, pneumonia)
    - Problem Type: Multiclass Classification
-   - **Probabilistic Classification**: Uncertainty is expressed as probabilities, e.g., P(pneumonia)=0.7P(\text{pneumonia}) = 0.7P(pneumonia)=0.7.
+   - Probabilistic Classification: Uncertainty is expressed as probabilities, e.g., P(pneumonia)=0.7
 3. **Stock Price Prediction**
    - **Input**: Historical stock prices
    - **Output**: Price at the close of the next day
@@ -99,6 +99,7 @@ Instead of encoding rules, ML systems learn directly from **training data**—ex
 2. **Learning**: How do we find the best prediction function from training data?
 3. **Inference**: How do we compute predictions for new inputs?
 
+We'll tackle each of these questions as we move forward, so stick around!
 ---
 
 #### **ML vs. Statistics: Key Differences**
@@ -110,10 +111,10 @@ While both fields use mathematical tools like calculus, probability, and linear 
 
 #### **ML in AI and Human Learning**
 
-**Relation to AI**
+**Relation to AI:**
 Machine learning is a crucial subset of artificial intelligence (AI). While AI encompasses a broad range of approaches to simulate human-like intelligence, machine learning focuses specifically on learning patterns from data to make predictions or decisions.
 
-**Relation to Human Learning**
+**Relation to Human Learning:**
 Though inspired by human cognition, ML differs significantly:
 
 - We humans are highly efficient with limited data.
