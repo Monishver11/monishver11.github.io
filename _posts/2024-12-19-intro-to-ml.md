@@ -3,7 +3,7 @@ layout: post
 title: Introduction to ML
 date: 2024-12-19 15:44:00-0400
 featured: true
-description: Intro to ML and its relation to other topics
+description: An easy guide to machine learning, its applications, and how it connects to AI and human learning.
 tags: ML
 categories: sample-posts
 giscus_comments: false
