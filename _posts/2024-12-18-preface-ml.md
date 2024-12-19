@@ -4,7 +4,7 @@ title: Preface & Introduction
 date: 2024-12-18 13:43:00-0400
 featured: true
 description: First blog post, more like a preface of a book.
-tags: formatting toc sidebar
+tags: ML
 categories: sample-posts
 giscus_comments: false
 related_posts: false

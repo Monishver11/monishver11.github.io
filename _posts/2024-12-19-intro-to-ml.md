@@ -4,7 +4,7 @@ title: Introduction to ML
 date: 2024-12-19 15:44:00-0400
 featured: true
 description: Intro to ML and its relation to other topics
-tags: formatting toc sidebar
+tags: ML
 categories: sample-posts
 giscus_comments: false
 related_posts: false
