@@ -200,7 +200,11 @@ The Taylor series is a powerful tool that approximates complex functions using s
 #### **Definition**
 
 $$
-\text{For a function } f(x) \text{ that is infinitely differentiable at a point } a, \text{ the Taylor series is given by:}
+\text{For a function } f(x) \text{ that is infinitely differentiable at a point } a,
+$$
+
+$$
+\text{ the Taylor series is given by:}
 $$
 
 $$
@@ -232,7 +236,7 @@ Quick analogies to idealize it:
 3. **Gradient Estimation**:  
    When direct computation of gradients is challenging, Taylor series can approximate them.
 
-By leveraging the Taylor series, machine learning practitioners can approximate complex functions with simpler polynomial expressions, enabling more efficient computation and analysis. The Taylor series provides a detailed local understanding of functions, facilitating optimization, gradient estimation, and model interpretation. This makes it a valuable tool for bridging the gap between continuous mathematical phenomena and practical computational algorithms, playing a crucial role in solving complex problems and enhancing the efficiency of machine learning workflows.
+The Taylor series provides a detailed local understanding of functions, facilitating optimization, gradient estimation, and model interpretation. This makes it a valuable tool for bridging the gap between continuous mathematical phenomena and practical computational algorithms, playing a crucial role in solving complex problems and enhancing the efficiency of machine learning workflows.
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
 
