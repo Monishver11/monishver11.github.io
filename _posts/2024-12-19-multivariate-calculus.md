@@ -236,10 +236,10 @@ By leveraging the Taylor series, machine learning practitioners can approximate 
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
 
-### **References**:
+### **References**
 
-- AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-- BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-- Calculus: Building Intuition for the Derivative – BetterExplained [WWW Document], n.d. URL https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/ (accessed 12.19.24).
-- Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-- What is Calculus? Definition, Applications, and Concepts [WWW Document], n.d. . Photomath. URL https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/ (accessed 12.19.24).
+<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2012" target="_blank">AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
+<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2012" target="_blank">BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
+<a href="https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/" target="_blank">Calculus: Building Intuition for the Derivative – BetterExplained</a>
+<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2020" target="_blank">Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
+<a href="https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/" target="_blank">What is Calculus? Definition, Applications, and Concepts – Photomath</a>
