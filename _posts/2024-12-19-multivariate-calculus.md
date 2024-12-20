@@ -238,8 +238,6 @@ This foundational knowledge from multivariate calculus sets the stage for deeper
 
 ### **References**
 
-<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2012" target="_blank">AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
-<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2012" target="_blank">BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
-<a href="https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/" target="_blank">Calculus: Building Intuition for the Derivative – BetterExplained</a>
-<a href="https://math.stackexchange.com/questions/answer/whys-gradient-the-direction-of-steepest-ascent-2020" target="_blank">Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange</a>
-<a href="https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/" target="_blank">What is Calculus? Definition, Applications, and Concepts – Photomath</a>
+- <a href="https://math.stackexchange.com/questions/223252/why-is-gradient-the-direction-of-steepest-ascent" target="_blank">Why is gradient the direction of steepest ascent?</a>
+- <a href="https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/" target="_blank">Calculus: Building Intuition for the Derivative – BetterExplained</a>
+- <a href="https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/" target="_blank">What is Calculus? Definition, Applications, and Concepts – Photomath</a>
