@@ -236,10 +236,10 @@ By leveraging the Taylor series, machine learning practitioners can approximate 
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
 
-### **References:**
+### **References**:
 
-AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-Calculus: Building Intuition for the Derivative – BetterExplained [WWW Document], n.d. URL https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/ (accessed 12.19.24).
-Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
-What is Calculus? Definition, Applications, and Concepts [WWW Document], n.d. . Photomath. URL https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/ (accessed 12.19.24).
+- AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+- BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+- Calculus: Building Intuition for the Derivative – BetterExplained [WWW Document], n.d. URL https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/ (accessed 12.19.24).
+- Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+- What is Calculus? Definition, Applications, and Concepts [WWW Document], n.d. . Photomath. URL https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/ (accessed 12.19.24).
