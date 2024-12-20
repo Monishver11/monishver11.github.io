@@ -136,11 +136,11 @@ By leveraging the gradient vector, machine learning algorithms efficiently navig
 
 Building on partial derivatives and gradient vectors, **Hessian** and **Jacobian matrices** offer even deeper insights into multivariable functions. These higher-order constructs are essential for advanced optimization techniques and will be explored in detail next down.
 
-#### Jacobian Matrix
+#### **Jacobian Matrix**
 
 The Jacobian matrix generalizes the gradient vector for vector-valued functions, capturing how changes in multiple inputs affect multiple outputs.
 
-##### Definition
+##### **Definition**
 
 $$
 \text{For a function } \mathbf{f}: \mathbb{R}^n \to \mathbb{R}^m, \text{ the Jacobian matrix } \mathbf{J} \text{ is an } m \times n \text{ matrix defined as:}
@@ -160,11 +160,11 @@ $$
 component functions } f_i \text{ with respect to the input variables } x_j.
 $$
 
-#### Hessian Matrix
+#### **Hessian Matrix**
 
 The Hessian matrix contains all second-order partial derivatives of a scalar-valued function. It provides information about the curvature of the function, making it essential for understanding the landscape of optimization problems.
 
-##### Definition
+##### **Definition**
 
 $$
 \text{For a function } f: \mathbb{R}^n \to \mathbb{R}, \text{ the Hessian matrix } \mathbf{H} \text{ is an } n \times n \text{ symmetric matrix defined as:}
@@ -188,11 +188,11 @@ Both the Jacobian and Hessian matrices extend the concept of partial derivatives
 
 ---
 
-### Taylor Series
+### **Taylor Series**
 
 The Taylor series is a powerful tool that approximates complex functions using simpler polynomial expressions. This approximation is widely used in optimization and machine learning.
 
-#### Definition
+#### **Definition**
 
 $$
 \text{For a function } f(x) \text{ that is infinitely differentiable at a point } a, \text{ the Taylor series is given by:}
@@ -218,7 +218,7 @@ Quick analogies to idealize it:
 2. **Prediction Machine**:  
    Think of it as a step-by-step refinement of a guess about the function's behavior. It starts with a constant, then linear, quadratic, cubic, and so on, improving accuracy at each step.
 
-#### Applications in Machine Learning
+#### **Applications in Machine Learning**
 
 1. **Function Approximation**:  
    Simplifies complex functions into polynomials that are computationally easier to work with.
