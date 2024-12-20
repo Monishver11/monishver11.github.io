@@ -130,6 +130,8 @@ Gradient vectors are pivotal in optimization and training algorithms:
 
 By leveraging the gradient vector, machine learning algorithms efficiently navigate complex parameter spaces, optimize models, and adapt to data characteristics. The gradient not only informs about the loss landscape but also helps shape strategies to improve performance.
 
+You might be wondering why the gradient points in the direction of steepest ascent—see the references below for more details.
+
 ---
 
 ### **Hessian and Jacobian: Higher-Order Tools**
