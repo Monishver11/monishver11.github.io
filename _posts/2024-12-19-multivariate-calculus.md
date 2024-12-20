@@ -236,7 +236,7 @@ By leveraging the Taylor series, machine learning practitioners can approximate 
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
 
-### **References: **
+### **References:**
 
 AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
 BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
