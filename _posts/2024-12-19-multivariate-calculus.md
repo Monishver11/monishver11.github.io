@@ -158,8 +158,9 @@ $$
 $$
 
 $$
-\text{The entries of the Jacobian matrix are partial derivatives of the component functions } f_i 
+\text{The entries of the Jacobian matrix are partial derivatives of the component functions } f_i
 $$
+
 $$
 \text{ with respect to the input variables } x_j.
 $$
