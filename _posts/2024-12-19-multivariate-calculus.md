@@ -158,8 +158,10 @@ $$
 $$
 
 $$
-\text{The entries of the Jacobian matrix are partial derivatives of the
-component functions } f_i \text{ with respect to the input variables } x_j.
+\text{The entries of the Jacobian matrix are partial derivatives of the component functions } f_i 
+$$
+$$
+\text{ with respect to the input variables } x_j.
 $$
 
 #### **Hessian Matrix**
@@ -232,3 +234,11 @@ Quick analogies to idealize it:
 By leveraging the Taylor series, machine learning practitioners can approximate complex functions with simpler polynomial expressions, enabling more efficient computation and analysis. The Taylor series provides a detailed local understanding of functions, facilitating optimization, gradient estimation, and model interpretation. This makes it a valuable tool for bridging the gap between continuous mathematical phenomena and practical computational algorithms, playing a crucial role in solving complex problems and enhancing the efficiency of machine learning workflows.
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
+
+### **References: **
+
+AsinglePANCAKE, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+BobaFret, 2012. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+Calculus: Building Intuition for the Derivative – BetterExplained [WWW Document], n.d. URL https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/ (accessed 12.19.24).
+Shai, 2020. Answer to “Why is gradient the direction of steepest ascent?” Mathematics Stack Exchange.
+What is Calculus? Definition, Applications, and Concepts [WWW Document], n.d. . Photomath. URL https://photomath.com/articles/what-is-calculus-definition-applications-and-concepts/ (accessed 12.19.24).
