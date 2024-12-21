@@ -28,22 +28,23 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
   - Row vector: $$\mathbf{v} = [v_1, v_2, \dots, v_n]$$
   - Column vector: $$\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix}$$
 - **Properties:**
-  - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm. 
-  
-  $$ 
-    \|\mathbf{v}\|_2 = \sqrt{\sum_{i=1}^{n} v_i^2} \ \ ; \quad \|\mathbf{v}\|_1 = \sum_{i=1}^{n} |v_i| 
+
+  - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm.
+
+  $$
+    \|\mathbf{v}\|_2 = \sqrt{\sum_{i=1}^{n} v_i^2} \ \ ; \quad \|\mathbf{v}\|_1 = \sum_{i=1}^{n} |v_i|
   $$
 
-  - **Dot Product:** The dot product of two vectors measures their similarity. The dot product between two vectors $$\mathbf{v}_1​$$ and $$\mathbf{v}_2$$​ is computed as: 
-  
-  $$ 
-    \mathbf{v}_1 \cdot \mathbf{v}_2 = \sum_{i=1}^{n} v_{1i} v_{2i} 
+  - **Dot Product:** The dot product of two vectors measures their similarity. The dot product between two vectors $$\mathbf{v}_1​$$ and $$\mathbf{v}_2$$​ is computed as:
+
+  $$
+    \mathbf{v}_1 \cdot \mathbf{v}_2 = \sum_{i=1}^{n} v_{1i} v_{2i}
   $$
 
-  - **Distance:** The Euclidean distance is a common way to measure the difference between two vectors: 
-  
-  $$ 
-  d(\mathbf{v}_1, \mathbf{v}_2) = \sqrt{\sum_{i=1}^{n} (v_{1i} - v_{2i})^2} 
+  - **Distance:** The Euclidean distance is a common way to measure the difference between two vectors:
+
+  $$
+  d(\mathbf{v}_1, \mathbf{v}_2) = \sqrt{\sum_{i=1}^{n} (v_{1i} - v_{2i})^2}
   $$
 
 - **Operations on Vectors:**
@@ -56,7 +57,7 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
 A **matrix** is a two-dimensional array of numbers, and it is widely used in machine learning for data storage, transformations, and solving systems of equations.
 
 - **Definition:** A matrix consists of rows and columns and is denoted as $$A$$, where $$A_{ij}$$​ represents the element in the i-th row and j-th column.
-  
+
   $$
   A = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix}
   $$
@@ -88,23 +89,25 @@ Vectors and matrices play a pivotal role in representing both data and models in
 
 - **Linear Regression:** In linear regression, matrix operations are used to solve for the optimal weights. The normal equation for linear regression is:
 
-$$ 
-w=(X^TX)^{−1}X^Ty 
+$$
+w=(X^TX)^{−1}X^Ty
 $$
 
-  where $$X$$ is the matrix of input features and $$y$$ is the vector of target values.
-- **Neural Networks:** Each layer of a neural network applies a linear transformation to its input, which is represented by matrix multiplication: 
+where $$X$$ is the matrix of input features and $$y$$ is the vector of target values.
+
+- **Neural Networks:** Each layer of a neural network applies a linear transformation to its input, which is represented by matrix multiplication:
 
 $$
 y=XW+b
 $$
 
 where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bias vector.
+
 - **Gradient Descent:** The gradient descent optimization algorithm frequently uses vector and matrix operations to update model parameters iteratively. In deep learning, the gradient of the loss function with respect to the weights and biases is calculated using matrix operations during back-propagation.
 
 **4. Dimensionality Reduction**
 
-- **Principal Component Analysis (PCA) is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. Eigenvalues and Eigenvectors are explained down below.
+- \*\*Principal Component Analysis (PCA) is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. Eigenvalues and Eigenvectors are explained down below.
 
 ---
 
@@ -114,14 +117,16 @@ where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bi
 
 - **Eigenvector:**  
    An eigenvector of a square matrix $$\mathbf{A}$$ is a non-zero vector $$\mathbf{v}$$ that, when the matrix $$\mathbf{A}$$ is applied to it, only scales the vector without changing its direction:
-   
-   $$
-   \mathbf{A} \mathbf{v} = \lambda \mathbf{v}
-   $$
+
+  $$
+  \mathbf{A} \mathbf{v} = \lambda \mathbf{v}
+  $$
 
   where:
+
   - $$\mathbf{v}$$ is the eigenvector,
   - $$\lambda$$ is the eigenvalue, the scalar that represents how much the eigenvector is scaled by the transformation.
+
 - **Eigenvalue:**  
    The eigenvalue $$\lambda$$ is the factor by which the eigenvector is scaled when the matrix $$\mathbf{A}$$ acts on it.
 
@@ -130,6 +135,7 @@ where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bi
 Imagine a squishy sheet of rubber (the matrix) and a point in space (the vector). If you apply a transformation (like stretching, rotating, or shearing) to the point using the rubber sheet, most points move to new locations. However, some special points, called **eigenvectors**, only get **stretched** or **compressed** but **stay in the same direction**. The amount of stretching or compression is determined by the **eigenvalue**.
 
 **Mathematical Properties of Eigenvalues and Eigenvectors**
+
 - Eigenvectors must be **non-zero vectors**.
 - Eigenvalues can be **real** or **complex** (but are often real in machine learning applications).
 - A matrix can have multiple eigenvectors corresponding to the **same eigenvalue** (if it is **degenerate**) or distinct eigenvalues corresponding to distinct eigenvectors.
@@ -143,6 +149,7 @@ Imagine a squishy sheet of rubber (the matrix) and a point in space (the vector)
 - **Eigenvalues:** The corresponding eigenvalues indicate the magnitude of variance in each direction.
 
 Key steps in PCA:
+
 - Sort eigenvectors in decreasing order of their eigenvalues.
 - Select the top **k** eigenvectors to reduce dimensionality while preserving most of the variance.
 
@@ -211,6 +218,7 @@ Key steps in PCA:
   $$
 
   where $$m$$ is the number of data points, and $$\bar{x}$$ and $$\bar{y}$$​ are the means of the features $$X$$ and $$Y$$, respectively.
+
 - **Covariance Matrix Definition:** For a dataset with $$n$$ features, the covariance matrix $$\Sigma$$ is an $$n \times n$$ matrix where each entry is:
 
   $$
@@ -218,6 +226,7 @@ Key steps in PCA:
   $$
 
   where $$X_i$$​ and $$X_j$$​ are the $$i$$-th and $$j$$-th features, respectively.
+
 - **Properties:**
   - **Symmetry:** The covariance matrix is always symmetric, i.e., $$\Sigma_{ij} = \Sigma_{ji}$$
   - **Positive Semi-Definiteness (PSD):** The covariance matrix is always positive semi-definite, meaning for any vector $$\mathbf{v}$$, $$\mathbf{v}^T \Sigma \mathbf{v} \geq 0$$.
@@ -251,7 +260,6 @@ Key steps in PCA:
 
 ---
 
-
 That wraps up the key linear algebra concepts for machine learning. This post is designed as a quick reference rather than an exhaustive guide. Don't stress about memorizing everything—focus instead on understanding the concepts and knowing when to revisit them if needed.
 
 Math is a language, and like any language, it's more about learning to use it than memorizing rules. Treat this as a foundation to build on, and come back to refresh your knowledge whenever necessary.
@@ -261,6 +269,7 @@ Up next, we'll explore the prerequisites of **Probability Theory** for machine l
 See you in the next one!
 
 ### **References:**
+
 <!-- - other than pca, where eigen values used in ml. modify that section.
 - basis? add reference and pointer above
 - Singular Value Decomposition
