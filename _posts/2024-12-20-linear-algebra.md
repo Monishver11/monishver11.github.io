@@ -195,7 +195,7 @@ Key steps in PCA:
 
 #### 3. **Positive Definite Matrix (PD):**
 
-- **Definition:** A square matrix $$A$$ is **positive definite** if for any non-zero vector $$\mathbf{v}$, $\mathbf{v}^T A \mathbf{v} > 0$$. In simpler terms, it means that the matrix has strictly positive eigenvalues.
+- **Definition:** A square matrix $$A$$ is **positive definite** if for any non-zero vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} > 0$$. In simpler terms, it means that the matrix has strictly positive eigenvalues.
 - **Properties:**
   - All eigenvalues are positive.
   - The matrix is invertible (non-singular).
