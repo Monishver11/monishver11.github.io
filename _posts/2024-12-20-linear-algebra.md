@@ -25,12 +25,21 @@ Linear algebra forms the backbone of modern machine learning. As a branch of mat
 A **vector** is a fundamental concept in linear algebra and is essentially a one-dimensional array of numbers. In machine learning, vectors can represent different elements, including features, weights, or data points.
 
 - **Definition:** A vector is a set of numbers arranged in a specific order, and it can be represented either as a **row vector** or a **column vector**.
-  - Row vector: $$ \mathbf{v} = [v_1, v_2, \dots, v_n] $$
-  - Column vector:$$ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix} $$
+  - Row vector: $ \mathbf{v} = [v_1, v_2, \dots, v_n] $
+  - Column vector:$ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix} $
 - **Properties:**
-  - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm. $$ \|\mathbf{v}\|_2 = \sqrt{\sum_{i=1}^{n} v_i^2} \ \ ; \quad \|\mathbf{v}\|_1 = \sum_{i=1}^{n} |v_i| $$
-  - **Dot Product:** The dot product of two vectors measures their similarity. The dot product between two vectors \mathbf{v}_1​ and \mathbf{v}_2​ is computed as: $$ \mathbf{v}_1 \cdot \mathbf{v}_2 = \sum_{i=1}^{n} v_{1i} v_{2i} $$
-  - **Distance:** The Euclidean distance is a common way to measure the difference between two vectors: $$ d(\mathbf{v}_1, \mathbf{v}_2) = \sqrt{\sum_{i=1}^{n} (v_{1i} - v_{2i})^2} $$
+  - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm. 
+  $$ 
+  \|\mathbf{v}\|_2 = \sqrt{\sum_{i=1}^{n} v_i^2} \ \ ; \quad \|\mathbf{v}\|_1 = \sum_{i=1}^{n} |v_i| 
+  $$
+  - **Dot Product:** The dot product of two vectors measures their similarity. The dot product between two vectors \mathbf{v}_1​ and \mathbf{v}_2​ is computed as: 
+  $$ 
+  \mathbf{v}_1 \cdot \mathbf{v}_2 = \sum_{i=1}^{n} v_{1i} v_{2i} 
+  $$
+  - **Distance:** The Euclidean distance is a common way to measure the difference between two vectors: 
+  $$ 
+  d(\mathbf{v}_1, \mathbf{v}_2) = \sqrt{\sum_{i=1}^{n} (v_{1i} - v_{2i})^2} 
+  $$
 - **Operations on Vectors:**
   - **Addition:** Vectors of the same size can be added element-wise.
   - **Scalar Multiplication:** Multiplying each element of a vector by a scalar.
@@ -41,7 +50,7 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
 A **matrix** is a two-dimensional array of numbers, and it is widely used in machine learning for data storage, transformations, and solving systems of equations.
 
 - **Definition:** A matrix consists of rows and columns and is denoted as $ A $, where A_{ij}​ represents the element in the i-th row and j-th column.
-- $$A = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix}$$
+  $$A = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix}$$
 - **Properties of Matrices:**
   - **Rank:** The rank of a matrix is the maximum number of linearly independent rows or columns, indicating the number of independent dimensions in the matrix.
   - **Trace:** The trace is the sum of the diagonal elements of a square matrix. It is often involved in optimization problems.
