@@ -99,8 +99,7 @@ Instead of encoding rules, ML systems learn directly from **training data**—ex
 2. **Learning**: How do we find the best prediction function from training data?
 3. **Inference**: How do we compute predictions for new inputs?
 
-We'll tackle each of these questions as we move forward, so stick around!
----
+## We'll tackle each of these questions as we move forward, so stick around!
 
 #### **ML vs. Statistics: Key Differences**
 
