@@ -25,13 +25,15 @@ Linear algebra forms the backbone of modern machine learning. As a branch of mat
 A **vector** is a fundamental concept in linear algebra and is essentially a one-dimensional array of numbers. In machine learning, vectors can represent different elements, including features, weights, or data points.
 
 - **Definition:** A vector is a set of numbers arranged in a specific order, and it can be represented either as a **row vector** or a **column vector**.
-  - Row vector: $ \mathbf{v} = [v_1, v_2, \dots, v_n] $
-  - Column vector:$ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix} $
+  - Row vector: $$\mathbf{v} = [v_1, v_2, \dots, v_n]$$
+  - Column vector:$$\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix}$$
 - **Properties:**
   - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm. 
+  
   $$ 
     \|\mathbf{v}\|_2 = \sqrt{\sum_{i=1}^{n} v_i^2} \ \ ; \quad \|\mathbf{v}\|_1 = \sum_{i=1}^{n} |v_i| 
   $$
+
   - **Dot Product:** The dot product of two vectors measures their similarity. The dot product between two vectors $$\mathbf{v}_1​$$ and $$\mathbf{v}_2$$​ is computed as: 
   
   $$ 
@@ -53,7 +55,7 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
 
 A **matrix** is a two-dimensional array of numbers, and it is widely used in machine learning for data storage, transformations, and solving systems of equations.
 
-- **Definition:** A matrix consists of rows and columns and is denoted as $ A $, where $$A_{ij}$$​ represents the element in the i-th row and j-th column.
+- **Definition:** A matrix consists of rows and columns and is denoted as $$A$$, where $$A_{ij}$$​ represents the element in the i-th row and j-th column.
   
   $$
   A = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix}
@@ -63,7 +65,7 @@ A **matrix** is a two-dimensional array of numbers, and it is widely used in mac
   - **Rank:** The rank of a matrix is the maximum number of linearly independent rows or columns, indicating the number of independent dimensions in the matrix.
   - **Trace:** The trace is the sum of the diagonal elements of a square matrix. It is often involved in optimization problems.
   - **Determinant:** The determinant helps in determining whether a matrix is invertible. A non-zero determinant implies that the matrix is invertible.
-  - **Invertibility:** A matrix $A$ is invertible if it has full rank and a non-zero determinant. The inverse of a matrix $$A$$ is denoted by $$A^{-1}$$, and it satisfies the equation: $$A A^{-1} = I$$ where $$I$$ is the identity matrix.
+  - **Invertibility:** A matrix $$A$$ is invertible if it has full rank and a non-zero determinant. The inverse of a matrix $$A$$ is denoted by $$A^{-1}$$, and it satisfies the equation: $$A A^{-1} = I$$ where $$I$$ is the identity matrix.
 - **Operations on Matrices:**
   - **Matrix Addition/Subtraction:** Matrices of the same dimension can be added or subtracted element-wise.
   - **Matrix Multiplication:** Matrix multiplication is the dot product of rows and columns between two matrices. This operation is central to machine learning algorithms.
@@ -90,7 +92,7 @@ $$
 w=(X^TX)^{−1}X^Ty 
 $$
 
-  where $X$ is the matrix of input features and $y$ is the vector of target values.
+  where $$X$$ is the matrix of input features and $$y$$ is the vector of target values.
 - **Neural Networks:** Each layer of a neural network applies a linear transformation to its input, which is represented by matrix multiplication: 
 
 $$
@@ -204,7 +206,7 @@ Key steps in PCA:
 
 #### 4. **Positive Semi-Definite Matrix (PSD):**
 
-- **Definition:** A matrix $A$ is **positive semi-definite** if for any vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} \geq 0$$. In other words, all eigenvalues are non-negative (i.e., zero or positive).
+- **Definition:** A matrix $$A$$ is **positive semi-definite** if for any vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} \geq 0$$. In other words, all eigenvalues are non-negative (i.e., zero or positive).
 - **Properties:**
   - Eigenvalues are non-negative $$(\lambda_i \geq 0)$$.
   - The matrix may not be invertible if it has zero eigenvalues.
@@ -232,7 +234,7 @@ Key steps in PCA:
   where $$X_i$$​ and $$X_j$$​ are the $$i$$-th and $$j$$-th features, respectively.
 - **Properties:**
   - **Symmetry:** The covariance matrix is always symmetric, i.e., $$\Sigma_{ij} = \Sigma_{ji}$$
-  - **Positive Semi-Definiteness (PSD):** The covariance matrix is always positive semi-definite, meaning for any vector $$\mathbf{v}$, $\mathbf{v}^T \Sigma \mathbf{v} \geq 0$$.
+  - **Positive Semi-Definiteness (PSD):** The covariance matrix is always positive semi-definite, meaning for any vector $$\mathbf{v}$$, $$\mathbf{v}^T \Sigma \mathbf{v} \geq 0$$.
   - **Diagonal Entries (Variance):** The diagonal entries represent the variance of individual features.
   - **Off-Diagonal Entries (Covariance):** The off-diagonal entries represent the covariance between different features. Positive covariance indicates that the features increase or decrease together, while negative covariance suggests they move inversely.
   - **Eigenvalues and Eigenvectors:** The eigenvectors of the covariance matrix represent the directions of maximum variance, while the eigenvalues represent the magnitude of variance along these directions.
@@ -250,7 +252,7 @@ Key steps in PCA:
   - If $$A$$ is an $$m \times n$$ matrix, and $$\text{rank}(A) = \min(m, n)$$, the matrix is full rank.
   - A full rank matrix is **invertible** if it is square (i.e., if $$m = n$$).
 - **Relevance in Machine Learning:**
-  - **Linear Regression:** In linear regression, the design matrix $X$ must be full rank to ensure a unique solution. If $$X$$ is not full rank, the matrix $$X^T X$$ is singular and cannot be inverted.
+  - **Linear Regression:** In linear regression, the design matrix $$X$$ must be full rank to ensure a unique solution. If $$X$$ is not full rank, the matrix $$X^T X$$ is singular and cannot be inverted.
   - **Solving Systems of Equations:** Full rank matrices guarantee that a system of linear equations has a unique solution. This is important for models that involve solving for weights (like in linear regression or neural networks).
 
 #### 7. **Singular Matrix:**
@@ -260,7 +262,7 @@ Key steps in PCA:
   - The determinant of a singular matrix is 0.
   - The matrix has at least one eigenvalue equal to 0.
 - **Relevance in Machine Learning:**
-  - **Linear Dependence:** If the feature matrix $X$ in a linear model is singular, some features are perfectly correlated, and this leads to instability in training and difficulties in solving for the model parameters.
+  - **Linear Dependence:** If the feature matrix $$X$$ in a linear model is singular, some features are perfectly correlated, and this leads to instability in training and difficulties in solving for the model parameters.
 
 ---
 
@@ -270,6 +272,6 @@ Math is a language, and like any language, it's more about learning to use it th
 
 Up next, we'll explore the prerequisites of **probability theory** for machine learning. Since probability can often feel trickier, we'll focus more on "what," "why," and "how" questions to make the concepts intuitive and approachable.
 
-See you in the next post!
+See you in the next one!
 
 ### **References**:
