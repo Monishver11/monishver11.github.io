@@ -260,7 +260,7 @@ Up next, we'll explore the prerequisites of **Probability Theory** for machine l
 
 See you in the next one!
 
-### **References*:*
+### **References:**
 <!-- - other than pca, where eigen values used in ml. modify that section.
 - basis? add reference and pointer above
 - Singular Value Decomposition
