@@ -110,7 +110,7 @@ where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bi
 
 ### **Eigenvalues and Eigenvectors**
 
-#### **What Are Eigenvalues and Eigenvectors?**
+##### **Definition:**
 
 - **Eigenvector:**  
    An eigenvector of a square matrix $$\mathbf{A}$$ is a non-zero vector $$\mathbf{v}$$ that, when the matrix $$\mathbf{A}$$ is applied to it, only scales the vector without changing its direction:
@@ -159,7 +159,7 @@ Key steps in PCA:
 
 ### **A Few More Key Matrices Types Relevant to ML**
 
-#### **1. Symmetric Matrix:**
+#### **Symmetric Matrix:**
 
 - **Definition:** A matrix $$A$$ is **symmetric** if $$A = A^T$$, meaning it is equal to its transpose.
 - **Properties:**
@@ -169,7 +169,7 @@ Key steps in PCA:
   - **Covariance Matrices:** Covariance matrices are always symmetric because the covariance between two features is the same regardless of the order.
   - **Optimization Problems:** Many optimization problems in machine learning involve symmetric matrices (e.g., in second-order optimization methods like Newton's method or in regularization).
 
-#### **2. Orthogonal Matrix:**
+#### **Orthogonal Matrix:**
 
 - **Definition:** A matrix $$A$$ is **orthogonal** if $$A^T A = I$$, where $$I$$ is the identity matrix.
 - **Properties:**
@@ -179,7 +179,7 @@ Key steps in PCA:
 - **Relevance in Machine Learning:**
   - **Rotation and Transformation:** Orthogonal matrices are used in certain machine learning algorithms for transformations that preserve distances and angles. For example, in PCA, orthogonal transformation is used to create new orthogonal basis vectors.
 
-#### **3. Positive Definite Matrix (PD):**
+#### **Positive Definite Matrix (PD):**
 
 - **Definition:** A square matrix $$A$$ is **positive definite** if for any non-zero vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} > 0$$. In simpler terms, it means that the matrix has strictly positive eigenvalues.
 - **Properties:**
@@ -190,7 +190,7 @@ Key steps in PCA:
   - **Optimization Problems:** In convex optimization, the Hessian matrix of a convex function is often positive definite. This ensures that a function has a unique local minimum, making optimization well-posed.
   - **Covariance Matrices:** The covariance matrix of any dataset with multiple features is positive semi-definite. In special cases (e.g., full rank), it can be positive definite.
 
-#### **4. Positive Semi-Definite Matrix (PSD):**
+#### **Positive Semi-Definite Matrix (PSD):**
 
 - **Definition:** A matrix $$A$$ is **positive semi-definite** if for any vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} \geq 0$$. In other words, all eigenvalues are non-negative (i.e., zero or positive).
 - **Properties:**
@@ -200,7 +200,7 @@ Key steps in PCA:
   - **Covariance Matrices:** As mentioned, the covariance matrix of a dataset is positive semi-definite. This is essential because covariance cannot be negative and the matrix represents the relationship between features.
   - **Kernel Matrices (in SVMs, Gaussian Processes, etc.):** The kernel matrix in algorithms like SVM and kernel PCA is always positive semi-definite. It measures similarity between data points in a transformed feature space.
 
-#### **5. Covariance Matrix:**
+#### **Covariance Matrix:**
 
 - **Definition:** A **covariance matrix** is a square matrix that contains the covariances between pairs of features in a dataset. If a dataset has $$n$$ features, the covariance matrix will be an $$n \times n$$ matrix, where each entry represents the covariance between two features.
 
@@ -230,7 +230,7 @@ Key steps in PCA:
   - **Multivariate Gaussian Distribution:** In probabilistic models like **Gaussian Mixture Models (GMM)**, the covariance matrix defines the shape of the data distribution. It is used to model the distribution of features in a multi-dimensional space.
   - **Feature Selection:** Covariance matrices help identify correlated features. Features that show high covariance (i.e., strong correlation) can be dropped or combined to improve model performance and reduce dimensionality.
 
-#### 6. **Full Rank Matrix:**
+#### **Full Rank Matrix:**
 
 - **Definition:** A matrix is **full rank** if its rank is equal to the smallest of its number of rows or columns. In other words, all rows (or columns) are linearly independent.
 - **Properties:**
@@ -240,7 +240,7 @@ Key steps in PCA:
 - **Relevance in Machine Learning:**
   - **Linear Regression:** In linear regression, the design matrix $$X$$ must be full rank to ensure a unique solution. If $$X$$ is not full rank, the matrix $$X^T X$$ is singular and cannot be inverted.
 
-#### 7. **Singular Matrix:**
+#### **Singular Matrix:**
 
 - **Definition:** A matrix is **singular** if it is not invertible, meaning its determinant is zero. A singular matrix has linearly dependent rows or columns.
 - **Properties:**
