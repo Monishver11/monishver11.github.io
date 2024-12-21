@@ -16,17 +16,17 @@ Linear algebra forms the backbone of modern machine learning. As a branch of mat
 
 ---
 
-## Core Components of Linear Algebra
+## **Core Components of Linear Algebra**
 
-### Vectors and Matrices
+### **Vectors and Matrices**
 
-#### 1. Vectors
+#### **1. Vectors**
 
 A **vector** is a fundamental concept in linear algebra and is essentially a one-dimensional array of numbers. In machine learning, vectors can represent different elements, including features, weights, or data points.
 
 - **Definition:** A vector is a set of numbers arranged in a specific order, and it can be represented either as a **row vector** or a **column vector**.
   - Row vector: $$\mathbf{v} = [v_1, v_2, \dots, v_n]$$
-  - Column vector:$$\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix}$$
+  - Column vector: $$\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n\end{bmatrix}$$
 - **Properties:**
   - **Magnitude (Norm):** The magnitude of a vector, often referred to as its norm, measures the vector's length. The most common norms used are the L2 norm (Euclidean norm) and L1 norm. 
   
@@ -51,7 +51,7 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
   - **Scalar Multiplication:** Multiplying each element of a vector by a scalar.
   - **Dot Product:** A fundamental operation for determining the similarity between two vectors.
 
-#### 2. Matrices
+#### **2. Matrices**
 
 A **matrix** is a two-dimensional array of numbers, and it is widely used in machine learning for data storage, transformations, and solving systems of equations.
 
@@ -72,19 +72,19 @@ A **matrix** is a two-dimensional array of numbers, and it is widely used in mac
   - **Transpose:** The transpose of a matrix $$A$$ is denoted as $$A^T$$ and involves flipping its rows and columns.
   - **Inverse:** If a matrix is invertible, its inverse can be used to solve systems of linear equations.
 
-### Vectors and Matrices in ML
+### **Vectors and Matrices in ML**
 
 Vectors and matrices play a pivotal role in representing both data and models in machine learning.
 
-#### 1. Data Representation
+**1. Data Representation**
 
-In supervised learning, each data point is typically represented as a feature vector. For example, if a dataset has mmm samples and n features, it can be represented as an $$m \times n$$ matrix, where each row corresponds to a feature vector for a data point. The corresponding labels or target values are often stored in a vector.
+- In supervised learning, each data point is typically represented as a feature vector. For example, if a dataset has $$m$$ samples and $$n$$ features, it can be represented as an $$m \times n$$ matrix, where each row corresponds to a feature vector for a data point. The corresponding labels or target values are often stored in a vector.
 
-#### 2. Model Representation
+**2. Model Representation**
 
-- **Weight Vectors and Matrices:** In models like linear regression and neural networks, the weights that transform input data are stored in vectors or matrices. For example, in linear regression, the model is defined as: $$\hat{y} = Xw + b$$ where $$X$$ is the data matrix, $$w$$ is the weight vector, and $$b$$ is the bias term.
+- In models like linear regression and neural networks, the weights that transform input data are stored in vectors or matrices. For example, in linear regression, the model is defined as: $$\hat{y} = Xw + b$$ where $$X$$ is the data matrix, $$w$$ is the weight vector, and $$b$$ is the bias term.
 
-#### 3. Operations in Machine Learning Algorithms
+**3. Operations in Machine Learning Algorithms**
 
 - **Linear Regression:** In linear regression, matrix operations are used to solve for the optimal weights. The normal equation for linear regression is:
 
@@ -102,68 +102,54 @@ $$
 where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bias vector.
 - **Gradient Descent:** The gradient descent optimization algorithm frequently uses vector and matrix operations to update model parameters iteratively. In deep learning, the gradient of the loss function with respect to the weights and biases is calculated using matrix operations during back-propagation.
 
-#### 4. Dimensionality Reduction
+**4. Dimensionality Reduction**
 
-- **Principal Component Analysis (PCA):** PCA is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. The eigenvectors represent the directions of maximum variance, and the eigenvalues indicate the magnitude of the variance along those directions.
-
-#### 5. Optimization
-
-- **Loss Functions:** Machine learning models are optimized by minimizing a loss function, which often involves vectors and matrices. For instance, in deep learning, back-propagation uses gradients to update the weights by calculating the derivative of the loss function with respect to each weight matrix.
+- **Principal Component Analysis (PCA) is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. Eigenvalues and Eigenvectors are explained down below.
 
 ---
 
-### Eigenvalues and Eigenvectors
+### **Eigenvalues and Eigenvectors**
 
-#### **1. What Are Eigenvalues and Eigenvectors?**
+#### **What Are Eigenvalues and Eigenvectors?**
 
 - **Eigenvector:**  
-   An **eigenvector** of a square matrix $$\mathbf{A}$$ is a non-zero vector $$\mathbf{v}$$ that, when the matrix $$\mathbf{A}$$ is applied to it, only scales the vector without changing its direction:
+   An eigenvector of a square matrix $$\mathbf{A}$$ is a non-zero vector $$\mathbf{v}$$ that, when the matrix $$\mathbf{A}$$ is applied to it, only scales the vector without changing its direction:
    
    $$
    \mathbf{A} \mathbf{v} = \lambda \mathbf{v}
    $$
 
   where:
-  - $$\mathbf{v}$$ is the **eigenvector**,
-  - $$\lambda$$ is the **eigenvalue**, the scalar that represents how much the eigenvector is scaled by the transformation.
+  - $$\mathbf{v}$$ is the eigenvector,
+  - $$\lambda$$ is the eigenvalue, the scalar that represents how much the eigenvector is scaled by the transformation.
 - **Eigenvalue:**  
-   The **eigenvalue** $$\lambda$$ is the factor by which the eigenvector is scaled when the matrix $$\mathbf{A}$$ acts on it.
+   The eigenvalue $$\lambda$$ is the factor by which the eigenvector is scaled when the matrix $$\mathbf{A}$$ acts on it.
 
 **To build intuition, consider this analogy:**
 
-Imagine a **squishy sheet** of rubber (the matrix) and a **point** in space (the vector). If you apply a transformation (like stretching, rotating, or shearing) to the point using the rubber sheet, most points move to new locations. However, some special points, called **eigenvectors**, only get **stretched** or **compressed** but **stay in the same direction**. The amount of stretching or compression is determined by the **eigenvalue**.
+Imagine a squishy sheet of rubber (the matrix) and a point in space (the vector). If you apply a transformation (like stretching, rotating, or shearing) to the point using the rubber sheet, most points move to new locations. However, some special points, called **eigenvectors**, only get **stretched** or **compressed** but **stay in the same direction**. The amount of stretching or compression is determined by the **eigenvalue**.
 
-#### **2. Mathematical Properties of Eigenvalues and Eigenvectors**
-
-- **Eigenvalue Equation:**  
-  For a matrix $$\mathbf{A}$$ and a vector $$\mathbf{v}$$:
-
-  $$
-  \mathbf{A} \mathbf{v} = \lambda \mathbf{v}
-  $$
-
-  where $$\mathbf{A}$$ is an $$n \times n$$ matrix, $$\mathbf{v}$$ is the eigenvector, and $$\lambda$$ is the eigenvalue.
+**Mathematical Properties of Eigenvalues and Eigenvectors**
 - Eigenvectors must be **non-zero vectors**.
 - Eigenvalues can be **real** or **complex** (but are often real in machine learning applications).
 - A matrix can have multiple eigenvectors corresponding to the **same eigenvalue** (if it is **degenerate**) or distinct eigenvalues corresponding to distinct eigenvectors.
 
-#### **3. Why Are Eigenvalues and Eigenvectors Important in Machine Learning?**
+#### **Why Are Eigenvalues and Eigenvectors Important in Machine Learning?**
 
-**Principal Component Analysis (PCA)** is a widely used technique for **dimensionality reduction** in machine learning. It reduces the number of features while retaining the most important information in the dataset.
+**PCA** is a widely used technique for **dimensionality reduction** in machine learning. It reduces the number of features while retaining the most important information in the dataset.
 
-- **Covariance Matrix:** PCA begins by computing the **covariance matrix** to capture relationships between features.
-- **Eigenvectors of Covariance Matrix:** The **eigenvectors** represent the directions of maximum variance in the data—these are the **principal components**.
-- **Eigenvalues:** The corresponding **eigenvalues** indicate the magnitude of variance in each direction.
+- **Covariance Matrix:** PCA begins by computing the covariance matrix to capture relationships between features.
+- **Eigenvectors of Covariance Matrix:** The eigenvectors represent the directions of maximum variance in the data—these are the **principal components**.
+- **Eigenvalues:** The corresponding eigenvalues indicate the magnitude of variance in each direction.
 
 Key steps in PCA:
-
 - Sort eigenvectors in decreasing order of their eigenvalues.
 - Select the top **k** eigenvectors to reduce dimensionality while preserving most of the variance.
 
-#### **4. Key Properties of Eigenvalues and Eigenvectors in Machine Learning**
+#### **Key takeaways of Eigenvalues and Eigenvectors in ML**
 
 - **Diagonalizability:**  
-   A matrix is **diagonalizable** if it has enough eigenvectors to form a full basis. This property is essential in PCA and **Singular Value Decomposition (SVD)**, enabling efficient computation and interpretation.
+   A matrix is diagonalizable if it has enough eigenvectors to form a full basis. This property is essential in PCA and **Singular Value Decomposition (SVD)**, enabling efficient computation and interpretation.
 - **Magnitude of Eigenvalues:**  
    The magnitude of eigenvalues corresponds to the **variance captured** by the associated eigenvectors (principal components). Larger eigenvalues imply more variance explained.
 - **Orthogonality of Eigenvectors (Symmetric Matrices):**  
@@ -171,9 +157,9 @@ Key steps in PCA:
 
 ---
 
-### A Few More Key Matrices Relevant to ML
+### **A Few More Key Matrices Types Relevant to ML**
 
-#### 1. **Symmetric Matrix:**
+#### **1. Symmetric Matrix:**
 
 - **Definition:** A matrix $$A$$ is **symmetric** if $$A = A^T$$, meaning it is equal to its transpose.
 - **Properties:**
@@ -183,7 +169,7 @@ Key steps in PCA:
   - **Covariance Matrices:** Covariance matrices are always symmetric because the covariance between two features is the same regardless of the order.
   - **Optimization Problems:** Many optimization problems in machine learning involve symmetric matrices (e.g., in second-order optimization methods like Newton's method or in regularization).
 
-#### 2. **Orthogonal Matrix:**
+#### **2. Orthogonal Matrix:**
 
 - **Definition:** A matrix $$A$$ is **orthogonal** if $$A^T A = I$$, where $$I$$ is the identity matrix.
 - **Properties:**
@@ -193,7 +179,7 @@ Key steps in PCA:
 - **Relevance in Machine Learning:**
   - **Rotation and Transformation:** Orthogonal matrices are used in certain machine learning algorithms for transformations that preserve distances and angles. For example, in PCA, orthogonal transformation is used to create new orthogonal basis vectors.
 
-#### 3. **Positive Definite Matrix (PD):**
+#### **3. Positive Definite Matrix (PD):**
 
 - **Definition:** A square matrix $$A$$ is **positive definite** if for any non-zero vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} > 0$$. In simpler terms, it means that the matrix has strictly positive eigenvalues.
 - **Properties:**
@@ -204,7 +190,7 @@ Key steps in PCA:
   - **Optimization Problems:** In convex optimization, the Hessian matrix of a convex function is often positive definite. This ensures that a function has a unique local minimum, making optimization well-posed.
   - **Covariance Matrices:** The covariance matrix of any dataset with multiple features is positive semi-definite. In special cases (e.g., full rank), it can be positive definite.
 
-#### 4. **Positive Semi-Definite Matrix (PSD):**
+#### **4. Positive Semi-Definite Matrix (PSD):**
 
 - **Definition:** A matrix $$A$$ is **positive semi-definite** if for any vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} \geq 0$$. In other words, all eigenvalues are non-negative (i.e., zero or positive).
 - **Properties:**
@@ -218,14 +204,14 @@ Key steps in PCA:
 
 - **Definition:** A **covariance matrix** is a square matrix that contains the covariances between pairs of features in a dataset. If a dataset has $$n$$ features, the covariance matrix will be an $$n \times n$$ matrix, where each entry represents the covariance between two features.
 
-- **Covariance of two variables XXX and YYY:**
+- **Covariance of two variables X and Y:**
 
   $$
   \text{Cov}(X, Y) = \frac{1}{m} \sum_{i=1}^{m} (x_i - \bar{x})(y_i - \bar{y})
   $$
 
   where $$m$$ is the number of data points, and $$\bar{x}$$ and $$\bar{y}$$​ are the means of the features $$X$$ and $$Y$$, respectively.
-- **Covariance Matrix Definition:** For a dataset with nnn features, the covariance matrix $$\Sigma$$ is an $$n \times n$$ matrix where each entry is:
+- **Covariance Matrix Definition:** For a dataset with $$n$$ features, the covariance matrix $$\Sigma$$ is an $$n \times n$$ matrix where each entry is:
 
   $$
   \Sigma_{ij} = \text{Cov}(X_i, X_j)
@@ -240,7 +226,7 @@ Key steps in PCA:
   - **Eigenvalues and Eigenvectors:** The eigenvectors of the covariance matrix represent the directions of maximum variance, while the eigenvalues represent the magnitude of variance along these directions.
   - **Rank:** The rank of the covariance matrix corresponds to the number of **independent** features. If the matrix is rank-deficient, it indicates linearly dependent features.
 - **Relevance in Machine Learning:**
-  - **Principal Component Analysis (PCA):** In PCA, the covariance matrix is used to identify the directions (eigenvectors) of maximum variance in the dataset. Eigenvalues indicate how much variance is explained by each principal component. This helps in dimensionality reduction by selecting the most important components.
+  - **PCA:** In PCA, the covariance matrix is used to identify the directions (eigenvectors) of maximum variance in the dataset. Eigenvalues indicate how much variance is explained by each principal component. This helps in dimensionality reduction by selecting the most important components.
   - **Multivariate Gaussian Distribution:** In probabilistic models like **Gaussian Mixture Models (GMM)**, the covariance matrix defines the shape of the data distribution. It is used to model the distribution of features in a multi-dimensional space.
   - **Feature Selection:** Covariance matrices help identify correlated features. Features that show high covariance (i.e., strong correlation) can be dropped or combined to improve model performance and reduce dimensionality.
 
@@ -253,7 +239,6 @@ Key steps in PCA:
   - A full rank matrix is **invertible** if it is square (i.e., if $$m = n$$).
 - **Relevance in Machine Learning:**
   - **Linear Regression:** In linear regression, the design matrix $$X$$ must be full rank to ensure a unique solution. If $$X$$ is not full rank, the matrix $$X^T X$$ is singular and cannot be inverted.
-  - **Solving Systems of Equations:** Full rank matrices guarantee that a system of linear equations has a unique solution. This is important for models that involve solving for weights (like in linear regression or neural networks).
 
 #### 7. **Singular Matrix:**
 
@@ -266,12 +251,20 @@ Key steps in PCA:
 
 ---
 
+
 That wraps up the key linear algebra concepts for machine learning. This post is designed as a quick reference rather than an exhaustive guide. Don't stress about memorizing everything—focus instead on understanding the concepts and knowing when to revisit them if needed.
 
 Math is a language, and like any language, it's more about learning to use it than memorizing rules. Treat this as a foundation to build on, and come back to refresh your knowledge whenever necessary.
 
-Up next, we'll explore the prerequisites of **probability theory** for machine learning. Since probability can often feel trickier, we'll focus more on "what," "why," and "how" questions to make the concepts intuitive and approachable.
+Up next, we'll explore the prerequisites of **Probability Theory** for machine learning. Since probability can often feel trickier, we'll focus more on "what," "why," and "how" questions to make the concepts intuitive and approachable.
 
 See you in the next one!
 
-### **References**:
+### **References*:*
+<!-- - other than pca, where eigen values used in ml. modify that section.
+- basis? add reference and pointer above
+- Singular Value Decomposition
+- matrix quadratic form(optional)
+- linear indepenence and solutions, properties - can be added in linear regression concept as well
+
+- a point to add in the conclusion - a few ideas/concepts are repeated in multiple places on purpose. the reason is to get accustomed to the terminologies of ML and making it easy familiarize with as we go -->
