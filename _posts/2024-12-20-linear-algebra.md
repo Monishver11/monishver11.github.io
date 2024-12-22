@@ -107,7 +107,7 @@ where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bi
 
 **4. Dimensionality Reduction**
 
-- \*\*Principal Component Analysis (PCA) is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. Eigenvalues and Eigenvectors are explained down below.
+- Principal Component Analysis (PCA) is a popular technique for dimensionality reduction. It involves finding the eigenvectors and eigenvalues of the covariance matrix of the data. Eigenvalues and Eigenvectors are explained down below.
 
 ---
 
