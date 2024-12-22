@@ -48,14 +48,19 @@ The three fundamental axioms govern how probabilities are assigned:
    For events that are not mutually exclusive, subtract the overlap probability.
 	Example: Overlapping probabilities in surveys or data categorization.
 3. **Multiplication Rule for Independent Events:** 
+   
    $$ 
    P(E_1 \cap E_2) = P(E_1) \cdot P(E_2) \quad \text{if } E_1 \text{ and } E_2 \text{ are independent} 
-   $$.
+   $$
+
 	Example: Probability of flipping two heads with two coins:$$ P(\text{heads on coin 1} \cap \text{heads on coin 2}) = \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4} $$
 4. **Conditional Probability:** 
-   $$ P(E_1 \mid E_2) = \frac{P(E_1 \cap E_2)}{P(E_2)} \quad \text{if } P(E_2) > 0 
+   
+   $$ 
+   P(E_1 \mid E_2) = \frac{P(E_1 \cap E_2)}{P(E_2)} \quad \text{if } P(E_2) > 0 
    $$
-   . Conditional probability calculates $$ E_1 $$’s likelihood given $$ E_2 $$ has occurred.
+
+   Conditional probability calculates $$ E_1 $$’s likelihood given $$ E_2 $$ has occurred.
 	Example: Used in models like **Naive Bayes** for predictions under given conditions.
 
 #### **Why is Probability Important in Machine Learning?**
@@ -84,12 +89,15 @@ A **discrete random variable** takes on a countable number of distinct values. T
 **Characteristics**:
 - **Countable Outcomes**: The possible values can be listed, even if the list is infinite (e.g., the number of calls received by a call center).
 - **Probability Mass Function (PMF)**: The probability distribution of a discrete random variable is described by a probability mass function (PMF), which assigns probabilities to each possible value. The PMF satisfies:
+  
 $$
 P(X = x) \geq 0 \quad \text{for all } x
 $$
+
 $$
 \sum_{x} P(X = x) = 1
-$$.
+$$
+
 Here, the sum is over all possible values $$ x $$ that the random variable can take.
 
 **Examples of Discrete Random Variables**:
@@ -104,9 +112,11 @@ A **continuous random variable** can take on an infinite number of possible valu
 **Characteristics**:
 - **Uncountably Infinite Outcomes**: The possible values form a continuum, often represented by intervals on the real number line.
 - **Probability Density Function (PDF)**: The probability distribution of a continuous random variable is described by a probability density function (PDF). Unlike a PMF, the PDF does not give the probability of any specific outcome but rather the probability of the random variable falling within a certain range. The total area under the PDF curve is equal to 1, and the probability of the variable falling in an interval $$[a, b]$$ is given by:
+
 $$
 P(a \leq X \leq b) = \int_{a}^{b} f_X(x) \, dx
 $$
+
 where $$ f_X(x) $$ is the PDF of $$ X $$.
 
 **Examples of Continuous Random Variables**:
@@ -130,13 +140,17 @@ Formally, A **probability distribution** of a random variable $$ X $$ is a funct
 
 For both types, the total probability across all possible outcomes must sum (or integrate) to 1:
 - For discrete distributions:
+  
   $$
   \sum_{x} P(X = x) = 1
   $$
+
 - For continuous distributions:
+  
   $$
   \int_{-\infty}^{\infty} f_X(x) \, dx = 1
   $$
+
 where $$ f_X(x) $$ is the probability density function.
 
 ##### **1. Discrete Probability Distributions**
@@ -148,15 +162,19 @@ P(X = 1) = p, \quad P(X = 0) = 1 - p
 $$
 	- **Example**: The outcome of a coin flip (Heads = 1, Tails = 0).
 - **Binomial Distribution**: Describes the number of successes in a fixed number of independent Bernoulli trials. The random variable $$ X $$ counts the number of successes. The PMF is:
+  
   $$
   P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}
   $$
+
 where $$ n $$ is the number of trials, $$ p $$ is the probability of success, and $$ k $$ is the number of successes.
 	- **Example**: The number of heads in 10 coin flips.
 - **Poisson Distribution**: Models the number of events occurring in a fixed interval of time or space, given a constant average rate of occurrence. The PMF is:
+  
   $$
   P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}
   $$
+
 where $$ \lambda $$ is the average rate of occurrence (mean), and $$ k $$ is the number of events.
 	- **Example**: The number of phone calls received by a call center in an hour.
 
@@ -165,14 +183,18 @@ where $$ \lambda $$ is the average rate of occurrence (mean), and $$ k $$ is the
 Continuous distributions are used when the random variable can take any value within a given range or interval. These distributions are described by probability density functions (PDFs), where the probability of any single point is zero, and probabilities are calculated over intervals. Some common continuous probability distributions include:
 
 - **Uniform Distribution**: A continuous distribution where all values within a given interval are equally likely. The PDF is:
+  
   $$
   f_X(x) = \frac{1}{b-a} \quad \text{for} \ a \leq x \leq b
   $$
+
 	- **Example**: The time it takes for a bus to arrive, uniformly distributed between 5 and 15 minutes.
 - **Normal (Gaussian) Distribution**: A continuous distribution that is symmetric and bell-shaped. It is fully described by its mean $$ \mu $$ and standard deviation $$ \sigma $$. The PDF is:
+  
   $$
   f_X(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
   $$
+
 	- **Example**: The distribution of heights in a population.
 - **Exponential Distribution**: A continuous distribution often used to model the time between events in a Poisson process (events happening at a constant rate). The PDF is:
   $$
@@ -180,14 +202,18 @@ Continuous distributions are used when the random variable can take any value wi
   $$
 	- **Example**: The time between arrivals of customers at a service station.
 - **Gamma Distribution**: A generalization of the exponential distribution, used for modeling the sum of multiple exponentially distributed random variables. Its PDF is:
+  
   $$
   f_X(x) = \frac{x^{k-1} e^{-x/\theta}}{\Gamma(k) \theta^k} \quad \text{for} \ x \geq 0
   $$
+
 	- **Example**: The waiting time until a certain number of events occur in a Poisson process.
 - **Beta Distribution**: A continuous distribution on the interval $$[0, 1]$$, often used to model probabilities and proportions. Its PDF is:
+  
   $$
   f_X(x) = \frac{x^{\alpha-1} (1-x)^{\beta-1}}{B(\alpha, \beta)}
   $$
+
 	- **Example**: Modeling the proportion of customers who prefer a certain product in a market research study.
   
 #### **Why are Probability Distributions Important in Machine Learning?**
@@ -201,16 +227,20 @@ CDF is closely related to the **Probability Density Function (PDF)** in the case
 
 
 For a random variable $$ X $$, the **Cumulative Distribution Function (CDF)**, denoted by $$ F_X(x) $$, is defined as the probability that the random variable $$ X $$ takes a value less than or equal to $$ x $$. Formally:
+
 $$
 F_X(x) = P(X \leq x)
 $$
+
 The CDF is a function that provides the cumulative probability up to a point $$ x $$ and is computed by integrating (for continuous variables) or summing (for discrete variables) the corresponding probability distributions.
 
 #### **Properties of the CDF**
 1. **Non-decreasing**: The CDF is a non-decreasing function, meaning that the probability increases as $$ x $$ increases:
+   
    $$
    F_X(x_1) \leq F_X(x_2) \quad \text{if} \ x_1 \leq x_2
    $$
+
 2. **Range**: The CDF always lies within the range $$[0, 1]$$ : $$ 0 \leq F_X(x) \leq 1 \quad \text{for all} \ x$$
 
 3. **Limits**:
@@ -223,25 +253,32 @@ The CDF is a function that provides the cumulative probability up to a point $$ 
 #### **CDF for Discrete Random Variables**
 
 For a **discrete random variable** $$ X $$, the CDF is computed by summing the probabilities given by the PMF. If the possible values of $$ X $$ are $$ x_1, x_2, \dots $$, the CDF is:
+
 $$
 F_X(x) = P(X \leq x) = \sum_{x_i \leq x} P(X = x_i)
 $$
 
+
 **Example**
 Consider a discrete random variable $$ X $$ that represents the outcome of a fair 6-sided die. The possible values for $$ X $$ are $$ 1, 2, 3, 4, 5, 6 $$, each with a probability of $$\frac{1}{6}$$.
 The CDF for $$ X $$ is:
+
 $$
 F_X(x) = \begin{cases} 0 & \text{for} \ x < 1 \\ \frac{1}{6} & \text{for} \ 1 \leq x < 2 \\ \frac{2}{6} & \text{for} \ 2 \leq x < 3 \\ \frac{3}{6} & \text{for} \ 3 \leq x < 4 \\ \frac{4}{6} & \text{for} \ 4 \leq x < 5 \\ \frac{5}{6} & \text{for} \ 5 \leq x < 6 \\ 1 & \text{for} \ x \geq 6 \end{cases}
 $$
 
+
 #### **CDF for Continuous Random Variables**
 
 For a **continuous random variable** $$ X $$, the CDF is obtained by integrating the PDF: 
+
 $$
 F_X(x) = P(X \leq x) = \int_{-\infty}^{x} f_X(t) \, d
 t$$
+
 **Example**
 For a continuous random variable $$ X $$ that follows a **uniform distribution** on the interval $$[0, 1]$$, the PDF is:
+
 $$
 f_X(x) = \begin{cases} 
 1 & \text{for} \ 0 \leq x \leq 1 \\
@@ -249,23 +286,30 @@ f_X(x) = \begin{cases}
 \end{cases}
 $$
 
+
 The CDF is:
+
 $$
 F_X(x) = \begin{cases} 0 & \text{for} \ x < 0 \\ x & \text{for} \ 0 \leq x \leq 1 \\ 1 & \text{for} \ x > 1 \end{cases}
 $$
+
 
 This shows that for values of $$ x $$ between 0 and 1, the probability increases linearly from 0 to 1.
 #### **Relationship Between PDF and CDF**
 
 For a continuous random variable $$ X $$, the PDF is the derivative of the CDF:
+
 $$
 f_X(x) = \frac{d}{dx} F_X(x)
 $$
 
+
 Conversely, the CDF can be obtained by integrating the PDF:
+
 $$
 F_X(x) = \int_{-\infty}^{x} f_X(t) \, dt
 $$
+
 #### **Why is the CDF Important in Machine Learning?**
 1. **Data Interpretation**: The CDF provides a clear interpretation of the distribution of data and is useful for understanding the likelihood of a random variable being less than or equal to a specific value.
 2. **Probabilistic Decision Making**: The CDF helps integrate outcomes for decision-making in models like **Naive Bayes** or **Bayesian networks**.
@@ -275,16 +319,21 @@ $$
 - **Discrete Variables**:
 	- PMF: $$P(X = x_i)$$
 	- CDF: 
+    
     $$
     F_X(x) = \sum_{x_i \leq x} P(X = x_i)
     $$
+
 - **Continuous Variables**:
 	- PDF: $$ f_X(x) $$
 	- CDF: 
+    
     $$
     F_X(x) = \int_{-\infty}^{x} f_X(t) \, dt
     $$
+
 	- PDF from CDF: 
+    
     $$ 
     f_X(x) = \frac{d}{dx} F_X(x) 
     $$
