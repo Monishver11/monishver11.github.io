@@ -35,13 +35,13 @@ The three fundamental axioms govern how probabilities are assigned:
 2. **Normalization**: $$ P(S) = 1 $$. Here, $$ S $$ is the **sample space** (all possible outcomes). The probability of $$ S $$ is 1, as one outcome must occur.
 	Example: For a die roll, $$ S = \{1, 2, 3, 4, 5, 6\} $$, and $$ P(S) = 1 $$.
 3. **Additivity**: 
-4. 
+ 
     $$
     P(E_1 \cup E_2) = P(E_1) + P(E_2) \quad \text{if } E_1 \text{ and } E_2 \text{ are mutually exclusive}
     $$
 
 	For mutually exclusive events $$ E_1 $$ and $$ E_2 $$, the probability of either occurring is the sum of their individual probabilities.
-	**Example**: For a die roll, let $$ E_1 = \{1\} $$ and $$ E_2 = \{2\} $$:$$ P(E_1 \cup E_2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6} = \frac{1}{3} $$
+	**Example**: For a die roll, let $$ E_1 = \{1\} $$ and $$ E_2 = \{2\} $$: $$ P(E_1 \cup E_2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6} = \frac{1}{3} $$
 
 #### **Consequences of the Axioms**
 1. **Complementary Rule:** $$ P(E^c) = 1 - P(E) $$. The probability of the complement of $$ E $$ (event not occurring) equals $$ 1 $$ minus $$ P(E) $$.
@@ -84,7 +84,7 @@ Building upon the foundational axioms of probability, understanding **random var
 
 A **random variable** is a variable whose possible values are outcomes of a random process or experiment. It maps outcomes from a probabilistic event to real numbers, playing a central role in probability theory and machine learning. Random variables are typically categorized into two types: **discrete** and **continuous**.
 
-**Intuition for Random Variables**
+`**Intuition for Random Variables**`
 Think of a random variable as a "number generator" that transforms outcomes of a random process into numbers. For instance:
 - In a dice roll, the outcome (e.g., rolling a 4) is translated to the random variable $$ X = 4 $$.
 - In measuring rainfall, the amount (e.g., 12.5 mm) is assigned to the random variable $$ X = 12.5 $$. This abstraction helps in applying mathematical operations and deriving distributions.
@@ -124,7 +124,7 @@ $$
 P(a \leq X \leq b) = \int_{a}^{b} f_X(x) \, dx
 $$
 
-where $$ f_X(x) $$ is the PDF of $$ X $$.
+    where $$ f_X(x) $$ is the PDF of $$ X $$.
 
 **Examples of Continuous Random Variables**:
 1. **Height of a person**: The height $$ X $$ of a person can take any value within a realistic range (e.g., between 4 and 7 feet). The exact value is not countable, and it is typically modeled by a normal distribution.
@@ -158,7 +158,7 @@ For both types, the total probability across all possible outcomes must sum (or 
   \int_{-\infty}^{\infty} f_X(x) \, dx = 1
   $$
 
-where $$ f_X(x) $$ is the probability density function.
+    where $$ f_X(x) $$ is the probability density function.
 
 ##### **1. Discrete Probability Distributions**
 
@@ -174,7 +174,7 @@ $$
   P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}
   $$
 
-where $$ n $$ is the number of trials, $$ p $$ is the probability of success, and $$ k $$ is the number of successes.
+    where $$ n $$ is the number of trials, $$ p $$ is the probability of success, and $$ k $$ is the number of successes.
 	- **Example**: The number of heads in 10 coin flips.
 - **Poisson Distribution**: Models the number of events occurring in a fixed interval of time or space, given a constant average rate of occurrence. The PMF is:
   
@@ -182,7 +182,7 @@ where $$ n $$ is the number of trials, $$ p $$ is the probability of success, an
   P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}
   $$
 
-where $$ \lambda $$ is the average rate of occurrence (mean), and $$ k $$ is the number of events.
+    where $$ \lambda $$ is the average rate of occurrence (mean), and $$ k $$ is the number of events.
 	- **Example**: The number of phone calls received by a call center in an hour.
 
 
@@ -366,4 +366,9 @@ Choosing the appropriate probability distribution for a given machine learning (
 While this overview has touched on the most commonly used distributions, the world of probability distributions in machine learning is vast. As you dive deeper into various ML topics, you’ll encounter additional distributions tailored to specific data types and problems. Understanding how these distributions behave allows you to refine your models for more accurate, effective predictions.
 
 If you're eager to explore further, we will be diving deeper into these distributions as we continue our series on probability theory. The next section will introduce even more important concepts, so stay tuned for that!
+
 **See you in the next post!**
+
+### **References:**
+- Add links for common distributions for making it visually imaginable and relatable!
+- Go through it one more last time for corrections.
