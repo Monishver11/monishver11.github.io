@@ -40,17 +40,17 @@ Imagine you're trying to diagnose whether someone has a certain disease. You hav
 - The likelihood ($$ P(B \mid A) $$), which is the probability that a person with the disease would test positive on a medical test.
 - The evidence ($$ P(B) $$), which is the total probability that anyone, sick or healthy, would test positive.
 
-Bayes Rule helps us combine this information to update our belief about the probability of the disease (hypothesis $$ A $$) given the test result (evidence $$ B $$).
+Bayes' Rule helps us combine this information to update our belief about the probability of the disease (hypothesis $$ A $$) given the test result (evidence $$ B $$).
 
 #### **Why is Bayes' Rule Crucial in Machine Learning?**
 
 Bayes' Rule is central to a variety of machine learning models, particularly in probabilistic and Bayesian approaches. Some key applications include:
 
-1. **Naive Bayes Classifier**: In supervised learning, the Naive Bayes classifier uses Bayes Rule to classify data based on conditional probabilities. It assumes independence between features, simplifying the computation of probabilities.
+1. **Naive Bayes' Classifier**: In supervised learning, the Naive Bayes' classifier uses Bayes' Rule to classify data based on conditional probabilities. It assumes independence between features, simplifying the computation of probabilities.
    
-2. **Model Inference and Parameter Estimation**: Bayesian methods in machine learning, like Bayesian neural networks, use Bayes Rule to update the distribution of model parameters as new data is observed, instead of relying on point estimates.
+2. **Model Inference and Parameter Estimation**: Bayesian methods in machine learning, like Bayesian neural networks, use Bayes' Rule to update the distribution of model parameters as new data is observed, instead of relying on point estimates.
    
-3. **Decision Theory**: Bayes Rule helps in decision-making processes by quantifying the uncertainty associated with different outcomes, especially when there is a probabilistic component to the environment or model.
+3. **Decision Theory**: Bayes' Rule helps in decision-making processes by quantifying the uncertainty associated with different outcomes, especially when there is a probabilistic component to the environment or model.
 
 #### **Associated Properties of Bayes' Rule**
 
@@ -60,11 +60,11 @@ Bayes' Rule is central to a variety of machine learning models, particularly in 
 
 3. **The Law of Total Probability**: Bayes' Rule is closely related to the Law of Total Probability, which decomposes the total probability of an event into a sum of conditional probabilities. This can be useful when considering multiple sources of evidence or when performing integration in complex models.
 
-Bayes Rule is an indispensable tool in machine learning for reasoning about uncertainty, updating beliefs with new evidence, and making decisions in the face of incomplete information. 
+Bayes' Rule is an indispensable tool in machine learning for reasoning about uncertainty, updating beliefs with new evidence, and making decisions in the face of incomplete information. 
 
 ---
 
-### **Joint Probability and Independence: **
+### **Joint Probability and Independence:**
 
 In machine learning, understanding how different events relate to each other is critical. Two key concepts that help us analyze these relationships are **joint probability** and **independence**. 
 
@@ -132,11 +132,11 @@ This property is widely used in Bayesian networks and machine learning models to
 
 ---
 
-### Conditional Probability and Conditional Distributions: Building Blocks for Predictive Models
+### **Conditional Probability and Conditional Distributions: Building Blocks for Predictive Models**
 
 Conditional probability and conditional distributions concepts help us refine predictions based on additional information and allow us to build more accurate, data-driven models by considering how the likelihood of one event changes when we know about the occurrence of another.
 
-#### What is Conditional Probability?
+#### **What is Conditional Probability?**
 
 Conditional probability is the probability of an event occurring given that another event has already occurred. In other words, it quantifies the likelihood of an event, assuming that certain information is known. It is expressed as:
 
@@ -157,7 +157,7 @@ Imagine you're at a concert and you're interested in the probability that a pers
 
 This situation is an example of **conditional probability**, where the event $$ A $$ (person wearing a red T-shirt) is conditioned on the event $$ B $$ (person being in the front row). Conditional probability helps refine your predictions based on new information.
 
-#### Why is Conditional Probability Important in Machine Learning?
+#### **Why is Conditional Probability Important in Machine Learning?**
 
 Conditional probability is essential in many machine learning models for predicting outcomes based on known data. Key applications include:
 
