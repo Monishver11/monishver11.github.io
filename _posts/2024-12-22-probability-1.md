@@ -34,7 +34,12 @@ The three fundamental axioms govern how probabilities are assigned:
 1. **Non-negativity**: $$ P(E) \geq 0 \quad \text{for all events } E $$. Probabilities cannot be negative.
 2. **Normalization**: $$ P(S) = 1 $$. Here, $$ S $$ is the **sample space** (all possible outcomes). The probability of $$ S $$ is 1, as one outcome must occur.
 	Example: For a die roll, $$ S = \{1, 2, 3, 4, 5, 6\} $$, and $$ P(S) = 1 $$.
-3. **Additivity**: $$ P(E_1 \cup E_2) = P(E_1) + P(E_2) \quad \text{if } E_1 \text{ and } E_2 \text{ are mutually exclusive} $$
+3. **Additivity**: 
+4. 
+    $$
+    P(E_1 \cup E_2) = P(E_1) + P(E_2) \quad \text{if } E_1 \text{ and } E_2 \text{ are mutually exclusive}
+    $$
+
 	For mutually exclusive events $$ E_1 $$ and $$ E_2 $$, the probability of either occurring is the sum of their individual probabilities.
 	**Example**: For a die roll, let $$ E_1 = \{1\} $$ and $$ E_2 = \{2\} $$:$$ P(E_1 \cup E_2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6} = \frac{1}{3} $$
 
@@ -42,9 +47,11 @@ The three fundamental axioms govern how probabilities are assigned:
 1. **Complementary Rule:** $$ P(E^c) = 1 - P(E) $$. The probability of the complement of $$ E $$ (event not occurring) equals $$ 1 $$ minus $$ P(E) $$.
 	Example: If $$ P(\text{rain}) = 0.8 $$, then $$ P(\text{no rain}) = 1 - 0.8 = 0.2 $$.
 2. **Addition Rule for Non-Mutually Exclusive Events:** 
+   
    $$ 
    P(E_1 \cup E_2) = P(E_1) + P(E_2) - P(E_1 \cap E_2) 
-   $$. 
+   $$
+
    For events that are not mutually exclusive, subtract the overlap probability.
 	Example: Overlapping probabilities in surveys or data categorization.
 3. **Multiplication Rule for Independent Events:** 
@@ -130,7 +137,7 @@ where $$ f_X(x) $$ is the PDF of $$ X $$.
 
 ---
 
-#### **More on Probability Distribution and Types**
+### **More on Probability Distribution and Types**
 
 A probability distribution describes how probabilities are assigned to different possible outcomes of a random variable. It provides a mathematical function that represents the likelihood of each possible value the random variable can take. In simpler terms, it tells us how likely each outcome of an experiment or process is. 
 
