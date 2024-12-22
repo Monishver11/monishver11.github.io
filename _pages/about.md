@@ -8,7 +8,7 @@ subtitle: Hello there, and welcome!
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: prof_pic_cmp.jpg
   image_circular: false # crops the image to make it circular
   more_info: <p>At Bull Hill Full Loop, Hudson Highlands State Park Preserve, New York</p>
 news: false # includes a list of news items
