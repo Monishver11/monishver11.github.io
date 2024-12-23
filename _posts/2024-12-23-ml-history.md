@@ -17,7 +17,6 @@ Machine learning has come a long way, evolving through decades of research and i
 #### **1910s–1940s: Early Computational Foundations**
  
 - **1913:** `Markov Chains`
-    
     Andrey Markov introduces techniques later known as Markov chains, fundamental to many machine learning algorithms.
     
 - **1936:** `Turing's Theory of Computation`  
@@ -194,7 +193,6 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **2024:** `GPT-4 Enhancements`  
     Improved emotional recognition capabilities from a third-person perspective.
-
 
 
 The list of discoveries/events mentioned is extensive i guess, and apologies if I’ve missed any significant developments. The field of AI is advancing at a rapid pace, and we are eagerly awaiting the first steps toward AGI. As my focus remains on machine learning, I aim to contribute to this vibrant community, and I hope you’re as excited about the future of AI as I am. That’s likely why you’re reading this now. I wish you all the best and invite you to dive deeper into the realm of supervised learning in my next blog. 
