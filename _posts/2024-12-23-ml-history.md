@@ -16,7 +16,7 @@ Machine learning has come a long way, evolving through decades of research and i
 
 #### **1910s–1940s: Early Computational Foundations**
  
-- **1913:** `Markov Chains`
+- **1913:** `Markov Chains` \\
     Andrey Markov introduces techniques later known as Markov chains, fundamental to many machine learning algorithms.
     
 - **1936:** `Turing's Theory of Computation`  
