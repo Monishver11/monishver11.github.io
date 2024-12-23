@@ -14,29 +14,28 @@ related_posts: false
 
 Machine learning has come a long way, evolving through decades of research and innovation. This timeline highlights the pivotal moments that have defined the field.
 
-### 1910s–1940s: Early Computational Foundations
+### **1910s–1940s: Early Computational Foundations**
  
-- **1913:** _Markov Chains_  
+- **1913:** `_Markov Chains_`
     Andrey Markov introduces techniques later known as Markov chains, fundamental to many machine learning algorithms.
     
-- **1936:** _Turing's Theory of Computation_  
+- **1936:** `_Turing's Theory of Computation_`  
     Alan Turing proposes the theory of computation, forming the foundation for modern computing and machine learning.
     
-- **1940:** _ENIAC_  
+- **1940:** `_ENIAC_`  
     The first electronic general-purpose computer is created, paving the way for future computational advancements.
     
-- **1943:** _McCulloch-Pitts Model_  
+- **1943:** `_McCulloch-Pitts Model_`  
     Walter Pitts and Warren McCulloch publish the first mathematical model of a neural network, laying the foundation for neural networks.
     
-- **1949:** _Hebbian Learning_  
+- **1949:** `_Hebbian Learning_`  
     Donald Hebb publishes "The Organization of Behavior," introducing concepts crucial to neural network development.
     
-
 ---
 
-### 1950s–1960s: Foundations of Artificial Intelligence
+### **1950s–1960s: Foundations of Artificial Intelligence**
 
-- **1950:** _Turing Test_  
+- **1950:** `_Turing Test_`  
     Alan Turing proposes the Turing Test, a benchmark for machine intelligence.
     
 - **1951:** _SNARC_  
@@ -60,10 +59,9 @@ Machine learning has come a long way, evolving through decades of research and i
 - **1969:** _Limitations of Neural Networks_  
     Marvin Minsky and Seymour Papert publish "Perceptrons," highlighting limitations of early neural networks.
     
-
 ---
 
-### 1970s–1980s: Growth and Challenges
+### **1970s–1980s: Growth and Challenges**
 
 - **1970s:** _First AI Winter_  
     Funding and interest in AI declined due to unmet expectations and computational limitations.
@@ -86,10 +84,9 @@ Machine learning has come a long way, evolving through decades of research and i
 - **1989:** _Q-learning_  
     Christopher Watkins develops Q-learning, advancing reinforcement learning.
     
-
 ---
 
-### 1990s: Statistical Learning and Commercial AI
+### **1990s: Statistical Learning and Commercial AI**
 
 - **1992:** _TD-Gammon_  
     Gerald Tesauro invents TD-Gammon, a backgammon program using neural networks.
@@ -108,11 +105,10 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **1999:** _AIBO Robot Dog_  
     Sony launches AIBO, showcasing AI in consumer robotics.
-    
 
 ---
 
-### 2000s: Big Data and ML Techniques
+### **2000s: Big Data and ML Techniques**
 
 - **2000:** _Nomad Robot_  
     The Nomad robot explores Antarctica, becoming the first robot to discover a meteorite.
@@ -122,11 +118,10 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **2009:** _Netflix Prize_  
     Netflix awards $1 million for improving its recommendation system.
-    
 
 ---
 
-### 2010s: The Deep Learning Revolution
+### **2010s: The Deep Learning Revolution**
 
 - **2010:** _Kaggle Launch_  
     Kaggle, a platform for machine learning competitions, is launched.
@@ -148,11 +143,10 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **2018:** _Alibaba's AI_  
     Alibaba's AI outscores humans on Stanford University's reading comprehension test.
-    
 
 ---
 
-### 2020s: Large-Scale AI and Generative Models
+### **2020s: Large-Scale AI and Generative Models**
 
 - **2020:** _GPT-3 Released_  
     OpenAI’s large-scale language model demonstrated the power of generative pre-trained transformers.
@@ -166,10 +160,9 @@ Machine learning has come a long way, evolving through decades of research and i
 - **2023:** _Generative AI Adoption_  
     Widespread use of diffusion models and ChatGPT showcased the practical impact of generative AI.
 
-
 ---
 
-### 2024s: Cutting-Edge AI Innovations
+### **2024s: Cutting-Edge AI Innovations**
 
 - **2024:** _OpenAI's O1 Model_  
     Advanced reasoning capabilities in mathematics and coding, enhancing AI's problem-solving skills.
@@ -209,6 +202,7 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **2024:** _GPT-4 Enhancements_  
     Improved emotional recognition capabilities from a third-person perspective.
+
 
 
 The list of discoveries/events mentioned is extensive i guess, and apologies if I’ve missed any significant developments. The field of AI is advancing at a rapid pace, and we are eagerly awaiting the first steps toward AGI. As my focus remains on machine learning, I aim to contribute to this vibrant community, and I hope you’re as excited about the future of AI as I am. That’s likely why you’re reading this now. I wish you all the best and invite you to dive deeper into the realm of supervised learning in my next blog. Stay tuned, and I’ll see you there!
