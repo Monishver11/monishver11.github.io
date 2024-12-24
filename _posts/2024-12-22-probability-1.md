@@ -85,6 +85,7 @@ Building upon the foundational axioms of probability, understanding **random var
 A **random variable** is a variable whose possible values are outcomes of a random process or experiment. It maps outcomes from a probabilistic event to real numbers, playing a central role in probability theory and machine learning. Random variables are typically categorized into two types: **discrete** and **continuous**.
 
 `**Intuition for Random Variables**`
+
 Think of a random variable as a "number generator" that transforms outcomes of a random process into numbers. For instance:
 - In a dice roll, the outcome (e.g., rolling a 4) is translated to the random variable $$ X = 4 $$.
 - In measuring rainfall, the amount (e.g., 12.5 mm) is assigned to the random variable $$ X = 12.5 $$. This abstraction helps in applying mathematical operations and deriving distributions.
@@ -124,7 +125,7 @@ $$
 P(a \leq X \leq b) = \int_{a}^{b} f_X(x) \, dx
 $$
 
-    where $$ f_X(x) $$ is the PDF of $$ X $$.
+  where $$ f_X(x) $$ is the PDF of $$ X $$.
 
 **Examples of Continuous Random Variables**:
 1. **Height of a person**: The height $$ X $$ of a person can take any value within a realistic range (e.g., between 4 and 7 feet). The exact value is not countable, and it is typically modeled by a normal distribution.
