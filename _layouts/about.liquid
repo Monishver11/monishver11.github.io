@@ -27,10 +27,10 @@ layout: default
           {% endif %}
           {% capture sizes %}(min-width: {{ site.max_width }}) {{ site.max_width | minus: 30 | times: 0.3}}px, (min-width: 576px)
       30vw, 95vw"{% endcapture %}
-          {% assign image_width = "450" %}
-          {% assign image_height = "600" %}
+          {% assign image_width = "300" %}
+          {% assign image_height = "400" %}
           {%
-            include figure.liquid loading="lazy" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
+            include figure.liquid loading="eager" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
             width=image_width
             height=image_height
             cache_bust=true
