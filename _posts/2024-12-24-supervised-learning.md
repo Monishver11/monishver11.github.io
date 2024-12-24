@@ -37,6 +37,7 @@ These labels allow us to evaluate the performance of our predictions systematica
 
 ---
 
+
 ### **Evaluation Criterion**
 
 The next step in supervised learning is finding **optimal outputs** under various definitions of optimality. Some examples of evaluation criteria include:
@@ -64,19 +65,16 @@ This sequence is at the heart of most supervised learning frameworks.
 
 ---
 
+
 ### **Formalizing Supervised Learning**
 
-#### **Prediction Function**
+###### **Prediction Function**
 
 A **prediction function** is a mathematical function $$f: X \to Y$$ that takes an input $$x \in X$$ and produces an output $$\hat{y} \in Y$$.
 
-#### **Loss Function**
+###### **Loss Function**
 
 A **loss function** evaluates the discrepancy between the predicted output $$\hat{y}$$ and the true outcome $$y$$. It quantifies the "cost" of making incorrect predictions.
-
----
-
-### **Evaluating a Prediction Function**
 
 #### **The Goal: Optimal Prediction**
 
@@ -85,7 +83,7 @@ The primary goal is to find the **optimal prediction function**. The intuition i
 - The loss function $$\ell$$ evaluates a single output.
 - To evaluate the prediction function as a whole, we need to formalize the concept of "average performance."
 
-#### **Data Generating Distribution**
+###### **Data Generating Distribution**
 
 Assume there exists a data-generating distribution $$P_{X \times Y}$$. All input-output pairs $$(x, y)$$ are generated independently and identically distributed (i.i.d.) from this distribution.
 
@@ -97,7 +95,7 @@ $$
 
 is small, in some sense.
 
-#### **Risk Definition**
+###### **Risk Definition**
 
 The **risk** of a prediction function $$f: X \to Y$$ is defined as:
 
@@ -109,7 +107,7 @@ In words, this is the expected loss of $$f$$ over the data-generating distributi
 
 ---
 
-### **The Bayes Prediction Function**
+#### **The Bayes Prediction Function**
 
 **Definition**
 
@@ -126,6 +124,7 @@ where the minimum is taken over all functions from $$X$$ to $$Y$$.
 The risk associated with the Bayes prediction function is called the **Bayes risk**. This function is often referred to as the "target function" because it represents the best possible predictor.
 
 ---
+
 
 ### **Example: Multiclass Classification**
 
@@ -171,7 +170,7 @@ $$
 
 Thus, $$R(f)$$ directly measures the **misclassification error rate**, which is the probability of the model making an incorrect prediction.
 
-#### **Bayes Prediction Function**
+**Bayes Prediction Function**
 
 The Bayes prediction function returns the most likely class:
 
@@ -180,6 +179,7 @@ f^*(x) \in \underset{1 \leq c \leq k}{\text{argmax}} \ P(y = c \mid x).
 $$
 
 ---
+
 
 ### **Estimating Risk**
 
