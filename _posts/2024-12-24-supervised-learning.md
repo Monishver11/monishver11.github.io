@@ -14,7 +14,7 @@ related_posts: false
 
 Supervised learning is a cornerstone of machine learning, enabling systems to learn from labeled data to make predictions or decisions. In this post, we will explore the various components and formalizations of supervised learning to build a solid foundation.
 
-### **Goals in Supervised Learning**
+#### **Goals in Supervised Learning**
 
 In supervised learning problems, we typically aim to:
 
@@ -25,7 +25,7 @@ In supervised learning problems, we typically aim to:
 
 Each of these goals involves predicting or generating some form of output based on given inputs.
 
-#### **Labels: The Key to Supervised Learning**
+##### **Labels: The Key to Supervised Learning**
 
 Supervised learning involves pairing inputs with **labels**, which serve as the ground truth. Examples of labels include:
 
@@ -37,8 +37,7 @@ These labels allow us to evaluate the performance of our predictions systematica
 
 ---
 
-
-### **Evaluation Criterion**
+#### **Evaluation Criterion**
 
 The next step in supervised learning is finding **optimal outputs** under various definitions of optimality. Some examples of evaluation criteria include:
 
@@ -52,7 +51,7 @@ These criteria ensure that we can quantitatively measure the performance of our 
 
 ---
 
-### **Typical Sequence of Events**
+#### **Typical Sequence of Events**
 
 Supervised learning problems can often be formalized through the following sequence:
 
@@ -66,7 +65,7 @@ This sequence is at the heart of most supervised learning frameworks.
 ---
 
 
-### **Formalizing Supervised Learning**
+#### **Formalizing Supervised Learning**
 
 ###### **Prediction Function**
 
@@ -76,7 +75,7 @@ A **prediction function** is a mathematical function $$f: X \to Y$$ that takes a
 
 A **loss function** evaluates the discrepancy between the predicted output $$\hat{y}$$ and the true outcome $$y$$. It quantifies the "cost" of making incorrect predictions.
 
-#### **The Goal: Optimal Prediction**
+##### **The Goal: Optimal Prediction**
 
 The primary goal is to find the **optimal prediction function**. The intuition is simple: If we can evaluate how good a prediction function is, we can turn this into an optimization problem.
 
@@ -126,7 +125,7 @@ The risk associated with the Bayes prediction function is called the **Bayes ris
 ---
 
 
-### **Example: Multiclass Classification**
+#### **Example: Multiclass Classification**
 
 In multiclass classification, the output space is:
 
@@ -181,7 +180,7 @@ $$
 ---
 
 
-### **Estimating Risk**
+#### **Estimating Risk**
 
 We cannot compute the true risk $$R(f) = \mathbb{E}[\ell(f(x), y)]$$ because the true distribution $$P_{X \times Y}$$ is unknown. However, we can estimate it.
 
