@@ -67,15 +67,11 @@ This sequence is at the heart of most supervised learning frameworks.
 
 #### **Formalizing Supervised Learning**
 
-###### **Prediction Function**
-
 A **prediction function** is a mathematical function $$f: X \to Y$$ that takes an input $$x \in X$$ and produces an output $$\hat{y} \in Y$$.
-
-###### **Loss Function**
 
 A **loss function** evaluates the discrepancy between the predicted output $$\hat{y}$$ and the true outcome $$y$$. It quantifies the "cost" of making incorrect predictions.
 
-##### **The Goal: Optimal Prediction**
+###### **The Goal: Optimal Prediction**
 
 The primary goal is to find the **optimal prediction function**. The intuition is simple: If we can evaluate how good a prediction function is, we can turn this into an optimization problem.
 
