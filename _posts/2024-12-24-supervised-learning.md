@@ -14,7 +14,7 @@ related_posts: false
 
 Supervised learning is a cornerstone of machine learning, enabling systems to learn from labeled data to make predictions or decisions. In this post, we will explore the various components and formalizations of supervised learning to build a solid foundation.
 
-### Goals in Supervised Learning
+### **Goals in Supervised Learning**
 
 In supervised learning problems, we typically aim to:
 
@@ -25,7 +25,7 @@ In supervised learning problems, we typically aim to:
 
 Each of these goals involves predicting or generating some form of output based on given inputs.
 
-#### Labels: The Key to Supervised Learning
+#### **Labels: The Key to Supervised Learning**
 
 Supervised learning involves pairing inputs with **labels**, which serve as the ground truth. Examples of labels include:
 
@@ -37,7 +37,7 @@ These labels allow us to evaluate the performance of our predictions systematica
 
 ---
 
-### Evaluation Criterion
+### **Evaluation Criterion**
 
 The next step in supervised learning is finding **optimal outputs** under various definitions of optimality. Some examples of evaluation criteria include:
 
@@ -51,7 +51,7 @@ These criteria ensure that we can quantitatively measure the performance of our 
 
 ---
 
-### Typical Sequence of Events
+### **Typical Sequence of Events**
 
 Supervised learning problems can often be formalized through the following sequence:
 
@@ -64,32 +64,28 @@ This sequence is at the heart of most supervised learning frameworks.
 
 ---
 
-### Formalizing Supervised Learning
+### **Formalizing Supervised Learning**
 
-#### Prediction Function
+#### **Prediction Function**
 
 A **prediction function** is a mathematical function $$f: X \to Y$$ that takes an input $$x \in X$$ and produces an output $$\hat{y} \in Y$$.
 
-#### Loss Function
+#### **Loss Function**
 
 A **loss function** evaluates the discrepancy between the predicted output $$\hat{y}$$ and the true outcome $$y$$. It quantifies the "cost" of making incorrect predictions.
 
 ---
 
-### Evaluating a Prediction Function
+### **Evaluating a Prediction Function**
 
-#### The Goal: Optimal Prediction
+#### **The Goal: Optimal Prediction**
 
 The primary goal is to find the **optimal prediction function**. The intuition is simple: If we can evaluate how good a prediction function is, we can turn this into an optimization problem.
 
 - The loss function $$\ell$$ evaluates a single output.
 - To evaluate the prediction function as a whole, we need to formalize the concept of "average performance."
 
----
-
-### Loss Function and Risk
-
-#### Data Generating Distribution
+#### **Data Generating Distribution**
 
 Assume there exists a data-generating distribution $$P_{X \times Y}$$. All input-output pairs $$(x, y)$$ are generated independently and identically distributed (i.i.d.) from this distribution.
 
@@ -101,7 +97,7 @@ $$
 
 is small, in some sense.
 
-#### Risk Definition
+#### **Risk Definition**
 
 The **risk** of a prediction function $$f: X \to Y$$ is defined as:
 
@@ -113,9 +109,9 @@ In words, this is the expected loss of $$f$$ over the data-generating distributi
 
 ---
 
-### The Bayes Prediction Function
+### **The Bayes Prediction Function**
 
-#### Definition
+**Definition**
 
 The **Bayes prediction function** $$f^*: X \to Y$$ achieves the minimal risk among all possible functions:
 
@@ -125,15 +121,13 @@ $$
 
 where the minimum is taken over all functions from $$X$$ to $$Y$$.
 
-#### Bayes Risk
+**Bayes Risk**
 
 The risk associated with the Bayes prediction function is called the **Bayes risk**. This function is often referred to as the "target function" because it represents the best possible predictor.
 
 ---
 
-### Example: Multiclass Classification
-
-#### Problem Setup
+### **Example: Multiclass Classification**
 
 In multiclass classification, the output space is:
 
@@ -141,15 +135,11 @@ $$
 Y = \{1, 2, \dots, k\}.
 $$
 
-#### 0-1 Loss
-
 The **0-1 loss** function is defined as:
 
 $$ \ell(\hat{y}, y) = \mathbb{1}[\hat{y} \neq y] := \begin{cases} 1 & \text{if } \hat{y} \neq y, \\ 0 & \text{otherwise.} \end{cases} $$
 
 - Here, $$\mathbb{1}[\hat{y} \neq y]$$ is an **indicator function**. It returns a value of 1 when the condition $$\hat{y} \neq y$$ is true (i.e., the prediction is incorrect) and 0 otherwise. This signifies whether the prediction is correct or incorrect and is commonly used to measure classification errors.
-
-#### Risk
 
 The risk $$R(f)$$ under the 0-1 loss can be expanded as follows:
 
@@ -181,7 +171,7 @@ $$
 
 Thus, $$R(f)$$ directly measures the **misclassification error rate**, which is the probability of the model making an incorrect prediction.
 
-#### Bayes Prediction Function
+#### **Bayes Prediction Function**
 
 The Bayes prediction function returns the most likely class:
 
@@ -191,7 +181,7 @@ $$
 
 ---
 
-### Estimating Risk
+### **Estimating Risk**
 
 We cannot compute the true risk $$R(f) = \mathbb{E}[\ell(f(x), y)]$$ because the true distribution $$P_{X \times Y}$$ is unknown. However, we can estimate it.
 
@@ -213,4 +203,6 @@ This leads us to the concept of **empirical risk** and its minimization, which w
 
 ---
 
-In the next blog, we will dive into **empirical risk minimization** and how it helps solve supervised learning problems effectively. **Stay tuned!**
+In the next blog, we will dive into **empirical risk minimization** and how it helps solve supervised learning problems effectively. 
+
+**Stay tuned!**
