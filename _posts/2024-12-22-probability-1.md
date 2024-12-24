@@ -84,7 +84,7 @@ Building upon the foundational axioms of probability, understanding **random var
 
 A **random variable** is a variable whose possible values are outcomes of a random process or experiment. It maps outcomes from a probabilistic event to real numbers, playing a central role in probability theory and machine learning. Random variables are typically categorized into two types: **discrete** and **continuous**.
 
-`**Intuition for Random Variables**`
+**Intuition for Random Variables**
 
 Think of a random variable as a "number generator" that transforms outcomes of a random process into numbers. For instance:
 - In a dice roll, the outcome (e.g., rolling a 4) is translated to the random variable $$ X = 4 $$.
