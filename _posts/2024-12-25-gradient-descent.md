@@ -102,24 +102,13 @@ Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ ap
 
 <div align="center">
     <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif" alt="Gradient Descent GIF" width="500">
-    <p>Path of a Gradient Descent Algorithm</p>
+    <p>Path of a Gradient Descent Algorithm 1</p>
 </div>
 
 <center>
-    <img src="{{ 'assets/gif/Gradient_descent.gif'}}" alt="Gradient Descent Path" width="500">
+    <img src="{{'assets/gif/Gradient_descent.gif'}}" alt="Gradient Descent Path" width="500">
     <p><em>Path of a Gradient Descent Algorithm</em></p>
 </center>
-
-
-<!-- <div class="row mt-3 d-flex justify-content-center align-items-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif" alt="Gradient Descent GIF" class="img-fluid rounded z-depth-1">
-    </div>
-</div>
-
-<div class="caption text-center">
-    Path of a Gradient Descent Algorithm
-</div> -->
 
 #### **Insights into Gradient Descent**
 
