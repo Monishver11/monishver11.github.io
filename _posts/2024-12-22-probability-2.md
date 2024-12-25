@@ -400,7 +400,7 @@ Where:
 | **Range**        | $$(-\infty, \infty)$$               | $$[-1, 1]$$                     |
 | **Use Case**     | Direction of relationship           | Strength and direction combined |
 
-
+// 
 #### **Applications in Machine Learning**
 
 1. **Feature Relationships**:

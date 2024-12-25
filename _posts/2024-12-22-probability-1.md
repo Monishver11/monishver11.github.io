@@ -57,7 +57,7 @@ The three fundamental axioms govern how probabilities are assigned:
 3. **Multiplication Rule for Independent Events:** 
    
    $$ 
-   P(E_1 \cap E_2) = P(E_1) \cdot P(E_2) \quad \text{if } E_1 \text{ and } E_2 \text{ are independent} 
+   P(E_1 \cap E_2) = P(E_1) \cdot P(E_2) \quad \text{:if } E_1 \text{ and } E_2 \text{ are independent} 
    $$
 
 	Example: Probability of flipping two heads with two coins:$$ P(\text{heads on coin 1} \cap \text{heads on coin 2}) = \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4} $$
