@@ -98,15 +98,15 @@ To iteratively minimize $$f(x)$$, follow these steps:
 
 Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ appropriately is critical to avoid divergence or slow convergence. "Step size" is also referred to as "learning rate" in neural networks literature.
 
-**Diagram**: Gradient Descent Path (Add a visual representation here, Img/Gif).
+**Diagram**: Gradient Descent Path (Add a visual representation here, Img/Gif). Add Credits to the below image.
 
-<div class="row mt-3">
-    <div class="col-sm mt-3 mt-md-0">
+<div class="row mt-3 justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif" alt="Gradient Descent GIF" class="img-fluid rounded z-depth-1">
     </div>
 </div>
 
-<div class="caption">
+<div class="caption text-center">
     Path of a Gradient Descent Algorithm
 </div>
 
