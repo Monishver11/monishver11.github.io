@@ -102,8 +102,8 @@ Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ ap
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        <a href="assets/img/Gradient_descent.gif" target="_blank">
-            <img src="assets/img/Gradient_descent.gif" alt="Gradient Descent GIF" class="img-fluid rounded z-depth-1">
+        <a href="assets/gif/Gradient_descent.gif" target="_blank">
+            <img src="assets/gif/Gradient_descent.gif" alt="Gradient Descent GIF" class="img-fluid rounded z-depth-1">
         </a>
     </div>
 </div>
