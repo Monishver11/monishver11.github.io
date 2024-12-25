@@ -47,6 +47,7 @@ Gradient descent is a powerful optimization technique for unconstrained problems
 #### **Unconstrained Optimization Setting**
 
 We assume the objective function $$f : \mathbb{R}^d \to \mathbb{R}$$ is **differentiable**, and we aim to find:
+
 $$
 x^* = \arg \min_{x \in \mathbb{R}^d} f(x)
 $$
@@ -58,15 +59,18 @@ The gradient is a fundamental concept in optimization. For a differentiable func
 $$
 \nabla f(x_0) = \left[ \frac{\partial f}{\partial x_1}(x_0), \frac{\partial f}{\partial x_2}(x_0), \dots, \frac{\partial f}{\partial x_d}(x_0) \right]
 $$
+
 ###### **Key points:**
 
 - The gradient points in the direction of the steepest **increase** of the function $$f(x)$$ starting from $$x_0$$.
 - The **magnitude** of the gradient indicates how steep the slope is in that direction.
 
 For example, consider a 2D function $$f(x, y)$$. The gradient at a point $$(x_0, y_0)$$ is:
+
 $$
 \nabla f(x_0, y_0) = \left[ \frac{\partial f}{\partial x}(x_0, y_0), \frac{\partial f}{\partial y}(x_0, y_0) \right]
 $$
+
 This tells us how $$f$$ changes with respect to $$x$$ and $$y$$ near $$(x_0, y_0)$$.
 ###### **Importance in Optimization**
 
@@ -90,7 +94,7 @@ To iteratively minimize $$f(x)$$, follow these steps:
 1. **Initialize**: $$x \leftarrow 0$$
 2. **Repeat**:
    $$x \leftarrow x - \eta \nabla f(x)$$
-   until a stopping criterion is met.
+   - until a stopping criterion is met.
 
 Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ appropriately is critical to avoid divergence or slow convergence. "Step size" is also referred to as "learning rate" in neural networks literature.
 
@@ -119,17 +123,22 @@ For convex functions(Added Reference), gradient descent can converge to the glob
 
 ---
 
-The following theorems are often overlooked when learning about gradient descent. We'll dive into them in detail in the next blog, but for now, give them a quick read and continue.
+The following theorems are often overlooked when learning about gradient descent. We'll dive into them in detail in a separate blog, but for now, give them a quick read and continue.
 
 #### **Theorem: Convergence of Gradient Descent with Fixed Step Size**
 
 Suppose $$f : \mathbb{R}^d \to \mathbb{R}$$ is convex and differentiable, and $$\nabla f$$ is Lipschitz continuous with constant $$L > 0$$ (i.e., $$f$$ is L-smooth). This means:
+
 $$
 \|\nabla f(x) - \nabla f(x')\| \leq L \|x - x'\|
 $$
+
 for any $$x, x' \in \mathbb{R}^d$$.
-#### Result
+
+**Result:**
+
 If gradient descent uses a fixed step size $$\eta \leq \frac{1}{L}$$, then:
+
 $$
 f(x^{(k)}) - f(x^*) \leq \frac{\|x^{(0)} - x^*\|^2}{2\eta k}
 $$
@@ -137,21 +146,27 @@ $$
 **Implications:**
 - Gradient descent is **guaranteed to converge** under these conditions.
 - The convergence rate is $$O(1/k)$$
+  
 ---
 
 #### **Strongly Convex Functions**
 
 A function $$f$$ is $$\mu$$-strongly convex if:
+
 $$
 f(x') \geq f(x) + \nabla f(x) \cdot (x' - x) + \frac{\mu}{2} \|x - x'\|^2
 $$
+
 **Add the image for reference here.**
+
 #### **Convergence Theorem for Strongly Convex Functions**
 
 If $$f$$ is both $$L$$-smooth and $$\mu$$-strongly convex, with step size $$0 < \eta \leq \frac{1}{L}$$, then gradient descent achieves convergence with the following inequality:
+
 $$
 \|x^{(k)} - x^*\|^2 \leq (1 - \eta \mu)^k \|x^{(0)} - x^*\|^2
 $$
+
 This implies **linear convergence**, but it depends on $$\mu$$. If the estimate of µ is bad then the rate is not great.
 
 ---
@@ -168,19 +183,21 @@ This implies **linear convergence**, but it depends on $$\mu$$. If the estimate 
 ### **Quick recap: Gradient Descent for ERM**
 
 Given a hypothesis space $$F = \{f_w : X \to Y \mid w \in \mathbb{R}^d\}$$, we aim to minimize:
+
 $$
 \hat{R}_n(w) = \frac{1}{n} \sum_{i=1}^n \ell(f_w(x_i), y_i)
 $$
-Gradient descent is applicable if $$\ell(f_w(x_i), y_i)$$ is differentiable with respect to $$w$$.
 
----
+Gradient descent is applicable if $$\ell(f_w(x_i), y_i)$$ is differentiable with respect to $$w$$.
 
 #### **Scalability**
 
 At each iteration, we compute the gradient at the current $$w$$ as:
+
 $$
 \nabla \hat{R}_n(w) = \frac{1}{n} \sum_{i=1}^n \nabla_w \ell(f_w(x_i), y_i)
 $$
+
 This requires $$O(n)$$ computation per step, as we have to iterate over all n training points to take a single step. To scale better, alternative methods like **stochastic gradient descent (SGD)** can be considered.
 
 ---
