@@ -98,8 +98,6 @@ To iteratively minimize $$f(x)$$, follow these steps:
 
 Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ appropriately is critical to avoid divergence or slow convergence. "Step size" is also referred to as "learning rate" in neural networks literature.
 
-**Diagram**: Gradient Descent Path (Add a visual representation here, Img/Gif). Add Credits to the below image.
-
 <div align="center">
     <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif" alt="Gradient Descent GIF" width="500">
     <p>Path of a Gradient Descent Algorithm</p>
@@ -116,7 +114,17 @@ Here, $$\eta$$ is the **step size** (or **learning rate**). Choosing $$\eta$$ ap
 	 - **Small steps**: In steep regions where the gradient is large, smaller steps ensure stability and prevent overshooting. 
 	 - Adaptive methods like Adam or RMSprop leverage this intuition by dynamically adjusting the step size based on the gradient's magnitude or past behavior.
 
-**Add 2D Divergence example**
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/GD_Learning_Rate.png" title="GD_Learning_Rate" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Step size variations. Image credit: https://medium.com/@yennhi95zz
+</div>
+
+
+
 ###### **Convergence**
 
 Gradient descent converges to a stationary point (where the derivative is zero) for differentiable functions. These stationary points could be:
@@ -162,7 +170,14 @@ $$
 f(x') \geq f(x) + \nabla f(x) \cdot (x' - x) + \frac{\mu}{2} \|x - x'\|^2
 $$
 
-**Add the image for reference here.**
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Strongly_Convex.png" title="Strongly_Convex" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Convex and Strongly Convex Curve
+</div>
 
 #### **Convergence Theorem for Strongly Convex Functions**
 
@@ -195,7 +210,7 @@ $$
 
 Gradient descent is applicable if $$\ell(f_w(x_i), y_i)$$ is differentiable with respect to $$w$$.
 
-#### **Scalability**
+###### **Scalability**
 
 At each iteration, we compute the gradient at the current $$w$$ as:
 
@@ -212,3 +227,11 @@ Gradient descent is an indispensable tool for optimization, especially in machin
 
 Stay tuned for the next post, where we’ll explore stochastic gradient descent and its variations for scalability!
 
+--- 
+
+##### **References & Good Resources for Visualizing Gradient Descent:**
+- <a href="https://aero-learn.imperial.ac.uk/vis/Machine%20Learning/gradient_descent_3d.html" target="_blank">3D Gradient Descent</a>
+- <a href="https://kaggle.com/code/trolukovich/animating-gradien-descent" target="_blank">Animating Gradient Descent</a>
+- <a href="https://towardsdatascience.com/a-visual-explanation-of-gradient-descent-methods-momentum-adagrad-rmsprop-adam-f898b102325c" target="_blank">A Visual Explanation of Gradient Descent Methods (Momentum, AdaGrad, RMSProp, Adam) – Towards Data Science</a> (Variations of Gradient Descent)
+- <a href="https://medium.com/@yennhi95zz/4-a-beginners-guide-to-gradient-descent-in-machine-learning-773ba7cd3dfe" target="_blank">Yennhi95zz, 2023. #4. A Beginner’s Guide to Gradient Descent in Machine Learning. Medium</a>
+- [Path of a Gradient Descent Algorithm](https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif) (Image Credit)
