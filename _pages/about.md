@@ -1,6 +1,6 @@
 ---
 layout: about
-title: about
+title: About
 nav: false
 #nav_order: 1
 permalink: /

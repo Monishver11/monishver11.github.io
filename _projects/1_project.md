@@ -2,7 +2,7 @@
 layout: page
 title: MTA Transit Time Prediction
 description: Leveraging real-time data and machine learning to predict bus arrival times in New York City with route-based and grid-based approaches.
-img: assets/img/12.jpg
+img: assets/img/project_1/MTA_1.jpeg
 importance: 1
 category: work
 related_publications: false
@@ -141,8 +141,6 @@ Here’s how our models stacked up:
 | LSTM                 | 132.23       | —           | —            |
 | XGBoost (Grid-Wise)  | 82.02        | 43.73       | —            |
 
-
-
 <div class="row justify-content-sm-center">
     <div class="col-sm-6 mt-3 mt-md-0">
         {% include figure.liquid path="assets/img/project_1/Lasso Regression_plot.png" title="Lasso Regression" class="img-fluid rounded z-depth-1" %}
@@ -152,7 +150,7 @@ Here’s how our models stacked up:
     </div>
 </div>
 <div class="caption">
-    Overlaying the distribution of predicted estimated arrival times (in seconds) on the distribution of actual estimated arrival times shows that Lasso Regression(Left) and XGBoost(Right) generalizes effectively and learns the underlying dataset's distribution.
+    Overlaying the distribution of predicted estimated arrival times (in seconds) on the distribution of actual estimated arrival times shows the Lasso Regression(Left) and XGBoost(Right) generalization and effective learnability of the underlying dataset's distribution.
 </div>
 
 
@@ -181,6 +179,8 @@ Our work lays the groundwork for smarter transit predictions, but there’s alwa
 
 Our project underscores the importance of using the right models for the right data. While LSTMs are excellent for sequential tasks, grid-based methods excel in capturing localized patterns in urban settings. By aligning model design with the unique characteristics of urban transit systems, we’re one step closer to making public transportation smarter and more reliable.
 
-**Want to dive deeper? Check out our detailed implementation in the report & code linked below:** <a href="https://drive.google.com/file/d/18ulc0J0qGOSBSYhrQYd6A7KyB27QEwfi/view?usp=sharing">View Full Report (PDF)</a> & <a href="https://drive.google.com/file/d/1bXVwFi-551409npz8qCrhw4uiybQTBw5/view?usp=sharing">Code (ZIP)</a>
+**Want to dive deeper? Check out our detailed implementation in the report & code linked below:** 
+- <a href="https://drive.google.com/file/d/18ulc0J0qGOSBSYhrQYd6A7KyB27QEwfi/view?usp=sharing">View Full Report (PDF)</a> 
+- <a href="https://drive.google.com/file/d/1bXVwFi-551409npz8qCrhw4uiybQTBw5/view?usp=sharing">Code (ZIP)</a>
 
 
