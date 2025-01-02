@@ -14,8 +14,9 @@ related_posts: false
 
 To understand the **Convergence Theorem for Fixed Step Size**, it is essential to grasp a few foundational concepts like **Lipschitz continuity** and **convexity**. This section introduces these concepts and establishes the necessary prerequisites.
 
-**Big Note:** `If you find yourself struggling to understand a specific part or step, don’t worry—simply copy and paste it into ChatGPT/Perplexity for an explanation. More than 90% of the time, you'll be able to grasp the concept and move forward. If you’re still stuck, don’t hesitate to ask for help. The key is not to get bogged down by small hurdles—keep going and seek assistance when needed!`
+**Quick note:** If you find yourself struggling with any part or step, don't worry—just copy and paste it into ChatGPT or Perplexity for an explanation. In most cases, you’ll be able to grasp the concept and move forward. If you're still stuck, feel free to ask for help. The key is not to let small obstacles slow you down—keep going and seek assistance when needed!
 
+---
 
 #### **Lipschitz Continuity?**
 
