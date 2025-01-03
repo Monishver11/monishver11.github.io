@@ -3,7 +3,7 @@ layout: post
 title: Preface & Introduction
 date: 2024-12-18 13:43:00-0400
 featured: true
-description: First blog post—more of a preface, setting the stage for the journey ahead.
+description: First blog post—setting the stage for the journey ahead.
 tags: ML
 categories: sample-posts
 giscus_comments: false
