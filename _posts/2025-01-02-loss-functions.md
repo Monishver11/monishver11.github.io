@@ -87,7 +87,7 @@ $$
 \end{cases}
 $$
 
-For small residuals, it behaves like squared loss, while for large residuals, it switches to absolute loss, providing robustness without sacrificing differentiability.
+For small residuals, it behaves like squared loss, while for large residuals, it switches to absolute loss, providing robustness without sacrificing differentiability. **Note**: Equal values and slopes at $$(r = \delta)$$.
 
 **Understanding Robustness**: It describes a loss function’s resistance to the influence of outliers.
 - **Squared loss** is highly sensitive to outliers.
@@ -244,7 +244,7 @@ Here’s how it works based on different predicted values of $$\hat{y}$$:
 - The **negative sign** in the loss function ensures that when the model predicts correctly (i.e., $$\hat{y}$$ is close to the true label), the loss is minimized (approaching 0).
 - The loss grows as the predicted probability $$\hat{y}$$ moves away from the true label $$y$$, and it grows more rapidly as the predicted probability becomes more confident but incorrect.
 
-[Add Binary Cross Entropy Loss Function - Intrative Better!]
+[Add Binary Cross Entropy Loss Function - Intractive Better!]
 
 ##### **Logistic Regression with Labels as -1 or 1**
 When the labels are in $$\{-1, 1\}$$, the sigmoid function simplifies using the property:
