@@ -94,7 +94,14 @@ For small residuals, it behaves like squared loss, while for large residuals, it
 - **Absolute loss** is much more robust.
 - **Huber loss** strikes a balance between sensitivity and robustness. Meaning, it is sensitive enough to provide a useful gradient for smaller errors (via L2), but becomes more robust to large residuals, preventing them from disproportionately influencing the model (via L1).
 
-[Add Loss Functions Graph here!]
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Regression_Losses.png" title="Regression_Losses" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Regression Loss Functions
+</div>
 
 ---
 
@@ -162,7 +169,14 @@ $$
 
 It is a convex, upper bound on 0-1 loss and encourages a positive margin. However, it is not differentiable at $$m = 1$$.
 
-[Add Loss Functions Graph here!]
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Classification_Losses.png" title="Classification_Losses" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Classification Loss Functions
+</div>
 
 ----
 
@@ -244,7 +258,15 @@ Here’s how it works based on different predicted values of $$\hat{y}$$:
 - The **negative sign** in the loss function ensures that when the model predicts correctly (i.e., $$\hat{y}$$ is close to the true label), the loss is minimized (approaching 0).
 - The loss grows as the predicted probability $$\hat{y}$$ moves away from the true label $$y$$, and it grows more rapidly as the predicted probability becomes more confident but incorrect.
 
-[Add Binary Cross Entropy Loss Function - Intractive Better!]
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Binary_Cross_Entropy_Loss.gif" title="Binary_Cross_Entropy_Loss" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Binary Cross Entropy Loss Function(https://www.desmos.com/calculator/ygciza1leg)
+</div>
+
 
 ##### **Logistic Regression with Labels as -1 or 1**
 When the labels are in $$\{-1, 1\}$$, the sigmoid function simplifies using the property:
@@ -297,11 +319,18 @@ $$
 ###### **Why Not Use Square Loss?**
 Square loss heavily penalizes outliers, such as mislabeled examples, making it unsuitable for classification tasks where robust performance on noisy data is crucial.
 
-[Add a combined loss functions plot of Logistic Regression for all discussed above!]
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Logistic_Regression_Losses.png" title="Logistic_Regression_Losses" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Logistic Regression Loss Functions
+</div>
 
 ---
 
-##### **Summary**
+##### **Conclusion**
 
 Loss functions form the backbone of machine learning, providing a mathematical framework for optimization. A quick recap:
 - **Regression Losses**:
@@ -316,7 +345,5 @@ These concepts tie back to critical components of machine learning workflows, su
 
 Up next, we’ll dive into **Regularization**, focusing on how it combats overfitting and improves model performance. Stay tuned!
 
----
-
-- Add loss functions pic and others where-ever needed.
-- Verify the math parts with slides.
+<!-- - Add loss functions pic and others where-ever needed.
+- Verify the math parts with slides. -->
