@@ -104,7 +104,7 @@ A larger $$\lambda$$ imposes a heavier penalty on complexity, meaning that addin
 
 However, directly using the number of features as a complexity measure is non-differentiable, making it hard to optimize. This limitation motivates the use of alternative measures, such as norms on the model weights, which provide a differentiable and computationally efficient framework.
 
-[Add think of it this way part!]
+**Consider it like this:**: Think of choosing ingredients for a dish. The training loss is like the flavor of the dish, and the penalty term is like the cost of adding ingredients. If you add too many ingredients (features), the cost goes up, and the dish may become overcomplicated or unbalanced. By introducing a penalty (regularization), you’re essentially saying, “Only add more ingredients if they significantly improve the flavor.” The larger the penalty (larger $$\lambda$$), the more careful you have to be about adding new ingredients, encouraging simplicity and preventing the dish from becoming too cluttered. This approach keeps the recipe (model) balanced and prevents unnecessary complexity.
 
 ###### **Soft Selection Through Weight Shrinkage**
 
@@ -132,7 +132,16 @@ $$
 
 The second model has large coefficients, making the curve "wiggle" excessively to fit the training data, a hallmark of overfitting. In contrast, the first model—with smaller weights—is smoother and less prone to overfitting.
 
-[Plot the two functions in Desmos + Example!]
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Polynomial_Regression_Plot.png" title="Polynomial_Regression_Plot" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption text-center">
+    Function Plots in Desmos
+</div>
+
+**Think of it this way**: Imagine you're driving a car down a winding road. A car with a sensitive steering wheel (large weights) will make sharp turns with every slight variation in the road, making the ride bumpy and unpredictable. In contrast, a car with a more stable, less sensitive steering wheel (smaller weights) will handle the same road with smoother, more controlled movements, reducing the impact of small bumps and ensuring a more stable journey. Similarly, in regression, smaller weights lead to smoother, more stable models that are less prone to overfitting and better at handling new data.
 
 ##### **Linear Regression with $$L_2$$ Regularization**
 
@@ -142,7 +151,7 @@ $$ \hat{w} = \arg\min_{w \in \mathbb{R}^d} \frac{1}{n} \sum_{i=1}^n \left( w^\to
 
 While effective, this approach can overfit when the number of features $$d$$ is large compared to the number of samples $$n$$. For example, in natural language processing, it's common to have millions of features but only thousands of documents.
 
-To address this, **$$L_2$$ regularization** (also known as ridge regression) adds a penalty on the $$L_2$$ norm of the weights:
+To address this, **$$L_2$$ regularization** (also known as **ridge regression**) adds a penalty on the $$L_2$$ norm of the weights:
 
 $$ \hat{w} = \arg\min_{w \in \mathbb{R}^d} \frac{1}{n} \sum_{i=1}^n \left( w^\top x_i - y_i \right)^2 + \lambda \|w\|_2^2, $$
 
@@ -154,7 +163,7 @@ $$
 
 This additional term penalizes large weights, shrinking them toward zero. When $$\lambda = 0$$, the solution reduces to ordinary least squares. As $$\lambda$$ increases, the penalty grows, favoring simpler models with smaller weights.
 
-[Add analogy!]
+**Intuition**: Think of fitting a suit to someone. In ordinary least squares, you would tailor the suit to fit perfectly according to every measurement. However, if the person has an unusual body shape or you have limited data, the suit might end up being too tight in some areas, causing discomfort. With  $$L_2$$ regularization, it’s like adding some flexibility to the design, allowing for slight adjustments to ensure the suit is comfortable and fits well, even if the measurements aren’t perfect. This prevents overfitting and makes the model more robust, much like a well-tailored suit that remains comfortable under different conditions.
 
 ###### **Generalization to Other Models**
 
