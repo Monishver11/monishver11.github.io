@@ -217,7 +217,7 @@ $$
 
  encourages sparsity in the weight vector, setting some coefficients exactly to zero. **But what's behind this, really?** Keep reading!
 
-#### **Ridge vs. Lasso Regression**
+##### **Ridge vs. Lasso Regression**
 
 The key difference between ridge and lasso regression lies in their impact on the weights. Ridge regression tends to shrink all coefficients toward zero but does not eliminate any of them. In contrast, lasso regression produces sparse solutions, where some coefficients are exactly zero. **We'll dive into this next.**
 
@@ -234,7 +234,7 @@ This sparsity has significant practical advantages. By zeroing out irrelevant fe
 
 A distinctive property of **L1 regularization** is its ability to produce sparse solutions, where some weights are exactly zero. This characteristic makes L1 regularization particularly useful for feature selection, as it effectively identifies the most important features by eliminating irrelevant ones. To understand this better, let’s explore the theoretical underpinnings and geometric intuition behind this phenomenon.
 
-##### **Revisiting Lasso Regression**
+###### **Revisiting Lasso Regression:**
 
 Lasso regression penalizes the **L1 norm** of the weights. The objective function, also known as the **Tikhonov form**, is given by:
 
@@ -250,7 +250,7 @@ $$
 
 This formulation encourages sparsity by applying a uniform penalty across all weights, effectively "pushing" some weights to zero when they contribute minimally to the prediction.
 
-##### **Regularization as Constrained Empirical Risk Minimization (ERM)**
+###### **Regularization as Constrained Empirical Risk Minimization (ERM)**
 
 Regularization can also be viewed through the lens of **constrained ERM**. For a given complexity measure $$\Omega$$ and a fixed threshold $$r \geq 0$$, the optimization problem is expressed as:
 
@@ -271,44 +271,63 @@ Here, $$r$$ plays the same role as the regularization parameter $$\lambda$$ in t
 To understand why L1 regularization promotes sparsity, consider a simple hypothesis space $$\mathcal{F} = \{f(x) = w_1x_1 + w_2x_2\}$$. Each function can be represented as a point $$(w_1, w_2)$$ in $$\mathbb{R}^2$$. The regularization constraints can be visualized as follows:
 
 - **L2 norm constraint:** 
-$$w_1^2 + w_2^2 \leq r$$ (a circle in $$\mathbb{R}^2$$).
+$$w_1^2 + w_2^2 \leq r$$, which is a **circle** in $$\mathbb{R}^2$$.
 - **L1 norm constraint:** 
-$$|w_1| + |w_2| \leq r$$ (a diamond in $$\mathbb{R}^2$$).
+$$|w_1| + |w_2| \leq r$$, which forms a **diamond** in $$\mathbb{R}^2$$.
 
-The sparse solutions correspond to the vertices of the diamond, where at least one weight is zero.
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_1.png" title="L1_Reg_1" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
-[Need more details and intuitons!]
 
-##### **Visualizing Regularization**
+`Note`: The sparse solutions correspond to the vertices of the diamond, where at least one weight is zero.
 
-To build intuition, let’s analyze the geometry of the optimization:
+**To build intuition**, let’s analyze the geometry of the optimization:
 
 1. The **blue region** represents the feasible space defined by the regularization constraint 
-(e.g., $$w_1^2 + w_2^2 \leq r$$ for L2, or $$|w_1| + |w_2| \leq r$$ for L1).
-2. The **red contours** represent the level sets of the empirical risk 
-$$
-\hat{R}_n(w) = \frac{1}{n} \sum_{i=1}^n \big(w^T x_i - y_i\big)^2
-$$.
+   (e.g., $$w_1^2 + w_2^2 \leq r$$ for L2, or $$|w_1| + |w_2| \leq r$$ for L1).
+2. The **red contours** represent the level sets of the empirical risk function:
+   
+   $$
+   \hat{R}_n(w) = \frac{1}{n} \sum_{i=1}^n \big(w^T x_i - y_i\big)^2
+   $$
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_2_1.png" title="L1_Reg_2_1" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_2_2.png" title="L1_Reg_2_2" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 
 The optimal solution is found where the smallest contour intersects the feasible region. For L1 regularization, this intersection tends to occur at the corners of the diamond, where one or more weights are exactly zero.
 
-[Add the visualization!]
+Suppose the loss contours grow as perfect circles (or spheres in higher dimensions). When these contours intersect the diamond-shaped feasible region of L1 regularization, the corners of the diamond are more likely to be touched. These corners correspond to solutions where at least one weight is zero.
 
-##### **Why Does ℓ1 Regularization Encourage Sparse Solutions?**
+<div class="row justify-content-sm-center">
+<div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_3_2.png" title="L1_Reg_3_2" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_3_1.png" title="L1_Reg_3_1" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
-The sparsity induced by L1 regularization can be understood geometrically. Suppose the loss contours grow as perfect circles (or spheres in higher dimensions). When these contours intersect the diamond-shaped feasible region of L1 regularization, the corners of the diamond are more likely to be touched. These corners correspond to solutions where at least one weight is zero.
 
-In contrast, for L2 regularization, the feasible region is a circle (or sphere), and the intersection is equally likely to occur in any direction. This results in small, but non-zero, weights across all features.
+In contrast, for L2 regularization, the feasible region is a circle (or sphere), and the intersection is equally likely to occur in any direction. This results in small, but non-zero, weights across all features, rather than sparse solutions.
 
-[Need things to Visualize!]
-
-##### **Optimization Perspective**
+###### **Optimization Perspective:**
 
 From an optimization viewpoint, the difference between L1 and L2 regularization lies in how the penalty affects the gradient:
 
 - For **L2 regularization**, as a weight $$w_i$$ becomes smaller, the penalty $$\lambda w_i^2$$ decreases more rapidly. However, the gradient of the penalty also diminishes, providing less incentive to shrink the weight to exactly zero.
 - For **L1 regularization**, the penalty 
   $$\lambda |w_i|$$ decreases linearly, and its gradient remains constant regardless of the weight's size. This consistent gradient drives small weights to zero, promoting sparsity.
+
 
 ##### **Generalizing to ℓq Regularization**
 
@@ -329,3 +348,8 @@ Here are some notable cases:
 ##### **Conclusion**
 
 L1 regularization’s sparsity-inducing property makes it an indispensable tool in feature selection and high-dimensional problems. Its geometric intuition, optimization characteristics, and ability to simplify models while retaining interpretability set it apart from L2 regularization. By understanding the nuances of L1, L2, and generalized $$\ell_q$$ regularization, practitioners can leverage these techniques effectively to address diverse challenges in machine learning.
+
+- Add regularization path - explanation and image
+- Add References
+- Image credits
+  
