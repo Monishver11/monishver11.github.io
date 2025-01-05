@@ -98,7 +98,7 @@ $$
 | \hat{f}(\mathbf{x} + \mathbf{h}) - \hat{f}(\mathbf{x}) | \leq \| \mathbf{w} \|_p \| \mathbf{h} \|_q
 $$
 
-where $$ p $$ and $$ q $$ are Hölder conjugates, satisfying:
+where $$ p $$ and $$ q $$ satisfies:
 
 $$
 \frac{1}{p} + \frac{1}{q} = 1
@@ -108,7 +108,7 @@ $$
 
 This shows that the idea of controlling the sensitivity of the model (through the Lipschitz constant) extends naturally to any norm. The choice of norm alters how the regularization penalizes weights but retains the fundamental property of bounding the function's rate of change.
 
-###### **Analogy for Ending**
+###### **An analogy to internalize this:**
 
 Think of $$ L_2 $$ regularization as a bungee cord attached to a daring rock climber. The climber represents the model trying to navigate a complex landscape (data). Without the cord (regularization), they might venture too far and fall into overfitting. The cord adds just enough tension (penalty) to keep the climber balanced and safe, ensuring they explore the terrain without taking reckless leaps. Similarly, regularization helps the model stay grounded, generalizing well without succumbing to overfitting.
 
@@ -140,7 +140,7 @@ $$
 
 This additional term penalizes large weights, helping to control model complexity and reduce overfitting.
 
-##### **Gradients of the Objective**
+###### **Gradients of the Objective:**
 
 The inclusion of the regularization term affects the gradient of the loss function. For linear regression, the gradient is:
 
@@ -154,9 +154,9 @@ $$
 \nabla L(w) = X^T (Xw - y) + \lambda w
 $$
 
-The regularization term $$\lambda w$$ biases the solution toward smaller weights, thereby stabilizing the optimization.
+The regularization term $$\lambda w$$ biases the solution toward smaller weights, thereby stabilizing the optimization. By adding this term, the model is less sensitive to small changes in the data, especially in cases where multicollinearity exists, i.e., when features are highly correlated. 
 
-##### **Closed-form Solutions**
+###### **Closed-form Solutions:**
 
 Both linear regression and ridge regression admit closed-form solutions. For linear regression, the weights are given by:
 
@@ -170,7 +170,10 @@ $$
 w = (X^T X + \lambda I)^{-1} X^T y
 $$
 
-The addition of $$\lambda I$$ ensures that $$X^T X + \lambda I$$ is always invertible, addressing potential issues of singularity in the design matrix.
+The addition of $$\lambda I$$ ensures that $$X^T X + \lambda I$$ is always invertible, addressing potential issues of singularity in the design matrix. In linear regression, if the matrix $$X^T X$$ is singular or nearly singular (which can occur when features are linearly dependent or when there are more features than samples), the inverse may not exist or be unstable. By adding $$\lambda I$$, where \( I \) is the identity matrix, we effectively shift the eigenvalues of $$X^T X$$, making the matrix non-singular and ensuring a stable solution. 
+
+---
+
 
 #### **A Constrained Optimization Perspective**
 
