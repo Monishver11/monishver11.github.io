@@ -170,30 +170,36 @@ $$
 w = (X^T X + \lambda I)^{-1} X^T y
 $$
 
-The addition of $$\lambda I$$ ensures that $$X^T X + \lambda I$$ is always invertible, addressing potential issues of singularity in the design matrix. In linear regression, if the matrix $$X^T X$$ is singular or nearly singular (which can occur when features are linearly dependent or when there are more features than samples), the inverse may not exist or be unstable. By adding $$\lambda I$$, where \( I \) is the identity matrix, we effectively shift the eigenvalues of $$X^T X$$, making the matrix non-singular and ensuring a stable solution. 
+The addition of $$\lambda I$$ ensures that $$X^T X + \lambda I$$ is always invertible, addressing potential issues of singularity in the design matrix. In linear regression, if the matrix $$X^T X$$ is singular or nearly singular (which can occur when features are linearly dependent or when there are more features than samples), the inverse may not exist or be unstable. By adding $$\lambda I$$, where $$ I $$ is the identity matrix, we effectively shift the eigenvalues of $$X^T X$$, making the matrix non-singular and ensuring a stable solution. 
 
 ---
 
-
 #### **A Constrained Optimization Perspective**
 
-The L2 regularization term can also be interpreted through the lens of constrained optimization. In this view, the ridge regression objective is expressed in its **Tikhonov form** as:
+L2 regularization can also be understood through the lens of constrained optimization. In this perspective, the ridge regression objective is expressed in **Tikhonov regularization** form as:
 
 $$
-w^* = \arg\min_w \frac{1}{2} \|Xw - y\|_2^2 + \frac{\lambda}{2} \|w\|_2^2
+w^* = \arg\min_w \left( \frac{1}{2} \|Xw - y\|_2^2 + \frac{\lambda}{2} \|w\|_2^2 \right)
 $$
 
-Alternatively, using **Lagrangian theory**, we can reformulate this as a constraint on the norm of the weights:
+The **Ivanov form** is another perspective where the objective is similarly constrained, but the constraint is typically applied in a more specific way, usually in the context of ill-posed problems or regularization approaches in functional analysis. It focuses on minimizing the error while controlling the solution's smoothness or complexity. While this form is less commonly used directly in machine learning, it is foundational in understanding regularization in more theoretical settings. We mention this now because both forms will appear later in the discussion of other concepts, and it’s helpful to have a brief overview before we revisit them in more depth.
+
+Alternatively, using **Lagrangian theory**, we can reframe ridge regression as a constrained optimization problem. The objective is to minimize the residual sum of squares subject to a constraint on the L2 norm of the weights:
 
 $$
 w^* = \arg\min_{w : \|w\|_2^2 \leq r} \frac{1}{2} \|Xw - y\|_2^2
 $$
 
-At the optimum, the gradients of the main objective and the constraint balance each other, providing a geometric interpretation of regularization.
+Here, $$ r $$ represents the maximum allowed value for the squared norm of the weights, effectively placing a limit on their size. The Lagrange multiplier adjusts the importance of the constraint during optimization. This form emphasizes the constraint on model complexity, ensuring that the weights don't grow too large.
 
-[Express both Ivanov and Tikhonov form more clearly]
 
-[Add a point stating that the Lagrangian Theory will be explain later while we discuss about SVM]
+
+At the optimal solution, the gradients of the objective function and the constraint term balance each other, providing a geometric interpretation of how regularization controls the model complexity.
+
+**Note:** The Lagrangian theory will be explored further when we discuss Support Vector Machines (SVMs), where this approach plays a central role in optimization.
+
+
+---
 
 #### **Lasso Regression and $$L_1$$ Regularization**
 
