@@ -122,7 +122,7 @@ In each case, the regularization (the cord) helps the climber (the model) stay w
 
 --- 
 
-#### **Linear Regression vs. Ridge Regression**
+#### **Linear vs. Ridge Regression**
 
 The inclusion of L2 regularization modifies the optimization objective, as illustrated by the difference between **linear regression** and **ridge regression**.
 
@@ -215,11 +215,11 @@ $$
 \|w\|_1 = |w_1| + |w_2| + \dots + |w_d|
 $$
 
- encourages sparsity in the weight vector, setting some coefficients exactly to zero.
+ encourages sparsity in the weight vector, setting some coefficients exactly to zero. **But what's behind this, really?** Keep reading!
 
-#### **Ridge vs. Lasso: A Comparative Analysis**
+#### **Ridge vs. Lasso Regression**
 
-The key difference between ridge and lasso regression lies in their impact on the weights. Ridge regression tends to shrink all coefficients toward zero but does not eliminate any of them. In contrast, lasso regression produces sparse solutions, where some coefficients are exactly zero. **But why?** Keep reading!
+The key difference between ridge and lasso regression lies in their impact on the weights. Ridge regression tends to shrink all coefficients toward zero but does not eliminate any of them. In contrast, lasso regression produces sparse solutions, where some coefficients are exactly zero. **We'll dive into this next.**
 
 This sparsity has significant practical advantages. By zeroing out irrelevant features, lasso regression simplifies the model, making it:
 
@@ -227,12 +227,6 @@ This sparsity has significant practical advantages. By zeroing out irrelevant fe
 - **Cheaper** to store and deploy, especially on resource-constrained devices.
 - **More interpretable**, as it highlights the most important features.
 - **Less prone to overfitting**, since the reduced complexity often leads to better generalization.
-
-##### **Quick Recap:**
-
-Both L1 and L2 regularization are powerful techniques for controlling overfitting, improving interpretability, and ensuring numerical stability. L2 regularization excels in stabilizing solutions and handling multicollinearity, while L1 regularization shines when feature selection or sparsity is desired.
-
-[Do I need this part?]
 
 ---
 
