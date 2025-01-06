@@ -328,28 +328,53 @@ From an optimization viewpoint, the difference between L1 and L2 regularization 
 - For **L1 regularization**, the penalty 
   $$\lambda |w_i|$$ decreases linearly, and its gradient remains constant regardless of the weight's size. This consistent gradient drives small weights to zero, promoting sparsity.
 
+**Consider the following idea:** Imagine you’re packing items into a small rectangular box, and you have two kinds of items: rigid boxes (representing $$L_1$$ regularization) and pebbles (representing $$L_2$$ regularization).
 
-##### **Generalizing to ℓq Regularization**
+The rigid boxes are shaped with sharp corners and don’t squish or deform. When you try to fit them into the small box, they naturally stack at the edges or corners of the space. This means some of the rigid boxes might not fit at all, so you leave them out—just like $$L_1$$ regularization pushing weights to zero.
 
-L1 and L2 regularization are specific cases of the more general $$\ell_q$$ regularization, defined as:
+The pebbles, on the other hand, are smooth and can be squished slightly. When you pack them into the box, they distribute evenly, filling in gaps without leaving any pebbles completely outside. This is like $$L_2$$ regularization, where weights are reduced but not exactly zero.
+
+So, that's why $$L_1$$ regularization creates sparse solutions (only the most critical items get packed) while $$L_2$$ regularization spreads the influence across all features (everything gets included, but smaller).
+
+
+##### **Generalizing to $$\ell_q$$ Regularization**
+
+$$\ell_1$$ and $$\ell_2$$ regularization are specific cases of the more general $$\ell_q$$ regularization, defined as:
 
 $$
 \|w\|_q^q = |w_1|^q + |w_2|^q + \dots + |w_d|^q
 $$
 
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/L1_Reg_4.png" title="L1_Reg_4" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 Here are some notable cases:
 
 - For $$q \geq 1$$, $$\|w\|_q$$ is a valid norm.
-- For $$0 < q < 1$$, the constraint becomes non-convex, making optimization challenging. While $$\ell_q$$ regularization with $$q < 1$$ can induce even sparser solutions than L1, it is often impractical in real-world scenarios.
+- For $$0 < q < 1$$, the constraint becomes non-convex, making optimization challenging. While $$\ell_q$$ regularization with $$q < 1$$ can induce even sparser solutions than L1, it is often impractical in real-world scenarios. For instance when $$q=0.5$$, the regularization takes the form of a square root function, which is non-convex.
 - The $$\ell_0$$ norm, defined as the number of non-zero weights, corresponds to **subset selection** but is computationally infeasible due to its combinatorial nature.
+
+**Note:** $$L_n$$and $$\ell_n$$ represent the same concept, so don’t let the difference in notation confuse you.
 
 ---
 
 ##### **Conclusion**
 
-L1 regularization’s sparsity-inducing property makes it an indispensable tool in feature selection and high-dimensional problems. Its geometric intuition, optimization characteristics, and ability to simplify models while retaining interpretability set it apart from L2 regularization. By understanding the nuances of L1, L2, and generalized $$\ell_q$$ regularization, practitioners can leverage these techniques effectively to address diverse challenges in machine learning.
+$$L_1$$ regularization’s sparsity-inducing property makes it an indispensable tool in feature selection and high-dimensional problems. Its optimization characteristics and ability to simplify models while retaining interpretability set it apart from $$L_2$$ regularization.
+
+Next, we’ll talk about the **maximum margin classifier & SVM**. Stay tuned, as moving on, it’s going to get a little intense, but don’t worry—we’ll get through it together! 
+
+##### **References**
+- [why-l1-norm-for-sparse-models](https://stats.stackexchange.com/questions/45643/why-l1-norm-for-sparse-models)
+- [L1 Norm Regularization and Sparsity Explained for Dummies](https://blog.mlreview.com/l1-norm-regularization-and-sparsity-explained-for-dummies-5b0e4be3938a)
+- [why-small-l1-norm-means-sparsity](https://math.stackexchange.com/questions/1904767/why-small-l1-norm-means-sparsity)
+- Image Credits: Mairal et al.’s Sparse Modeling for Image and Vision Processing Fig 1.6, 
+KPM Fig. 13
+
+---
 
 - Add regularization path - explanation and image
-- Add References
-- Image credits
   
