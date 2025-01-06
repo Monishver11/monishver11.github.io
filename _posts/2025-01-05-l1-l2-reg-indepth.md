@@ -58,7 +58,7 @@ $$
 
 This implies that when the input changes from $$x$$ to $$x + h$$, the function's output change is bounded by $$L\|h\|_2$$. In simpler terms, $$L_2$$ regularization controls the rate of change of $$\hat{f}(x)$$, making the model less sensitive to variations in the input data.
 
-##### **Mathematical Proof of Lipschitz Continuity**
+###### **Mathematical Proof of Lipschitz Continuity**
 
 To formalize this property, let’s derive the Lipschitz bound:
 
@@ -371,10 +371,7 @@ Next, we’ll talk about the **maximum margin classifier & SVM**. Stay tuned, as
 - [why-l1-norm-for-sparse-models](https://stats.stackexchange.com/questions/45643/why-l1-norm-for-sparse-models)
 - [L1 Norm Regularization and Sparsity Explained for Dummies](https://blog.mlreview.com/l1-norm-regularization-and-sparsity-explained-for-dummies-5b0e4be3938a)
 - [why-small-l1-norm-means-sparsity](https://math.stackexchange.com/questions/1904767/why-small-l1-norm-means-sparsity)
+- [Regularization path using Lasso regression](https://medium.com/analytics-vidhya/regularization-path-using-lasso-regression-c450eea9321e)
 - Image Credits: Mairal et al.’s Sparse Modeling for Image and Vision Processing Fig 1.6, 
 KPM Fig. 13
-
----
-
-- Add regularization path - explanation and image
   
