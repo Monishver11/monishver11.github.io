@@ -5,7 +5,7 @@ date: 2024-12-25 15:01:00-0400
 featured: false
 description: An in-depth exploration of gradient descent, including its convergence and step size considerations.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

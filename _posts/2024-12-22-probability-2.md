@@ -4,8 +4,8 @@ title: Advanced Probability Concepts for Machine Learning
 date: 2024-12-22 15:21:00-0400
 featured: false
 description: This blog explores key probability theory concepts, from distributions and Bayes' Theorem to covariance and the Central Limit Theorem, emphasizing their critical application in machine learning and statistical modeling.
-tags: ML
-categories: sample-posts
+tags: ML Math
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

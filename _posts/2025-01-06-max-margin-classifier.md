@@ -5,7 +5,7 @@ date: 2025-01-06 01:57:00-0400
 featured: false
 description: An engaging walkthrough of maximum margin classifiers, exploring their foundations, geometric insights, and the transition to support vector machines.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

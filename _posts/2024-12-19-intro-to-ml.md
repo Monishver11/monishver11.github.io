@@ -5,7 +5,7 @@ date: 2024-12-19 15:44:00-0400
 featured: true
 description: An easy guide to machine learning, its applications, and how it connects to AI and human learning.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 toc:

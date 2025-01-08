@@ -4,8 +4,8 @@ title: Understanding the Basics of Probability Theory for Machine Learning
 date: 2024-12-22 07:55:00-0400
 featured: false
 description: This blog explores essential probability concepts and their significance in machine learning.
-tags: ML
-categories: sample-posts
+tags: ML Math
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

@@ -5,7 +5,7 @@ date: 2024-12-24 11:35:00-0400
 featured: false
 description: An in-depth exploration of the supervised learning setup, covering key concepts like prediction functions, loss functions, risk evaluation, and the Bayes optimal predictor.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

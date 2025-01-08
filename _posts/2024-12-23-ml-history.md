@@ -5,7 +5,7 @@ date: 2024-12-23 17:59:00-0400
 featured: false
 description: A concise timeline of machine learning's history, showcasing key milestones and breakthroughs that shaped the field.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

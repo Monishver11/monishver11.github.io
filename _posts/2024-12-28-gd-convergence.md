@@ -5,7 +5,7 @@ date: 2024-12-28 21:44:00-0400
 featured: false
 description: Understanding the convergence of gradient descent with a fixed step size and proving its rate of convergence for convex, differentiable functions.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

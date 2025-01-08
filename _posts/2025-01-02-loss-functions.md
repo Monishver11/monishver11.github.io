@@ -5,7 +5,7 @@ date: 2025-01-02 17:28:00-0400
 featured: false
 description: Exploring regression and classification loss functions, with a deep dive into logistic regression and its role in machine learning.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

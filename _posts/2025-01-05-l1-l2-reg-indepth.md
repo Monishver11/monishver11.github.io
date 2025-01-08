@@ -5,7 +5,7 @@ date: 2025-01-05 13:50:00-0400
 featured: false
 description: A detailed explanation of L1 and L2 regularization, focusing on their theoretical insights, geometric interpretations, and practical implications for machine learning models.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

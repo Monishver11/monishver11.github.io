@@ -5,7 +5,7 @@ date: 2025-01-03 12:39:00-0400
 featured: false
 description: Discover how regularization controls model complexity, reduces overfitting, and enhances generalization in machine learning.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 # toc:

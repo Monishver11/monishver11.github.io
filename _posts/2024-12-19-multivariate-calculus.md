@@ -4,8 +4,8 @@ title: Multivariate Calculus - Prerequisites for Machine Learning
 date: 2024-12-19 20:10:00-0400
 featured: false
 description: This blog post explores key multivariate calculus concepts essential for understanding optimization in machine learning.
-tags: ML
-categories: sample-posts
+tags: ML Math
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 toc:

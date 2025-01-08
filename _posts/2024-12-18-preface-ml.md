@@ -5,7 +5,7 @@ date: 2024-12-18 13:43:00-0400
 featured: true
 description: First blog post—setting the stage for the journey ahead.
 tags: ML
-categories: sample-posts
+categories: ML-NYU
 giscus_comments: false
 related_posts: false
 toc:
