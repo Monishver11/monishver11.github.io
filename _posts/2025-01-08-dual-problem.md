@@ -212,7 +212,7 @@ In the context of the dual function:
 - Using $$\inf$$ ensures that the dual function $$g(\lambda)$$ is well-defined, even in cases where $$\min_x L(x, \lambda)$$ doesn’t exist.
 
 
-##### **A Playful Perspective**
+##### **A Lighter Take**
 
 Think of this as "playing with math language" to get to the result we want. Just as you might rephrase a sentence to make it clearer or more persuasive, in mathematics, we transform the problem into a new form (the dual) that’s easier to work with. 
 
@@ -366,14 +366,18 @@ The dual problem's convexity comes from the way it is constructed:
 3. The pointwise infimum of affine functions (as in $$ g(\lambda) $$) is guaranteed to be concave.
 4. The dual problem maximizes this concave function over a convex set ($$ \lambda \geq 0 $$), making it a convex optimization problem.
 
+This ensures that solving the dual problem is computationally efficient and well-structured, even when the primal problem is non-convex.
+
+---
+
+
+#### **Conclusion**
 
 By exploring the **dual problem** of SVM, we gain both theoretical insights and practical benefits. The dual formulation provides a new perspective on the original optimization problem, and solving it can sometimes be more efficient or insightful. The duality between the primal and dual problems underpins many of the optimization techniques used in machine learning, particularly in the context of support vector machines.
 
 Pat yourselves on the back for making it to the end of this blog! Take a well-deserved break, and stay tuned for the next one, where we'll apply everything we've learned so far to formulate the SVM dual problem.
 
 ##### **References**
-- Add pics for better understanding
-
 - [https://www.youtube.com/watch?v=thuYiebq1cE&t=136s - David S. Rosenberg](https://www.youtube.com/watch?v=thuYiebq1cE&t=136s)
 - [Lagrange Multipliers  \| Geometric Meaning & Full Example - Dr. Trefor Bazett](https://www.youtube.com/watch?v=8mjcnxGMwFo)
 - [Convexity and The Principle of Duality - Visually Explained](https://www.youtube.com/watch?v=d0CF3d5aEGc&t=216s)
