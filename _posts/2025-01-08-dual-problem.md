@@ -268,7 +268,13 @@ Below are the next two important results derived from the above formulation.
    p^* \geq d^*,
    $$
 
-   where $$p^*$$ and $$d^*$$ are the optimal values of the primal and dual problems, respectively. This is a fundamental result in optimization theory. [Why?]
+   where $$p^*$$ and $$d^*$$ are the optimal values of the primal and dual problems, respectively. This is a fundamental result in optimization theory. **Why so?** Because the dual problem is designed to provide a lower bound on the primal objective through the Lagrangian.
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Lagrangian_1.png" title="Lagrangian_1" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
 2. **Strong Duality**: In some special cases (such as when the problem satisfies **Slater’s condition**), **strong duality** holds, meaning the optimal values of the primal and dual problems are equal:
 
@@ -277,6 +283,12 @@ Below are the next two important results derived from the above formulation.
    $$
 
    Strong duality is particularly useful because it allows us to solve the dual problem instead of the primal one, often simplifying the problem or reducing computational complexity.
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Lagrangian_2.png" title="Lagrangian_2" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
 
 ##### **Slater's Conditions**
@@ -319,14 +331,50 @@ This condition tells us which constraints are binding (active) at the optimal so
 
 ---
 
-##### **Conclusion**
+Finally, there might be one question left—this is the one I had, so here’s the explanation:
+
+##### **If the Lagrangian dual function is concave, how is the Lagrangian dual problem always a convex optimization problem?**
+
+To understand why the dual problem is always a convex optimization problem, let’s revisit its structure:
+$$
+\max_{\lambda \geq 0} \; g(\lambda).
+$$
+
+1. **Maximizing a Concave Function:**  
+   The dual function $$ g(\lambda) $$ is **concave** by construction. In optimization, maximizing a concave function is equivalent to minimizing a convex function (negating the objective). Therefore, the objective of the dual problem aligns with the structure of a convex optimization problem.
+
+2. **Convex Feasible Region:**  
+   The constraints in the dual problem ($$ \lambda \geq 0 $$) define a **convex set**, as the non-negative orthant in $$ \mathbb{R}^m $$ is convex.
+
+###### **Definition of a Convex Optimization Problem:**
+A problem is a convex optimization problem if:
+- The objective function is **convex** (for minimization) or **concave** (for maximization).
+- The feasible region is a **convex set**.
+
+The dual problem satisfies these conditions because:
+- The objective function $$ g(\lambda) $$ is concave.
+- The constraint $$ \lambda \geq 0 $$ defines a convex feasible region.
+
+Thus, the dual problem is always a **convex optimization problem**, regardless of whether the primal problem is convex or not.
+
+
+###### **Intuition Behind Convexity of the Dual Problem**
+
+The dual problem's convexity comes from the way it is constructed:
+1. The Lagrangian combines the primal objective and constraints into a single function that penalizes constraint violations.
+2. By minimizing the Lagrangian over the primal variables $$ x $$, the dual function $$ g(\lambda) $$ captures the **tightest lower bound** of the primal objective.
+3. The pointwise infimum of affine functions (as in $$ g(\lambda) $$) is guaranteed to be concave.
+4. The dual problem maximizes this concave function over a convex set ($$ \lambda \geq 0 $$), making it a convex optimization problem.
+
 
 By exploring the **dual problem** of SVM, we gain both theoretical insights and practical benefits. The dual formulation provides a new perspective on the original optimization problem, and solving it can sometimes be more efficient or insightful. The duality between the primal and dual problems underpins many of the optimization techniques used in machine learning, particularly in the context of support vector machines.
 
-Understanding duality, the Lagrangian, weak and strong duality, and complementary slackness is crucial for anyone working with SVMs and optimization problems in general. Next, ..
+Pat yourselves on the back for making it to the end of this blog! Take a well-deserved break, and stay tuned for the next one, where we'll apply everything we've learned so far to formulate the SVM dual problem.
 
 ##### **References**
-- Notes
-- Visualization : any Ytube links
 - Add pics for better understanding
-- Slater's conditions
+
+- [https://www.youtube.com/watch?v=thuYiebq1cE&t=136s - David S. Rosenberg](https://www.youtube.com/watch?v=thuYiebq1cE&t=136s)
+- [Lagrange Multipliers  \| Geometric Meaning & Full Example - Dr. Trefor Bazett](https://www.youtube.com/watch?v=8mjcnxGMwFo)
+- [Convexity and The Principle of Duality - Visually Explained](https://www.youtube.com/watch?v=d0CF3d5aEGc&t=216s)
+- [Pointwise infimum of affine functions is concave](https://math.stackexchange.com/questions/515812/pointwise-infimum-of-affine-functions-is-concave?noredirect=1&lq=1)
