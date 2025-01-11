@@ -164,7 +164,7 @@ g(\alpha, \lambda) =
 \end{cases}
 $$
 
-**Note**: Go ahead and write this out yourself to see what cancels out. It’s much easier to follow the flow this way, and you'll better understand how the second term in the equation above is derived.
+**Quick tip**: Go ahead and write the derivation yourself to see what cancels out. It’s much easier to follow the flow this way, and you'll better understand how the second term in the equation above is derived.
 
 **The dual problem is** 
 
@@ -278,7 +278,7 @@ Next, we will explore how the **Complementary Slackness** condition in the SVM d
 
 #### **Understanding Complementary Slackness in SVMs**
 
-In our journey through the support vector machine (SVM) optimization problem, we have seen how the dual problem provides deep insights into the workings of SVMs. In this post, we will focus on **complementary slackness**, a key property of optimization problems, and its implications for SVMs. We will also discuss how it connects with the margin, slack variables, and the role of support vectors.
+In this section, we will focus on **complementary slackness**, a key property of optimization problems, and its implications for SVMs. We will also discuss how it connects with the margin, slack variables, and the role of support vectors.
 
 
 ##### **Revisiting Constraints and Lagrange Multipliers**
@@ -302,15 +302,24 @@ To understand complementary slackness, let’s start by recalling the constraint
    with Lagrange multiplier $$ \alpha_i $$.
 
 From the **first-order condition** with respect to $$ \xi_i $$, we derived the relationship:
+
 $$
-\lambda_i^* = C - \alpha_i^*,
+\lambda_i^* = \frac{c}{n} - \alpha_i^*,
 $$
-where $$ C $$ is the regularization parameter.
+
+where $$ c $$ is the regularization parameter.
 
 By **strong duality**, the complementary slackness conditions must hold, which state:
 
-1. $$ \alpha_i^* \left( 1 - y_i f^*(x_i) - \xi_i^* \right) = 0 $$,
-2. $$ \lambda_i^* \xi_i^* = \left( C - \alpha_i^* \right) \xi_i^* = 0 $$.
+$$ 
+\alpha_i^* \left( 1 - y_i f^*(x_i) - \xi_i^* \right) = 0 
+$$
+
+and,
+ 
+$$ 
+\lambda_i^* \xi_i^* = \left( \frac{c}{n} - \alpha_i^* \right) \xi_i^* = 0 
+$$
 
 These conditions essentially enforce that either the constraints are satisfied exactly or their corresponding Lagrange multipliers vanish.
 
@@ -325,22 +334,28 @@ Complementary slackness provides crucial insights into the relationship between 
 
 - **When $$ y_i f^*(x_i) < 1 $$:**
   - The margin loss is positive ($$ \xi_i^* > 0 $$).
-  - In this case, $$ \alpha_i^* = C $$, assigning the maximum weight to these examples.
+  - In this case, $$ \alpha_i^* = \frac{c}{n} $$, assigning the maximum weight to these examples.
 
 - **When $$ \alpha_i^* = 0 $$:**
   - This implies $$ \xi_i^* = 0 $$, so $$ y_i f^*(x_i) \geq 1 $$, meaning the example is correctly classified with no margin loss.
 
-- **When $$ \alpha_i^* \in (0, C) $$:**
+- **When $$ \alpha_i^* \in (0, \frac{c}{n}) $$:**
   - This implies $$ \xi_i^* = 0 $$, and the example lies exactly on the margin ($$ 1 - y_i f^*(x_i) = 0 $$).
 
 
-##### **A Summary of Complementary Slackness**
-
-We can summarize these relationships as follows:
+We can summarize these relationships(between margin and example weights) as follows:
 
 1. **If $$ \alpha_i^* = 0 $$:** The example satisfies $$ y_i f^*(x_i) \geq 1 $$, indicating no margin loss.
-2. **If $$ \alpha_i^* \in (0, C) $$:** The example lies exactly on the margin, with $$ y_i f^*(x_i) = 1 $$.
-3. **If $$ \alpha_i^* = C $$:** The example incurs a margin loss, with $$ y_i f^*(x_i) \leq 1 $$.
+2. **If $$ \alpha_i^* \in (0, \frac{c}{n}) $$:** The example lies exactly on the margin, with $$ y_i f^*(x_i) = 1 $$.
+3. **If $$ \alpha_i^* = \frac{c}{n} $$:** The example incurs a margin loss, with $$ y_i f^*(x_i) \leq 1 $$.
+
+and the other way is:
+
+$$y_if^*(x_i) < 1  \Rightarrow  α_i^* = \frac{c}{n}$$
+
+$$y_if^*(x_i) = 1  \Rightarrow  α_i^* \in [0, \frac{c}{n}]$$
+
+$$y_if^*(x_i) > 1  \Rightarrow  α_i^* = 0$$
 
 These relationships are foundational to understanding how SVMs allocate weights to examples and define the decision boundary.
 
@@ -381,7 +396,7 @@ subject to:
 
 ---
 
-## Wrapping Up
+##### **Wrapping Up**
 
 Complementary slackness conditions reveal much about the structure and workings of SVMs. They show how the margin, slack variables, and dual variables interact and highlight the pivotal role of support vectors. Moreover, the reliance on inner products paves the way for kernel methods, unlocking the power of SVMs for non-linear classification problems.
 
