@@ -64,7 +64,7 @@ Here, the terms involving $$ \alpha_i $$ and $$ \lambda_i $$ enforce the constra
 The next step is to leverage **strong duality**, which states that for certain optimization problems, the dual problem provides the same optimal value as the primal. For SVMs, strong duality holds due to **Slater's constraint qualification**, which requires the problem to:
 - Have a convex objective function,
 - Include affine constraints, and
-- Possess feasible points. [How and what are those points?]
+- Possess feasible points. 
 
 In the context of **Slater's constraint qualification** and **strong duality** for SVMs, **feasible points** refer to points in the feasible region that satisfy all the constraints of the primal optimization problem. Specifically, for SVMs, these points are:
 
@@ -207,8 +207,6 @@ The dual problem offers several key insights into the optimization process of SV
 
 In essence, the dual problem simplifies the primal by focusing on constraints and provides insights into how data points affect the model’s decision boundary.
 
-[So, instead of this a better explanation is required for the above dual problem interpretation. check if an intuition is needed]
-
 
 #### **KKT Conditions**
 
@@ -230,7 +228,6 @@ For convex problems, if Slater's condition is satisfied, the **Karush-Kuhn-Tucke
 - **Slater’s Condition** ensures strong duality.
 - **KKT Conditions** ensure the existence of the optimal solution and give the specific conditions under which the solution occurs.
 
-[Add reference and explain the above part well, specifically in this case]
 
 #### **The SVM Dual Solution**
 
@@ -433,9 +430,10 @@ Complementary slackness conditions reveal much about the structure and workings 
 
 In the next post, we’ll explore kernel functions in depth, including popular choices like Gaussian and polynomial kernels, and see how they influence SVM performance. See you!
 
----
 
-##### References
-- Math part verification
-- KKT 
-- 
+##### **References**
+- Math parts verification
+- [ KKT conditions -  KKT conditions](https://www.stat.cmu.edu/~ryantibs/convexopt-F16/scribes/kkt-scribed.pdf)
+- [Big picture behind how to use KKT conditions for constrained optimization](https://math.stackexchange.com/questions/2162932/big-picture-behind-how-to-use-kkt-conditions-for-constrained-optimization)
+- [SVM: Main Takeaways from Duality](https://davidrosenberg.github.io/mlcourse/Archive/2019/Notes/SVM-main-points.pdf)
+- [Extreme Abridgment of Boyd and Vandenberghe’s Convex Optimization](https://davidrosenberg.github.io/mlcourse/Archive/2019/Notes/convex-optimization.pdf)
