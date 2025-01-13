@@ -3,7 +3,7 @@ layout: post
 title: Unleashing the Power of Linear Models - Tackling Nonlinearity with Feature Maps
 date: 2025-01-13 17:26:00-0400
 featured: false
-description: Description: Explore how feature maps transform inputs, handle nonlinearities, and expand the expressiveness of linear models with practical examples and intuitive solutions.
+description: Explore how feature maps transform inputs, handle nonlinearities, and expand the expressiveness of linear models with practical examples and intuitive solutions.
 tags: ML
 categories: ML-NYU
 giscus_comments: false
@@ -12,7 +12,7 @@ related_posts: false
 #   sidebar: left
 ---
 
-## Understanding the Input Space $$ \mathcal{X} $$
+#### **Understanding the Input Space $$ \mathcal{X} $$**
 
 In machine learning, the input data we work with often originates from domains far removed from the mathematical structures we typically rely on. Text documents, image files, sound recordings, and even DNA sequences all serve as examples of such diverse input spaces. While these data types can be represented numerically, their raw form often lacks the structure necessary for effective analysis. 
 
@@ -20,9 +20,8 @@ Consider text data: each sequence might consist of words or characters, but the 
 
 This lack of structure highlights a fundamental challenge: we need a way to standardize and represent inputs in a meaningful way. The solution lies in a process called **feature extraction**.
 
----
 
-## Feature Extraction: Bridging the Gap Between Input and Model
+##### **Feature Extraction: Bridging the Gap Between Input and Model**
 
 Feature extraction, also known as **featurization**, is the process of transforming inputs from their raw forms into structured numerical vectors that can be processed by machine learning models. Think of it as translating the data into a language that models can understand and interpret.
 
@@ -32,9 +31,17 @@ $$
 $$
 Here, $$ \phi(x) $$ takes an input $$ x $$ from the space $$ \mathcal{X} $$ and maps it into a $$ d $$-dimensional vector in $$ \mathbb{R}^d $$. This transformation is crucial because it creates a consistent numerical structure that machine learning algorithms require.
 
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Feature_Maps_1.png" title="Feature_Maps_1" class="img-fluid rounded z-depth-1" %}
+   </div>
+</div>
+ 
+
 ---
 
-## Linear Models and Explicit Feature Maps
+#### **Linear Models and Explicit Feature Maps**
 
 Let’s delve into how feature extraction integrates with linear models. In this setup, we make no assumptions about the input space $$ \mathcal{X} $$. Instead, we introduce a **feature map**:
 $$
@@ -42,6 +49,7 @@ $$
 $$
 
 This feature map transforms inputs into a feature space $$ \mathbb{R}^d $$, enabling the use of standard linear model frameworks. Once in the feature space, the hypothesis space of affine functions is defined as:
+
 $$
 F = \left\{ x \mapsto w^T \phi(x) + b \mid w \in \mathbb{R}^d, \, b \in \mathbb{R} \right\}
 $$
@@ -53,9 +61,8 @@ In this formulation:
 
 This approach allows linear models to leverage the structured feature space effectively.
 
----
 
-## Geometric Intuition: Solving Nonlinear Problems with Featurization
+##### **Geometric Intuition: Solving Nonlinear Problems with Featurization**
 
 Imagine a two-class classification problem where the decision boundary is nonlinear. Using the **identity feature map** $$ \phi(x) = (x_1, x_2) $$, a linear model fails because the data points cannot be separated by a straight line in the original input space.
 
@@ -65,11 +72,17 @@ $$
 $$
 we can transform the data into a higher-dimensional space. In this transformed space, the previously nonlinear boundary becomes linearly separable.
 
-This geometric perspective is a powerful way to understand how feature maps enhance the capability of machine learning models. If you'd like to visualize this concept, consider watching [this illustrative video](http://youtu.be/3liCbRZPrZ).
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Feature_Maps_2.png" title="Feature_Maps_2" class="img-fluid rounded z-depth-1" %}
+   </div>
+</div>
+ 
 
----
+This geometric perspective is a powerful way to understand how feature maps enhance the capability of machine learning models. If you'd like to visualize this concept, consider watching [this illustrative video](https://www.youtube.com/watch?v=3liCbRZPrZA).
 
-## Expanding the Hypothesis Space: The Role of Features
+
+##### **Expanding the Hypothesis Space: The Role of Features**
 
 The expressivity of a linear model—its ability to capture complex relationships—depends directly on the features it has access to. To increase the hypothesis space's expressivity, we must introduce additional features. 
 
@@ -77,20 +90,13 @@ For instance, moving from basic linear features to polynomial or interaction fea
 
 However, with great expressivity comes the challenge of ensuring these features are meaningful and contribute to the task at hand. The art of feature design lies in striking the right balance: creating features that enhance the model’s capacity without overfitting or adding noise.
 
----
-
-> By understanding the foundational concepts of feature maps and their integration into linear models, we set the stage for exploring advanced techniques like kernel tricks and implicit feature maps. These tools enable us to go even further, tackling complex problems with elegance and efficiency. Stay tuned for the next part!
-
 
 ---
 
-# Handling Nonlinearity with Linear Methods
+#### **Handling Nonlinearity with Linear Methods**
 
 In machine learning, linear models are often preferred for their simplicity, interpretability, and efficiency. However, real-world problems rarely exhibit purely linear relationships, and this is where the challenge arises. How can we handle nonlinearity while retaining the advantages of linear methods?
 
----
-
-## Extracting Relevant Features
 
 Let’s take an example task: predicting an individual’s health score. At first glance, this might seem straightforward—after all, we can list plenty of features relevant to medical diagnosis, such as:
 - Height
@@ -100,9 +106,6 @@ Let’s take an example task: predicting an individual’s health score. At firs
 
 While these features are clearly useful, their relationships with the health score may not be linear. Furthermore, complex dependencies among these features can make predictions challenging. To address this, we must carefully consider the nature of nonlinearity and how it affects linear predictors.
 
----
-
-## The Three Types of Nonlinearities
 
 Nonlinearities in data can broadly be categorized into three types:
 1. **Non-monotonicity**: When the relationship between a feature and the label does not follow a single increasing or decreasing trend.
@@ -111,64 +114,63 @@ Nonlinearities in data can broadly be categorized into three types:
 
 Each of these presents unique challenges for linear models. Let’s explore them in detail.
 
----
 
-### Non-monotonicity: When Extremes Behave Differently
+##### **Non-monotonicity: When Extremes Behave Differently**
 
-#### The Issue
-Imagine we want to predict a health score $$ y $$ (where higher is better) based on body temperature $$ t $$. A simple feature map $$ \phi(x) = [1, t] $$ assumes an affine relationship between temperature and health, meaning it can only model cases where:
+Imagine we want to predict a health score $$ y $$ (where higher is better) based on body temperature $$ t $$. A simple feature map $$ \phi(x) = [1, t(x)] $$ assumes an affine relationship between temperature and health, meaning it can only model cases where:
 - Higher temperatures are better, or
 - Lower temperatures are better.
 
 But in reality, both extremes of temperature are harmful, and health is best around a "normal" temperature (e.g., 37°C). This non-monotonic relationship poses a problem.
 
-#### Solution 1: Domain Knowledge
+###### **Solution 1: Domain Knowledge**
 One approach is to manually transform the input to account for the non-monotonicity. For instance:
 $$
-\phi(x) = \left[1, \left(t - 37\right)^2 \right]
+\phi(x) = \left[1, \left(t(x) - 37\right)^2 \right]
 $$
 Here, we explicitly encode the deviation from normal temperature. While effective, this solution relies heavily on domain knowledge and manual feature engineering.
 
-#### Solution 2: Let the Model Decide
+###### **Solution 2: Let the Model Decide**
 An alternative approach is to include additional features, such as:
 $$
-\phi(x) = \left[1, t, t^2 \right]
+\phi(x) = \left[1, t(x), t(x)^2 \right]
 $$
 This makes the model more expressive, allowing it to learn the non-monotonic relationship directly from the data. As a general rule, features should be simple, modular building blocks that can adapt to various patterns.
 
----
 
-### Saturation: When Effects Diminish
+##### **Saturation: When Effects Diminish**
 
-#### The Issue
-Consider a recommendation system that scores products based on their relevance to a user query. One feature might be $$ N(x) $$, the number of people who purchased the product $$ x $$. Intuitively, relevance increases with $$ N(x) $$, but the relationship is not linear—after a certain point, additional purchases provide diminishing returns.
+Consider a recommendation system that scores products based on their relevance to a user query. One feature might be $$ N(x) $$, the number of people who purchased the product $$ x $$. Intuitively, relevance increases with $$ N(x) $$, but the relationship is not linear—after a certain point, additional purchases provide diminishing returns. [Better way to put it]
 
-#### The Solution
+###### **The Solution:**
 To address saturation, we can apply nonlinear transformations to the feature. Two common methods are:
 1. **Smooth nonlinear transformation**:
+   
    $$
    \phi(x) = [1, \log(1 + N(x))]
    $$
+
    The logarithm is particularly effective for features with large dynamic ranges, as it captures diminishing returns naturally.
 
 2. **Discretization**:
+   
    $$
    \phi(x) = [1[0 \leq N(x) < 10], 1[10 \leq N(x) < 100], \ldots]
    $$
+
    By bucketing $$ N(x) $$ into intervals, this method provides flexibility while maintaining interpretability.
 
----
 
-### Interactions: When Features Work Together
+##### **Interactions: When Features Work Together**
 
-#### The Issue
-Suppose we want to predict a health score based on a patient’s height $$ h $$ and weight $$ w $$. Using a feature map $$ \phi(x) = [h, w] $$ assumes these features independently influence the outcome. However, it’s the relationship between height and weight (e.g., body mass index) that matters most.
+Suppose we want to predict a health score based on a patient’s height $$ h $$ and weight $$ w $$. Using a feature map $$ \phi(x) = [h(x), w(x)] $$ assumes these features independently influence the outcome. However, it’s the relationship between height and weight (e.g., body mass index) that matters most.
 
-#### Approach 1: Domain-Specific Features
+###### **Approach 1: Domain-Specific Features**
 One way to capture this interaction is to use domain knowledge, such as Robinson’s ideal weight formula:
 $$
 \text{weight(kg)} = 52 + 1.9 \cdot (\text{height(in)} - 60)
 $$
+
 We can then score the deviation between actual weight $$ w $$ and ideal weight:
 $$
 f(x) = \left(52 + 1.9 \cdot [h(x) - 60] - w(x)\right)^2
@@ -176,16 +178,16 @@ $$
 
 While precise, this approach depends heavily on external knowledge and is less adaptable to other problems.
 
-#### Approach 2: General Interaction Terms
+###### **Approach 2: General Interaction Terms**
 A more flexible solution is to include all second-order features:
 $$
-\phi(x) = [1, h, w, h^2, w^2, hw]
+\phi(x) = [1, h(x), w(x), h(x)^2, w(x)^2, h(x)w(x)]
 $$
-This approach eliminates the need for predefined formulas, letting the model discover relationships on its own. By using interaction terms like $$ hw $$, we can model complex dependencies in the data.
+This approach eliminates the need for predefined formulas, letting the model discover relationships on its own. By using interaction terms like $$ h(x)w(x) $$, we can model complex dependencies in the data.
 
 ---
 
-## Monomial Interaction Terms: A Building Block for Nonlinearity
+#### **Monomial Interaction Terms: A Building Block for Nonlinearity**
 
 Interaction terms are fundamental for modeling nonlinearities. Starting with an input $$ x = [1, x_1, \ldots, x_d] $$, we can add monomials of degree $$ M $$, such as:
 $$
@@ -194,14 +196,12 @@ $$
 
 For example, in a 2D space with $$ M = 2 $$, the interaction terms would include $$ x_1^2, x_2^2, \text{and } x_1x_2 $$.
 
----
 
-## Big Feature Spaces: Challenges and Solutions
+###### **Big Feature Spaces: Challenges and Solutions**
 
 Adding interaction terms and monomials rapidly increases the size of the feature space. For $$ d = 40 $$ and $$ M = 8 $$, the number of features grows to an astronomical $$ 314,457,495 $$. Such large feature spaces bring two major challenges:
-1. **Overfitting**: Addressed through regularization techniques like L1/L2 penalties.
+1. **Overfitting**: Addressed through regularization techniques like $$L1/L2$$ penalties.
 2. **Memory and Computational Costs**: Kernel methods can help handle high (or infinite) dimensional spaces efficiently by computing feature interactions implicitly.
 
----
 
-> By leveraging feature maps and understanding the nuances of nonlinearities, we can significantly enhance the performance of linear models. In the next part, we’ll explore kernel methods and their role in handling complex feature spaces efficiently. Stay tuned!
+By leveraging feature maps and understanding the nuances of nonlinearities, we can significantly enhance the performance of linear models. In the next part, we’ll explore kernel methods and their role in handling complex feature spaces efficiently. Stay tuned, Bye 👋!
