@@ -140,7 +140,7 @@ This makes the model more expressive, allowing it to learn the non-monotonic rel
 
 ##### **Saturation: When Effects Diminish**
 
-Consider a recommendation system that scores products based on their relevance to a user query. One feature might be $$ N(x) $$, the number of people who purchased the product $$ x $$. Intuitively, relevance increases with $$ N(x) $$, but the relationship is not linear—after a certain point, additional purchases provide diminishing returns. [Better way to put it]
+Consider a recommendation system that scores products based on their relevance to a user query. One feature might be $$ N(x) $$, the number of people who purchased the product $$ x $$. Intuitively, relevance increases with $$ N(x) $$, but the relationship is not linear—beyond a certain point, each additional purchase contributes progressively less to relevance, reflecting diminishing returns.
 
 ###### **The Solution:**
 To address saturation, we can apply nonlinear transformations to the feature. Two common methods are:
@@ -189,7 +189,8 @@ This approach eliminates the need for predefined formulas, letting the model dis
 
 #### **Monomial Interaction Terms: A Building Block for Nonlinearity**
 
-Interaction terms are fundamental for modeling nonlinearities. Starting with an input $$ x = [1, x_1, \ldots, x_d] $$, we can add monomials of degree $$ M $$, such as:
+Interaction terms are fundamental for modeling nonlinearities. Starting with an input $$ x = [1, x_1, \ldots, x_d] $$, we can add monomials of degree $$ M $$, such as: 
+
 $$
 x_1^{p_1} \cdot x_2^{p_2} \cdots x_d^{p_d}, \quad \text{where } p_1 + \cdots + p_d = M
 $$
