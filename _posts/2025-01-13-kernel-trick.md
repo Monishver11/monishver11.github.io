@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Understanding the Kernel Trick in Machine Learning
+title: Understanding the Kernel Trick
 date: 2025-01-13 19:03:00-0400
 featured: false
 description: A step-by-step exploration of kernel methods, unraveling their role in enabling powerful nonlinear modeling through the elegance of the kernel trick.
@@ -17,7 +17,7 @@ When working with machine learning models, especially Support Vector Machines (S
 
 ---
 
-## SVMs with Explicit Feature Maps
+#### **SVMs with Explicit Feature Maps**
 
 To understand the kernel trick, let’s begin with SVMs. In the simplest case, an SVM aims to find a hyperplane that separates data into classes with the largest possible margin. To handle more complex data, we map the input data $$ \mathbf{x} $$ into a higher-dimensional feature space using a feature map $$ \psi: X \to \mathbb{R}^d $$. In this space, the SVM optimization problem can be written as:
 
@@ -29,9 +29,8 @@ Here, $$ \mathbf{w} $$ is the weight vector, $$ c $$ is a regularization paramet
 
 To address this issue, we turn to a reformulation of the SVM problem, derived from **Lagrangian duality**.
 
----
 
-## The SVM Dual Problem
+#### **The SVM Dual Problem**
 
 Through Lagrangian duality, the SVM optimization problem can be re-expressed as a dual problem:
 
@@ -57,19 +56,17 @@ $$
 \hat{f}(\mathbf{x}) = \sum_{i=1}^n \alpha_i^* y_i \psi(\mathbf{x}_i)^T \psi(\mathbf{x}).
 $$
 
----
 
-### Observing the Role of Inner Products
+##### **Observing the Role of Inner Products**
 
 An important observation here is that the feature map $$ \psi(\mathbf{x}) $$ appears only through inner products of the form $$ \psi(\mathbf{x}_i)^T \psi(\mathbf{x}_j) $$. This means we don’t actually need the explicit feature representation $$ \psi(\mathbf{x}) $$; instead, we just need the ability to compute these inner products efficiently.
 
----
 
-## Computing Inner Products in Practice
+#### **Computing Inner Products in Practice**
 
 Let’s make this idea more concrete with an example. 
 
-### Example: Degree-2 Monomials
+##### **Example: Degree-2 Monomials**
 
 Suppose we are working with 2D data points $$ \mathbf{x} = (x_1, x_2) $$. If we map the data into a space of degree-2 monomials, the feature map would look like this:
 
@@ -91,9 +88,8 @@ $$
 
 Remarkably, we can compute $$ \psi(\mathbf{x})^T \psi(\mathbf{x}') $$ directly from the original input space without ever constructing $$ \psi(\mathbf{x}) $$. This insight is key to the kernel trick.
 
----
 
-### Extending to Higher-Degree Monomials
+#### **Extending to Higher-Degree Monomials**
 
 Now, consider a feature map that includes monomials up to degree 2:
 
@@ -115,7 +111,7 @@ $$
 
 ---
 
-## Introducing the Kernel Trick
+#### **Introducing the Kernel Trick**
 
 This brings us to the **kernel trick**. Instead of explicitly computing the feature map $$ \psi(\mathbf{x}) $$, we define a **kernel function** $$ k(\mathbf{x}, \mathbf{x}') $$ that directly computes the inner product in the feature space:
 
@@ -133,11 +129,7 @@ By using kernel functions, we avoid the need to work in high-dimensional spaces 
 
 ---
 
-In the next part, we’ll explore the different types of kernels, their mathematical properties, and how they are applied in various machine learning tasks. Stay tuned!
-
----
-
-## Exploring the Kernel Function
+#### **Exploring the Kernel Function**
 
 To fully appreciate the kernel trick, we need to formalize the concept of the **kernel function**. In our earlier discussion, we introduced the idea of a feature map $$ \psi: X \to \mathcal{H} $$, which maps input data from the original space $$ X $$ to a higher-dimensional feature space $$ \mathcal{H} $$. The kernel function $$ k $$ corresponding to this feature map is defined as:
 
@@ -147,19 +139,18 @@ $$
 
 where $$ \langle \cdot, \cdot \rangle $$ represents the inner product in $$ \mathcal{H} $$. 
 
----
 
-### Why Use Kernel Functions?
+##### **Why Use Kernel Functions?**
 
 At first glance, this notation might seem like a trivial restatement of the inner product, but it’s far more powerful. The key insight is that we can often evaluate $$ k(\mathbf{x}, \mathbf{x}') $$ directly, without explicitly computing $$ \psi(\mathbf{x}) $$ and $$ \psi(\mathbf{x}') $$. This is crucial for efficiently working with high-dimensional or infinite-dimensional feature spaces. But this efficiency only applies to certain methods — those that can be **kernelized**.
 
 ---
 
-## Kernelized Methods
+#### **Kernelized Methods**
 
 A method is said to be **kernelized** if it uses the feature vectors $$ \psi(\mathbf{x}) $$ only inside inner products of the form $$ \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle $$. For such methods, we can replace these inner products with a kernel function $$ k(\mathbf{x}, \mathbf{x}') $$, avoiding explicit feature computation. Let’s revisit the SVM example to see kernelization in action.
 
-### Kernelized SVM Dual Formulation
+##### **Kernelized SVM Dual Formulation**
 
 Recall the dual problem for SVMs:
 
@@ -191,7 +182,7 @@ This reformulation is what allows SVMs to operate efficiently in high-dimensiona
 
 ---
 
-## The Kernel Matrix
+#### **The Kernel Matrix**
 
 A key component in kernelized methods is the **kernel matrix**, which encapsulates the pairwise kernel values for all data points. For a dataset $$ \{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\} $$, the kernel matrix $$ \mathbf{K} $$ is defined as:
 
@@ -213,9 +204,8 @@ $$
 
 subject to the same constraints.
 
----
 
-### Why Kernelize?
+##### **Again, Why Kernelize?**
 
 Kernelized methods bring several advantages:
 
@@ -225,26 +215,18 @@ Kernelized methods bring several advantages:
 
 These properties make kernelized methods invaluable when $$ d \gg n $$, a common scenario in machine learning tasks.
 
----
-
-## Conclusion
-
-The kernel trick revolutionizes how we think about high-dimensional data. By relying on kernel functions and kernelized methods, we can sidestep the computational challenges of explicitly working in high-dimensional spaces while leveraging their power. In the next part of this series, we will delve into popular kernel functions, their interpretations, and how to choose the right one for your problem.
-
-Stay tuned as we explore the fascinating world of kernel methods!
-
+The kernel trick revolutionizes how we think about high-dimensional data. By relying on kernel functions and kernelized methods, we can sidestep the computational challenges of explicitly working in high-dimensional spaces while leveraging their power. Next, we will delve into popular kernel functions, their interpretations, and how to choose the right one for your problem.
 
 ---
 
-## Example Kernels: Understanding the Foundations
+#### **Example Kernels: Understanding the Foundations**
 
 Kernels play a fundamental role in machine learning, often acting as **similarity scores** between data points. For any two inputs $$ \mathbf{x} $$ and $$ \mathbf{x}' $$, the kernel function $$ k(\mathbf{x}, \mathbf{x}') $$ measures their similarity in the feature space, even if the explicit feature map $$ \psi $$ is unknown. In fact, many practical kernels, such as string kernels and graph kernels, allow us to design these similarity functions without explicitly constructing $$ \psi $$.
 
 But how do we ensure that these kernels correspond to valid inner products in some feature space? Let’s break this down.
 
----
 
-## How to Obtain Kernels?
+##### **How to Obtain Kernels?**
 
 There are two primary ways to define kernels:
 
@@ -255,9 +237,8 @@ There are two primary ways to define kernels:
 
 2. **Direct Definition**: Directly define the kernel $$ k(\mathbf{x}, \mathbf{x}') $$ as a similarity score and verify that it corresponds to an inner product for some $$ \psi $$. This verification is often guided by mathematical theorems.
 
----
 
-### Positive Semidefinite Matrices and Kernels
+##### **Positive Semidefinite Matrices and Kernels**
 
 To verify if a kernel corresponds to a valid inner product, we rely on the concept of **positive semidefinite (PSD) matrices**. Here’s a quick refresher:
 
@@ -272,9 +253,8 @@ To verify if a kernel corresponds to a valid inner product, we rely on the conce
 
 Using these properties, we define a **positive definite (PD) kernel**:
 
----
 
-### Positive Definite Kernel: Definition
+##### **Positive Definite Kernel: Definition**
 
 A symmetric function $$ k: X \times X \to \mathbb{R} $$ is a PD kernel if, for any finite set $$ \{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\} \subset X $$, the kernel matrix:
 
@@ -291,9 +271,8 @@ is positive semidefinite. This ensures:
 1. Symmetry: $$ k(\mathbf{x}, \mathbf{x}') = k(\mathbf{x}', \mathbf{x}) $$.
 2. Positive semidefiniteness: $$ \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j k(\mathbf{x}_i, \mathbf{x}_j) \geq 0 $$, for all $$ \alpha_i \in \mathbb{R} $$.
 
----
 
-### Mercer’s Theorem
+##### **Mercer’s Theorem**
 
 Mercer’s Theorem provides a foundational result for kernels. It states:
 
@@ -301,9 +280,8 @@ Mercer’s Theorem provides a foundational result for kernels. It states:
 
 While proving that a kernel is PD can be challenging, we can use known kernels to construct new ones.
 
----
 
-## Constructing New Kernels from Existing Ones
+#### **Constructing New Kernels from Existing Ones**
 
 Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using the following operations:
 
@@ -313,20 +291,18 @@ Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using 
 4. **Recursion**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = k(\psi(\mathbf{x}), \psi(\mathbf{x}')) $$, for any function $$ \psi(\cdot) $$.
 5. **Feature Mapping**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = f(\mathbf{x}) f(\mathbf{x}') $$, for any function $$ f(\cdot) $$.
 
----
 
-## Popular Kernel Functions
+#### **Popular Kernel Functions**
 
-### Linear Kernel
+##### **Linear Kernel**
 
 The simplest kernel, corresponding to the standard dot product:
 
 - **Input Space**: $$ X = \mathbb{R}^d $$
 - **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = \mathbf{x}^\top \mathbf{x}' $$
 
----
 
-### Polynomial Kernel
+##### **Polynomial Kernel**
 
 Generalizes the linear kernel by including higher-degree interactions:
 
@@ -334,9 +310,8 @@ Generalizes the linear kernel by including higher-degree interactions:
 
 This kernel maps data to a feature space containing monomials up to degree $$ M $$, but the computational cost of explicit computation grows with $$ M $$.
 
----
 
-### Quadratic Kernel
+##### **Quadratic Kernel**
 
 A specific case of the polynomial kernel with $$ M = 2 $$:
 
@@ -347,9 +322,8 @@ A specific case of the polynomial kernel with $$ M = 2 $$:
 
 - **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = (\mathbf{x}^\top \mathbf{x}') + (\mathbf{x}^\top \mathbf{x}')^2 $$.
 
----
 
-### Radial Basis Function (RBF) / Gaussian Kernel
+##### **Radial Basis Function (RBF) / Gaussian Kernel**
 
 Perhaps the most commonly used nonlinear kernel:
 
@@ -363,11 +337,12 @@ The RBF kernel corresponds to an infinite-dimensional feature space and acts as 
 
 ---
 
-## Summary and Next Steps
+#### **Summary**
 
 In this section, we explored the theoretical foundations of kernel functions, how to construct valid kernels, and the properties of popular examples. We’ve seen how kernels enable us to work in high-dimensional spaces efficiently and extend the power of machine learning algorithms.
 
 Next, we’ll delve into practical considerations: recognizing kernelizable problems, choosing the right kernel, and optimizing models for real-world tasks.
 
-
-
+#### **References**
+- Add some visualization for kernels intuition
+- 
