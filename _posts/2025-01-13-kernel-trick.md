@@ -247,11 +247,13 @@ The kernel trick revolutionizes how we think about high-dimensional data. Next, 
 
 ---
 
-#### **Example Kernels: Understanding the Foundations**
+#### **Example Kernels**
 
-Kernels often acting as **similarity scores** between data points. For any two inputs $$ \mathbf{x} $$ and $$ \mathbf{x}' $$, the kernel function $$ k(\mathbf{x}, \mathbf{x}') $$ measures their similarity in the feature space, even if the explicit feature map $$ \psi $$ is unknown. In fact, many practical kernels, such as string kernels and graph kernels, allow us to design these similarity functions without explicitly constructing $$ \psi $$.
+In many cases, it's useful to think of the kernel function $$ k(x, x') $$ as a **similarity score** between the data points $$ x $$ and $$ x' $$. This perspective allows us to design similarity functions without explicitly considering the feature map.
 
-But how do we ensure that these kernels correspond to valid inner products in some feature space? Let’s break this down.
+For example, we can create **string kernels** or **graph kernels**—functions that define similarity based on the structure of strings or graphs, respectively. The key question, however, is: **How do we know that our kernel functions truly correspond to inner products in some feature space?**
+
+This is an essential consideration, as it ensures that the kernel method preserves the properties necessary for various machine learning algorithms to work effectively. Let’s break this down.
 
 
 ##### **How to Obtain Kernels?**
@@ -261,9 +263,11 @@ There are two primary ways to define kernels:
 1. **Explicit Construction**: Define the feature map $$ \psi(\mathbf{x}) $$ and use it to compute the kernel:
    $$
    k(\mathbf{x}, \mathbf{x}') = \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle.
-   $$
+   $$ (e.g. monomials)
 
-2. **Direct Definition**: Directly define the kernel $$ k(\mathbf{x}, \mathbf{x}') $$ as a similarity score and verify that it corresponds to an inner product for some $$ \psi $$. This verification is often guided by mathematical theorems.
+2. **Direct Definition**: Directly define the kernel $$ k(\mathbf{x}, \mathbf{x}') $$ as a similarity score and verify that it corresponds to an inner product for some $$ \psi $$. This verification is often guided by mathematical theorems. 
+   
+To understand this better, let's first equip ourselves with some essential linear algebra concepts.
 
 
 ##### **Positive Semidefinite Matrices and Kernels**
@@ -275,16 +279,18 @@ To verify if a kernel corresponds to a valid inner product, we rely on the conce
   \mathbf{x}^\top \mathbf{M} \mathbf{x} \geq 0, \quad \forall \mathbf{x} \in \mathbb{R}^n.
   $$
 
-- Equivalent conditions for $$ \mathbf{M} $$ being PSD:
+- Equivalent conditions, each necessary and sufficient for a symmetric matrixfor $$ \mathbf{M} $$ being **PSD**:
   - $$ \mathbf{M} = \mathbf{R}^\top \mathbf{R} $$, for some matrix $$ \mathbf{R} $$.
-  - All eigenvalues of $$ \mathbf{M} $$ are non-negative.
+  - All eigenvalues of $$ \mathbf{M} $$ are non-negative or $$\geq 0$$.
 
-Using these properties, we define a **positive definite (PD) kernel**:
+Next, we define a **positive definite (PD) kernel**:
 
 
-##### **Positive Definite Kernel: Definition**
+##### **Positive Definite Kernel**
 
-A symmetric function $$ k: X \times X \to \mathbb{R} $$ is a PD kernel if, for any finite set $$ \{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\} \subset X $$, the kernel matrix:
+**Definition:**
+
+A symmetric function $$ k: X \times X \to \mathbb{R} $$ is a **PD** kernel if, for any finite set $$ \{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\} \subset X $$, the kernel matrix:
 
 $$
 \mathbf{K} = \begin{bmatrix}
@@ -294,31 +300,44 @@ k(\mathbf{x}_n, \mathbf{x}_1) & \cdots & k(\mathbf{x}_n, \mathbf{x}_n)
 \end{bmatrix}
 $$
 
-is positive semidefinite. This ensures:
+is positive semidefinite. 
 
 1. Symmetry: $$ k(\mathbf{x}, \mathbf{x}') = k(\mathbf{x}', \mathbf{x}) $$.
-2. Positive semidefiniteness: $$ \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j k(\mathbf{x}_i, \mathbf{x}_j) \geq 0 $$, for all $$ \alpha_i \in \mathbb{R} $$.
+2. The kernel matrix needs to be positive semidefinite for any finite set of points. 
+3. Equivalently: $$ \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j k(\mathbf{x}_i, \mathbf{x}_j) \geq 0 $$, for all $$ \alpha_i \in \mathbb{R}$$ $$  \forall i$$.
 
+[How, better way of stating it!]
 
 ##### **Mercer’s Theorem**
 
 Mercer’s Theorem provides a foundational result for kernels. It states:
 
-- A symmetric function $$ k(\mathbf{x}, \mathbf{x}') $$ can be expressed as an inner product $$ k(\mathbf{x}, \mathbf{x}') = \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle $$ if and only if it is positive definite.
+- A symmetric function $$ k(\mathbf{x}, \mathbf{x}') $$ can be expressed as an inner product 
+  
+  $$
+   k(\mathbf{x}, \mathbf{x}') = \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle 
+  $$
+  
+   if and only if $$ k(\mathbf{x}, \mathbf{x}')$$ is positive definite.
 
-While proving that a kernel is PD can be challenging, we can use known kernels to construct new ones.
+While proving that a kernel is **PD** can be challenging, we can use known kernels to construct new ones.
 
 
-#### **Constructing New Kernels from Existing Ones**
+##### **Constructing New Kernels from Existing Ones**
 
 Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using the following operations:
 
-1. **Scaling**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = \alpha k(\mathbf{x}, \mathbf{x}') $$, where $$ \alpha \geq 0 $$.
+1. **Non-Negative Scaling**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = \alpha k(\mathbf{x}, \mathbf{x}') $$, where $$ \alpha \geq 0 $$.
 2. **Addition**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = k_1(\mathbf{x}, \mathbf{x}') + k_2(\mathbf{x}, \mathbf{x}') $$.
 3. **Multiplication**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = k_1(\mathbf{x}, \mathbf{x}') k_2(\mathbf{x}, \mathbf{x}') $$.
 4. **Recursion**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = k(\psi(\mathbf{x}), \psi(\mathbf{x}')) $$, for any function $$ \psi(\cdot) $$.
 5. **Feature Mapping**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = f(\mathbf{x}) f(\mathbf{x}') $$, for any function $$ f(\cdot) $$.
 
+And, Lots more theorems to help you construct new kernels from old.
+
+[Add reference to mercer theorem]
+
+---
 
 #### **Popular Kernel Functions**
 
