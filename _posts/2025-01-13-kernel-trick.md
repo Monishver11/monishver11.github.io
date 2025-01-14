@@ -22,7 +22,7 @@ When working with machine learning models, especially Support Vector Machines (S
 To understand the kernel trick, let’s begin with SVMs. In the simplest case, an SVM aims to find a hyperplane that separates data into classes with the largest possible margin. To handle more complex data, we map the input data $$ \mathbf{x} $$ into a higher-dimensional feature space using a feature map $$ \psi: X \to \mathbb{R}^d $$. In this space, the SVM optimization problem can be written as:
 
 $$
-\min_{\mathbf{w} \in \mathbb{R}^d} \frac{1}{2} \|\mathbf{w}\|^2 + c \sum_{i=1}^n \max(0, 1 - y_i \mathbf{w}^T \psi(\mathbf{x}_i)).
+\min_{\mathbf{w} \in \mathbb{R}^d} \frac{1}{2} \|\mathbf{w}\|^2 + \frac{c}{n} \sum_{i=1}^n \max(0, 1 - y_i \mathbf{w}^T \psi(\mathbf{x}_i)).
 $$
 
 Here, $$ \mathbf{w} $$ is the weight vector, $$ c $$ is a regularization parameter, and $$ y_i $$ are the labels of the data points. While this approach works well for small $$ d $$, it becomes computationally expensive as $$ d $$ increases, especially when using high-degree polynomial mappings. 
@@ -35,7 +35,7 @@ To address this issue, we turn to a reformulation of the SVM problem, derived fr
 Through Lagrangian duality, the SVM optimization problem can be re-expressed as a dual problem:
 
 $$
-\max_{\boldsymbol{\alpha}} \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j \psi(\mathbf{x}_i)^T \psi(\mathbf{x}_j),
+\max_{\boldsymbol{\alpha}} \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j \psi(\mathbf{x}_j)^T \psi(\mathbf{x}_i),
 $$
 
 subject to:
@@ -56,76 +56,106 @@ $$
 \hat{f}(\mathbf{x}) = \sum_{i=1}^n \alpha_i^* y_i \psi(\mathbf{x}_i)^T \psi(\mathbf{x}).
 $$
 
-
 ##### **Observing the Role of Inner Products**
 
-An important observation here is that the feature map $$ \psi(\mathbf{x}) $$ appears only through inner products of the form $$ \psi(\mathbf{x}_i)^T \psi(\mathbf{x}_j) $$. This means we don’t actually need the explicit feature representation $$ \psi(\mathbf{x}) $$; instead, we just need the ability to compute these inner products efficiently.
+An important observation here is that the feature map $$ \psi(\mathbf{x}) $$ appears only through inner products of the form $$ \psi(\mathbf{x}_j)^T \psi(\mathbf{x}_i) $$. This means we don’t actually need the explicit feature representation $$ \psi(\mathbf{x}) $$; instead, we just need the ability to compute these inner products efficiently.
 
 
 #### **Computing Inner Products in Practice**
 
-Let’s make this idea more concrete with an example. 
+Let’s explore the kernel trick with an example.
 
 ##### **Example: Degree-2 Monomials**
 
-Suppose we are working with 2D data points $$ \mathbf{x} = (x_1, x_2) $$. If we map the data into a space of degree-2 monomials, the feature map would look like this:
+Suppose we are working with 2D data points $$ \mathbf{x} = (x_1, x_2) $$. If we map the data into a space of degree-2 monomials, the feature map becomes:
 
 $$
-\psi: \mathbb{R}^2 \to \mathbb{R}^3, \quad (x_1, x_2) \mapsto (x_1^2, \sqrt{2} x_1 x_2, x_2^2).
+\psi: \mathbb{R}^2 \to \mathbb{R}^6, \quad (x_1, x_2) \mapsto (1, \sqrt{2}x_1, \sqrt{2}x_2, x_1^2, \sqrt{2}x_1x_2, x_2^2).
 $$
 
-The inner product in the feature space would then be:
+The inner product in the feature space is:
 
 $$
-\psi(\mathbf{x})^T \psi(\mathbf{x}') = x_1^2 x_1'^2 + (\sqrt{2} x_1 x_2)(\sqrt{2} x_1' x_2') + x_2^2 x_2'^2.
+\psi(\mathbf{x})^T \psi(\mathbf{x}') = 1 + 2x_1x_1' + 2x_2x_2' + (x_1x_1')^2 + 2x_1x_2x_1'x_2' + (x_2x_2')^2.
 $$
 
-Simplifying this, we find:
+Simplifying, we observe:
 
 $$
-\psi(\mathbf{x})^T \psi(\mathbf{x}') = (x_1 x_1')^2 + 2(x_1 x_1')(x_2 x_2') + (x_2 x_2')^2 = (\mathbf{x}^T \mathbf{x}')^2.
+\psi(\mathbf{x})^T \psi(\mathbf{x}') = (1 + x_1x_1' + x_2x_2')^2 = (1 + \mathbf{x}^T \mathbf{x}')^2.
 $$
 
-Remarkably, we can compute $$ \psi(\mathbf{x})^T \psi(\mathbf{x}') $$ directly from the original input space without ever constructing $$ \psi(\mathbf{x}) $$. This insight is key to the kernel trick.
+This shows that we can compute $$ \psi(\mathbf{x})^T \psi(\mathbf{x}') $$ directly from the original input space without explicitly constructing $$ \psi(\mathbf{x}) $$—a key insight behind the kernel trick.
 
+##### **General Case: Monomials Up to Degree $$p$$**
 
-#### **Extending to Higher-Degree Monomials**
-
-Now, consider a feature map that includes monomials up to degree 2:
-
-$$
-\psi: \mathbb{R}^2 \to \mathbb{R}^6, \quad (x_1, x_2) \mapsto (1, \sqrt{2} x_1, \sqrt{2} x_2, x_1^2, \sqrt{2} x_1 x_2, x_2^2).
-$$
-
-In this case, the inner product becomes:
+For feature maps that produce monomials up to degree $$p$$, the inner product generalizes as:
 
 $$
-\psi(\mathbf{x})^T \psi(\mathbf{x}') = (1 + \mathbf{x}^T \mathbf{x}')^2.
+\psi(x)^T \psi(x') = (1 + x^T x')^p.
 $$
 
-More generally, for a feature map that produces monomials up to degree $$ p $$, we have:
+It is worth noting that the coefficients of the monomials in $$\psi(x)$$ may vary depending on the specific feature map.
+
+
+#### **Efficiency of the Kernel Trick: From Exponential to Linear Complexity**
+
+One of the key advantages of the kernel trick is its ability to reduce the computational complexity of working with high-dimensional feature spaces. Let's break this down:
+
+##### **Explicit Computation Complexity**
+
+When we map an input vector $$\mathbf{x} \in \mathbb{R}^d$$ to a feature space with monomials up to degree $$p$$, the dimensionality of the feature space increases significantly. Specifically:
+
+- **Feature Space Dimension**: The number of features in the expansion is:
+
+  $$
+  \binom{d + p}{p} = \frac{(d + p)!}{d! \, p!}.
+  $$
+
+  For large $$p$$ or $$d$$, this grows rapidly and can quickly become computationally prohibitive.
+
+- **Explicit Inner Product**: Computing the inner product directly in this expanded space has a complexity of:
+
+  $$
+  O\left(\binom{d + p}{p}\right),
+  $$
+
+  which is exponential in $$p$$ for fixed $$d$$.
+
+##### **Implicit Computation Complexity**
+
+Using the kernel trick, we avoid explicitly constructing the feature space. For a kernel function like:
 
 $$
-\psi(\mathbf{x})^T \psi(\mathbf{x}') = (1 + \mathbf{x}^T \mathbf{x}')^p.
+k(\mathbf{x}, \mathbf{x}') = (1 + \mathbf{x}^T \mathbf{x}')^p,
 $$
 
----
+the computation operates directly in the input space. 
 
-#### **Introducing the Kernel Trick**
+- **Input Space Computation**: Computing the kernel function involves:
 
-This brings us to the **kernel trick**. Instead of explicitly computing the feature map $$ \psi(\mathbf{x}) $$, we define a **kernel function** $$ k(\mathbf{x}, \mathbf{x}') $$ that directly computes the inner product in the feature space:
+  1. **Dot Product**: $$\mathbf{x}^T \mathbf{x}'$$ is computed in $$O(d)$$.
+  2. **Polynomial Evaluation**: Raising this result to power $$p$$ is done in constant time, independent of $$d$$.
 
-$$
-k(\mathbf{x}, \mathbf{x}') = \psi(\mathbf{x})^T \psi(\mathbf{x}').
-$$
-
-For instance, the kernel function corresponding to the example above is:
+Thus, the complexity is reduced to:
 
 $$
-k(\mathbf{x}, \mathbf{x}') = (1 + \mathbf{x}^T \mathbf{x}')^p.
+O(d),
 $$
 
-By using kernel functions, we avoid the need to work in high-dimensional spaces explicitly, reducing computational complexity from $$ O(d^p) $$ to $$ O(d) $$. This allows SVMs and other algorithms to handle non-linear problems efficiently.
+which is **linear** in the input dimensionality $$d$$, regardless of $$p$$.
+
+
+##### **Why This Matters**
+
+- **Explicit Features**: For high $$p$$, the feature space grows exponentially, leading to a **curse of dimensionality** if explicit computation is used.
+- **Implicit Kernel Computation**: The kernel trick sidesteps the explicit feature space, allowing efficient computation even when the feature space is high-dimensional or infinite (e.g., with RBF kernels).
+
+This transformation from **exponential** to **linear complexity** is one of the core reasons kernel methods are powerful tools in machine learning.
+
+
+**Key Takeaway** : The kernel trick enables efficient computation in high-dimensional feature spaces by directly working in the input space. This reduces the complexity from $$O\left(\binom{d + p}{p}\right)$$ to $$O(d)$$, making it feasible to apply machine learning methods to problems with high-degree polynomial or infinite-dimensional feature spaces.
+
 
 ---
 
@@ -144,11 +174,10 @@ where $$ \langle \cdot, \cdot \rangle $$ represents the inner product in $$ \mat
 
 At first glance, this notation might seem like a trivial restatement of the inner product, but it’s far more powerful. The key insight is that we can often evaluate $$ k(\mathbf{x}, \mathbf{x}') $$ directly, without explicitly computing $$ \psi(\mathbf{x}) $$ and $$ \psi(\mathbf{x}') $$. This is crucial for efficiently working with high-dimensional or infinite-dimensional feature spaces. But this efficiency only applies to certain methods — those that can be **kernelized**.
 
----
 
 #### **Kernelized Methods**
 
-A method is said to be **kernelized** if it uses the feature vectors $$ \psi(\mathbf{x}) $$ only inside inner products of the form $$ \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle $$. For such methods, we can replace these inner products with a kernel function $$ k(\mathbf{x}, \mathbf{x}') $$, avoiding explicit feature computation. Let’s revisit the SVM example to see kernelization in action.
+A method is said to be **kernelized** if it uses the feature vectors $$ \psi(\mathbf{x}) $$ only inside inner products of the form $$ \langle \psi(\mathbf{x}), \psi(\mathbf{x}') \rangle $$. For such methods, we can replace these inner products with a kernel function $$ k(\mathbf{x}, \mathbf{x}') $$, avoiding explicit feature computation.  This applies to both the optimization problem and the prediction function. Let’s revisit the SVM example to see kernelization in action.
 
 ##### **Kernelized SVM Dual Formulation**
 
@@ -164,7 +193,7 @@ $$
 \sum_{i=1}^n \alpha_i y_i = 0, \quad \alpha_i \in \left[ 0, \frac{c}{n} \right] \quad \forall i.
 $$
 
-Here’s the key: because every occurrence of $$ \psi(\mathbf{x}) $$ is inside an inner product, we can replace $$ \langle \psi(\mathbf{x}_i), \psi(\mathbf{x}_j) \rangle $$ with $$ k(\mathbf{x}_i, \mathbf{x}_j) $$, the kernel function. The resulting dual optimization problem becomes:
+**Here’s the key**: because every occurrence of $$ \psi(\mathbf{x}) $$ is inside an inner product, we can replace $$ \langle \psi(\mathbf{x}_i), \psi(\mathbf{x}_j) \rangle $$ with $$ k(\mathbf{x}_i, \mathbf{x}_j) $$, the kernel function. The resulting dual optimization problem becomes:
 
 $$
 \max_{\boldsymbol{\alpha}} \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j k(\mathbf{x}_i, \mathbf{x}_j),
@@ -175,14 +204,14 @@ subject to the same constraints.
 For predictions, the decision function can also be written in terms of the kernel:
 
 $$
-\hat{f}(\mathbf{x}) = \sum_{i=1}^n \alpha_i^* y_i k(\mathbf{x}_i, \mathbf{x}).
+\hat{f}(\mathbf{x}) = \sum_{i=1}^n \alpha_i^* y_i k(\mathbf{x}_i, \mathbf{x})
+= \sum_{i=1}^n \alpha_i^* y_i \psi(\mathbf{x}_i)^T \psi(\mathbf{x}) 
 $$
 
 This reformulation is what allows SVMs to operate efficiently in high-dimensional spaces.
 
----
 
-#### **The Kernel Matrix**
+##### **The Kernel Matrix**
 
 A key component in kernelized methods is the **kernel matrix**, which encapsulates the pairwise kernel values for all data points. For a dataset $$ \{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\} $$, the kernel matrix $$ \mathbf{K} $$ is defined as:
 
@@ -205,9 +234,8 @@ $$
 subject to the same constraints.
 
 
-##### **Again, Why Kernelize?**
 
-Kernelized methods bring several advantages:
+**So, Given a kernelized ML algorithm** (i.e., all $$ \psi(x) $$'s show up as $$ \langle \psi(x), \psi(x') \rangle $$) :
 
 1. **Flexibility**: By substituting the kernel function, we can implicitly use very high-dimensional or even infinite-dimensional feature spaces.
 2. **Scalability**: Once the kernel matrix is computed, the computational cost depends on the number of data points $$ n $$, rather than the dimension of the feature space $$ d $$.
@@ -215,13 +243,13 @@ Kernelized methods bring several advantages:
 
 These properties make kernelized methods invaluable when $$ d \gg n $$, a common scenario in machine learning tasks.
 
-The kernel trick revolutionizes how we think about high-dimensional data. By relying on kernel functions and kernelized methods, we can sidestep the computational challenges of explicitly working in high-dimensional spaces while leveraging their power. Next, we will delve into popular kernel functions, their interpretations, and how to choose the right one for your problem.
+The kernel trick revolutionizes how we think about high-dimensional data. Next, we will delve into popular kernel functions, their interpretations, and how to choose the right one for your problem.
 
 ---
 
 #### **Example Kernels: Understanding the Foundations**
 
-Kernels play a fundamental role in machine learning, often acting as **similarity scores** between data points. For any two inputs $$ \mathbf{x} $$ and $$ \mathbf{x}' $$, the kernel function $$ k(\mathbf{x}, \mathbf{x}') $$ measures their similarity in the feature space, even if the explicit feature map $$ \psi $$ is unknown. In fact, many practical kernels, such as string kernels and graph kernels, allow us to design these similarity functions without explicitly constructing $$ \psi $$.
+Kernels often acting as **similarity scores** between data points. For any two inputs $$ \mathbf{x} $$ and $$ \mathbf{x}' $$, the kernel function $$ k(\mathbf{x}, \mathbf{x}') $$ measures their similarity in the feature space, even if the explicit feature map $$ \psi $$ is unknown. In fact, many practical kernels, such as string kernels and graph kernels, allow us to design these similarity functions without explicitly constructing $$ \psi $$.
 
 But how do we ensure that these kernels correspond to valid inner products in some feature space? Let’s break this down.
 
