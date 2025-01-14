@@ -15,7 +15,8 @@ related_posts: false
 Probability theory forms the foundation of machine learning by enabling models to quantify uncertainty and make evidence-based predictions. This article delves into core probability concepts, providing explanations, examples, and analogies designed for clarity and practical sense.
 
 ---
-### **Probability: Definition, Interpretation, and Basic Axioms**
+
+#### **Probability: Definition, Interpretation, and Basic Axioms**
 
 In simple terms, **probability** is a measure of the likelihood of an event occurring. It quantifies uncertainty by assigning a number between 0 and 1, where:
 - A probability of **0** means the event is impossible.
@@ -23,13 +24,14 @@ In simple terms, **probability** is a measure of the likelihood of an event occu
 - Values between 0 and 1 represent the likelihood of an event, with higher values indicating greater likelihood.
 
 Mathematically, probability is defined as a function:$$ P: \mathcal{F} \to [0, 1] $$ where $$ \mathcal{F} $$ is a collection of events, and $$ P $$ assigns a value to each event representing its likelihood.
-#### **Interpretation of Probability**
+
+##### **Interpretation of Probability**
 1. **Frequentist Interpretation**: Probability is the long-run relative frequency of an event occurring after repeated trials.
    Example: In flipping a fair coin many times, the probability of getting heads is $$ 0.5 $$, as heads appear in roughly 50% of the flips.
 2. **Bayesian Interpretation**: Probability reflects a degree of belief or confidence in an event occurring, updated as new evidence becomes available.
 	Example: If the chance of rain tomorrow is initially assigned as $$ 0.7 $$, this reflects 70% confidence based on current information.
 
-#### **Basic Axioms of Probability**
+##### **Basic Axioms of Probability**
 The three fundamental axioms govern how probabilities are assigned:
 1. **Non-negativity**: $$ P(E) \geq 0 \quad \text{for all events } E $$. Probabilities cannot be negative.
 2. **Normalization**: $$ P(S) = 1 $$. Here, $$ S $$ is the **sample space** (all possible outcomes). The probability of $$ S $$ is 1, as one outcome must occur.
@@ -43,7 +45,7 @@ The three fundamental axioms govern how probabilities are assigned:
 	For mutually exclusive events $$ E_1 $$ and $$ E_2 $$, the probability of either occurring is the sum of their individual probabilities.
 	**Example**: For a die roll, let $$ E_1 = \{1\} $$ and $$ E_2 = \{2\} $$: $$ P(E_1 \cup E_2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6} = \frac{1}{3} $$
 
-#### **Consequences of the Axioms**
+##### **Consequences of the Axioms**
 1. **Complementary Rule:** $$ P(E^c) = 1 - P(E) $$. The probability of the complement of $$ E $$ (event not occurring) equals $$ 1 $$ minus $$ P(E) $$.
 	Example: If $$ P(\text{rain}) = 0.8 $$, then $$ P(\text{no rain}) = 1 - 0.8 = 0.2 $$.
 2. **Addition Rule for Non-Mutually Exclusive Events:** 
@@ -70,7 +72,7 @@ The three fundamental axioms govern how probabilities are assigned:
    Conditional probability calculates $$ E_1 $$’s likelihood given $$ E_2 $$ has occurred.
 	Example: Used in models like **Naive Bayes** for predictions under given conditions.
 
-#### **Why is Probability Important in Machine Learning?**
+##### **Why is Probability Important in Machine Learning?**
 Probability theory plays a critical role in machine learning by enabling:
 1. **Modeling Uncertainty**: Essential in probabilistic models like Bayesian networks and Hidden Markov Models.
 2. **Decision Making**: Used in reinforcement learning for action selection under uncertainty.
@@ -78,7 +80,8 @@ Probability theory plays a critical role in machine learning by enabling:
 4. **Bayesian Inference**: Updates beliefs about parameters or predictions using new data.
 
 ---
-### **Random Variables: Discrete and Continuous**
+
+#### **Random Variables: Discrete and Continuous**
 
 Building upon the foundational axioms of probability, understanding **random variables** is the next critical step. Random variables bridge the gap between abstract probabilistic events and numerical representation, enabling a deeper connection between data and mathematical models.
 
@@ -90,7 +93,7 @@ Think of a random variable as a "number generator" that transforms outcomes of a
 - In a dice roll, the outcome (e.g., rolling a 4) is translated to the random variable $$ X = 4 $$.
 - In measuring rainfall, the amount (e.g., 12.5 mm) is assigned to the random variable $$ X = 12.5 $$. This abstraction helps in applying mathematical operations and deriving distributions.
 
-#### **Discrete Random Variables**
+##### **Discrete Random Variables**
 
 A **discrete random variable** takes on a countable number of distinct values. These values are often integers or counts, representing outcomes that are distinct and separate from one another. For example, the number of heads obtained when flipping a coin multiple times is a discrete random variable.
 
@@ -113,7 +116,7 @@ Here, the sum is over all possible values $$ x $$ that the random variable can t
 
 2. **Number of customers arriving at a store**: Let $$ X $$ represent the number of customers who arrive at a store during a 1-hour period. If customers arrive independently with an average rate of 3 per hour, $$ X $$ could follow a **Poisson distribution**.
 
-#### **Continuous Random Variables**
+##### **Continuous Random Variables**
 
 A **continuous random variable** can take on an infinite number of possible values within a given range. These values are not countable but form a continuum. For example, the height of a person is a continuous random variable because it can take any value within a range, such as $$ 5.6 $$ feet, $$ 5.65 $$ feet, $$ 5.654 $$ feet, and so on.
 
@@ -131,14 +134,15 @@ $$
 1. **Height of a person**: The height $$ X $$ of a person can take any value within a realistic range (e.g., between 4 and 7 feet). The exact value is not countable, and it is typically modeled by a normal distribution.
 2. **Time taken to complete a task**: If you measure the time $$ X $$ taken by someone to complete a task, this can take any value (e.g., 2.5 minutes, 2.55 minutes, etc.). The distribution could be modeled using an exponential or normal distribution, depending on the scenario.
 
-#### **Why are Random Variables Important in Machine Learning?**
+##### **Why are Random Variables Important in Machine Learning?**
+
 1. **Modeling Uncertainty**: In machine learning, random variables allow us to model uncertainty in data and predictions. For instance, in regression models, the target variable is often modeled as a random variable with some uncertainty, usually represented as a continuous distribution.
 2. **Bayesian Inference**: In Bayesian models, parameters are treated as random variables, and their distributions are updated with new data. This allows for probabilistic reasoning and uncertainty quantification in predictions.
 3. **Stochastic Processes**: Many machine learning algorithms, such as those in reinforcement learning or Monte Carlo simulations, involve **stochastic processes**, where future states or outcomes are modeled as random variables with given distributions.
 
 ---
 
-### **More on Probability Distribution and Types**
+#### **More on Probability Distribution and Types**
 
 A probability distribution describes how probabilities are assigned to different possible outcomes of a random variable. It provides a mathematical function that represents the likelihood of each possible value the random variable can take. In simpler terms, it tells us how likely each outcome of an experiment or process is. 
 
@@ -224,12 +228,12 @@ Continuous distributions are used when the random variable can take any value wi
 
 	- **Example**: Modeling the proportion of customers who prefer a certain product in a market research study.
   
-#### **Why are Probability Distributions Important in Machine Learning?**
+##### **Why are Probability Distributions Important in Machine Learning?**
 1. **Modeling Uncertainty**: Many machine learning models assume that the data follows a certain probability distribution (e.g., Gaussian distribution in linear regression).
 2. **Inference and Prediction**: In probabilistic models, such as Bayesian inference or Hidden Markov Models, understanding the probability distributions of variables allows for reasoning about uncertainty and making predictions based on observed data.
 3. **Risk Analysis**: Distributions help quantify the risk or uncertainty in machine learning predictions. For example, a model's output might be a probability distribution over potential outcomes, providing insights into the confidence of predictions.
 
-### **Cumulative Distribution Function (CDF)**
+#### **Cumulative Distribution Function (CDF)**
 
 CDF is closely related to the **Probability Density Function (PDF)** in the case of continuous random variables and the **Probability Mass Function (PMF)** for discrete variables. The CDF gives the cumulative probability that a random variable takes a value less than or equal to a particular point.
 
@@ -242,7 +246,7 @@ $$
 
 The CDF is a function that provides the cumulative probability up to a point $$ x $$ and is computed by integrating (for continuous variables) or summing (for discrete variables) the corresponding probability distributions.
 
-#### **Properties of the CDF**
+##### **Properties of the CDF**
 1. **Non-decreasing**: The CDF is a non-decreasing function, meaning that the probability increases as $$ x $$ increases:
    
    $$
@@ -258,7 +262,7 @@ The CDF is a function that provides the cumulative probability up to a point $$ 
 	- For **continuous random variables**, the CDF is continuous and smooth.
 	- For **discrete random variables**, the CDF is a step function, with jumps corresponding to the probabilities at specific points.
 
-#### **CDF for Discrete Random Variables**
+##### **CDF for Discrete Random Variables**
 
 For a **discrete random variable** $$ X $$, the CDF is computed by summing the probabilities given by the PMF. If the possible values of $$ X $$ are $$ x_1, x_2, \dots $$, the CDF is:
 
@@ -276,7 +280,7 @@ F_X(x) = \begin{cases} 0 & \text{for} \ x < 1 \\ \frac{1}{6} & \text{for} \ 1 \l
 $$
 
 
-#### **CDF for Continuous Random Variables**
+##### **CDF for Continuous Random Variables**
 
 For a **continuous random variable** $$ X $$, the CDF is obtained by integrating the PDF: 
 
@@ -303,7 +307,8 @@ $$
 
 
 This shows that for values of $$ x $$ between 0 and 1, the probability increases linearly from 0 to 1.
-#### **Relationship Between PDF and CDF**
+
+##### **Relationship Between PDF and CDF**
 
 For a continuous random variable $$ X $$, the PDF is the derivative of the CDF:
 
@@ -318,11 +323,11 @@ $$
 F_X(x) = \int_{-\infty}^{x} f_X(t) \, dt
 $$
 
-#### **Why is the CDF Important in Machine Learning?**
+##### **Why is the CDF Important in Machine Learning?**
 1. **Data Interpretation**: The CDF provides a clear interpretation of the distribution of data and is useful for understanding the likelihood of a random variable being less than or equal to a specific value.
 2. **Probabilistic Decision Making**: The CDF helps integrate outcomes for decision-making in models like **Naive Bayes** or **Bayesian networks**.
 
-#### **How PMF, PDF, and CDF Interrelate**
+##### **How PMF, PDF, and CDF Interrelate**
 
 - **Discrete Variables**:
 	- PMF: $$P(X = x_i)$$
@@ -346,7 +351,7 @@ $$
     f_X(x) = \frac{d}{dx} F_X(x) 
     $$
 
-### **Choosing the Right Distribution in ML**
+#### **Choosing the Right Distribution in ML**
 
 Choosing the appropriate probability distribution for a given machine learning (ML) problem is crucial to making accurate predictions. Each probability distribution captures a unique set of characteristics regarding the randomness and uncertainty in the data. A proper understanding of these distributions can directly influence the performance and efficiency of your model. Here's a more detailed look at the various distributions commonly used in ML:
 
@@ -356,13 +361,13 @@ Choosing the appropriate probability distribution for a given machine learning (
 
 - **Poisson/Exponential Distributions:** These distributions model events that occur over time or space, where the events happen at a constant average rate. The **Poisson distribution** models the number of events happening in a fixed interval of time or space (e.g., the number of customer arrivals at a service station). The **Exponential distribution** is often used to model the time between events in a Poisson process. Both distributions are important in scenarios involving queues or event-based systems, like predicting the time between customer purchases or server failures in network systems.
   
-#### Why Does Choosing the Right Distribution Matter?
+##### Why Does Choosing the Right Distribution Matter?
 
 1. **Tailoring Models to Data:** Understanding the underlying distribution of the data helps in selecting the right model for your problem. For example, if the data is normally distributed, using models like **linear regression** (which assumes normality of residuals) can result in more accurate predictions. On the other hand, when data is binary (e.g., yes/no outcomes), a **logistic regression** or **Bernoulli distribution** approach would be more appropriate.
 2. **Improving Model Efficiency:** When we align the assumptions of a machine learning algorithm with the real-world distribution of the data, models tend to be more efficient and require less computation. For instance, algorithms that work with Gaussian-distributed data can be optimized to take advantage of the symmetry of the distribution, leading to faster convergence in training.
 3. **Quantifying Uncertainty:** Different distributions provide unique ways to handle uncertainty in predictions. For example, when working with **Poisson distributions**, we can predict the expected number of events in a fixed period with a known variance. In contrast, the **Exponential distribution** models waiting times, making it suitable for applications like survival analysis or reliability engineering.
 
-#### **Further Exploration**
+##### **Further Exploration**
 
 While this overview has touched on the most commonly used distributions, the world of probability distributions in machine learning is vast. As you dive deeper into various ML topics, you’ll encounter additional distributions tailored to specific data types and problems. Understanding how these distributions behave allows you to refine your models for more accurate, effective predictions.
 
@@ -370,6 +375,6 @@ If you're eager to explore further, we will be diving deeper into these distribu
 
 **See you in the next post!**
 
-### **References:**
+##### **References:**
 - Add links for common distributions for making it visually imaginable and relatable!
 - Go through it one more last time for corrections.

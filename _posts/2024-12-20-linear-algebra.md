@@ -16,11 +16,9 @@ Linear algebra forms the backbone of modern machine learning. As a branch of mat
 
 ---
 
-## **Core Components of Linear Algebra**
+#### **Core Components of Linear Algebra**
 
-### **Vectors and Matrices**
-
-#### **1. Vectors**
+##### **1. Vectors**
 
 A **vector** is a fundamental concept in linear algebra and is essentially a one-dimensional array of numbers. In machine learning, vectors can represent different elements, including features, weights, or data points.
 
@@ -52,7 +50,7 @@ A **vector** is a fundamental concept in linear algebra and is essentially a one
   - **Scalar Multiplication:** Multiplying each element of a vector by a scalar.
   - **Dot Product:** A fundamental operation for determining the similarity between two vectors.
 
-#### **2. Matrices**
+##### **2. Matrices**
 
 A **matrix** is a two-dimensional array of numbers, and it is widely used in machine learning for data storage, transformations, and solving systems of equations.
 
@@ -73,7 +71,7 @@ A **matrix** is a two-dimensional array of numbers, and it is widely used in mac
   - **Transpose:** The transpose of a matrix $$A$$ is denoted as $$A^T$$ and involves flipping its rows and columns.
   - **Inverse:** If a matrix is invertible, its inverse can be used to solve systems of linear equations.
 
-### **Vectors and Matrices in ML**
+##### **Vectors and Matrices in ML**
 
 Vectors and matrices play a pivotal role in representing both data and models in machine learning.
 
@@ -111,7 +109,7 @@ where $$X$$ is the input matrix, $$W$$ is the weight matrix, and $$b$$ is the bi
 
 ---
 
-### **Eigenvalues and Eigenvectors**
+#### **Eigenvalues and Eigenvectors**
 
 ##### **Definition:**
 
@@ -140,7 +138,7 @@ Imagine a squishy sheet of rubber (the matrix) and a point in space (the vector)
 - Eigenvalues can be **real** or **complex** (but are often real in machine learning applications).
 - A matrix can have multiple eigenvectors corresponding to the **same eigenvalue** (if it is **degenerate**) or distinct eigenvalues corresponding to distinct eigenvectors.
 
-#### **Why Are Eigenvalues and Eigenvectors Important in Machine Learning?**
+##### **Why Are Eigenvalues and Eigenvectors Important in Machine Learning?**
 
 **PCA** is a widely used technique for **dimensionality reduction** in machine learning. It reduces the number of features while retaining the most important information in the dataset.
 
@@ -153,7 +151,7 @@ Key steps in PCA:
 - Sort eigenvectors in decreasing order of their eigenvalues.
 - Select the top **k** eigenvectors to reduce dimensionality while preserving most of the variance.
 
-#### **Key takeaways of Eigenvalues and Eigenvectors in ML**
+##### **Key takeaways of Eigenvalues and Eigenvectors in ML**
 
 - **Diagonalizability:**  
    A matrix is diagonalizable if it has enough eigenvectors to form a full basis. This property is essential in PCA and **Singular Value Decomposition (SVD)**, enabling efficient computation and interpretation.
@@ -164,9 +162,9 @@ Key steps in PCA:
 
 ---
 
-### **A Few More Key Matrices Types Relevant to ML**
+#### **A Few More Key Matrices Types Relevant to ML**
 
-#### **Symmetric Matrix:**
+##### **Symmetric Matrix:**
 
 - **Definition:** A matrix $$A$$ is **symmetric** if $$A = A^T$$, meaning it is equal to its transpose.
 - **Properties:**
@@ -176,7 +174,7 @@ Key steps in PCA:
   - **Covariance Matrices:** Covariance matrices are always symmetric because the covariance between two features is the same regardless of the order.
   - **Optimization Problems:** Many optimization problems in machine learning involve symmetric matrices (e.g., in second-order optimization methods like Newton's method or in regularization).
 
-#### **Orthogonal Matrix:**
+##### **Orthogonal Matrix:**
 
 - **Definition:** A matrix $$A$$ is **orthogonal** if $$A^T A = I$$, where $$I$$ is the identity matrix.
 - **Properties:**
@@ -186,7 +184,7 @@ Key steps in PCA:
 - **Relevance in Machine Learning:**
   - **Rotation and Transformation:** Orthogonal matrices are used in certain machine learning algorithms for transformations that preserve distances and angles. For example, in PCA, orthogonal transformation is used to create new orthogonal basis vectors.
 
-#### **Positive Definite Matrix (PD):**
+##### **Positive Definite Matrix (PD):**
 
 - **Definition:** A square matrix $$A$$ is **positive definite** if for any non-zero vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} > 0$$. In simpler terms, it means that the matrix has strictly positive eigenvalues.
 - **Properties:**
@@ -197,7 +195,7 @@ Key steps in PCA:
   - **Optimization Problems:** In convex optimization, the Hessian matrix of a convex function is often positive definite. This ensures that a function has a unique local minimum, making optimization well-posed.
   - **Covariance Matrices:** The covariance matrix of any dataset with multiple features is positive semi-definite. In special cases (e.g., full rank), it can be positive definite.
 
-#### **Positive Semi-Definite Matrix (PSD):**
+##### **Positive Semi-Definite Matrix (PSD):**
 
 - **Definition:** A matrix $$A$$ is **positive semi-definite** if for any vector $$\mathbf{v}$$, $$\mathbf{v}^T A \mathbf{v} \geq 0$$. In other words, all eigenvalues are non-negative (i.e., zero or positive).
 - **Properties:**
@@ -207,7 +205,7 @@ Key steps in PCA:
   - **Covariance Matrices:** As mentioned, the covariance matrix of a dataset is positive semi-definite. This is essential because covariance cannot be negative and the matrix represents the relationship between features.
   - **Kernel Matrices (in SVMs, Gaussian Processes, etc.):** The kernel matrix in algorithms like SVM and kernel PCA is always positive semi-definite. It measures similarity between data points in a transformed feature space.
 
-#### **Covariance Matrix:**
+##### **Covariance Matrix:**
 
 - **Definition:** A **covariance matrix** is a square matrix that contains the covariances between pairs of features in a dataset. If a dataset has $$n$$ features, the covariance matrix will be an $$n \times n$$ matrix, where each entry represents the covariance between two features.
 
@@ -239,7 +237,7 @@ Key steps in PCA:
   - **Multivariate Gaussian Distribution:** In probabilistic models like **Gaussian Mixture Models (GMM)**, the covariance matrix defines the shape of the data distribution. It is used to model the distribution of features in a multi-dimensional space.
   - **Feature Selection:** Covariance matrices help identify correlated features. Features that show high covariance (i.e., strong correlation) can be dropped or combined to improve model performance and reduce dimensionality.
 
-#### **Full Rank Matrix:**
+##### **Full Rank Matrix:**
 
 - **Definition:** A matrix is **full rank** if its rank is equal to the smallest of its number of rows or columns. In other words, all rows (or columns) are linearly independent.
 - **Properties:**
@@ -249,7 +247,7 @@ Key steps in PCA:
 - **Relevance in Machine Learning:**
   - **Linear Regression:** In linear regression, the design matrix $$X$$ must be full rank to ensure a unique solution. If $$X$$ is not full rank, the matrix $$X^T X$$ is singular and cannot be inverted.
 
-#### **Singular Matrix:**
+##### **Singular Matrix:**
 
 - **Definition:** A matrix is **singular** if it is not invertible, meaning its determinant is zero. A singular matrix has linearly dependent rows or columns.
 - **Properties:**
@@ -268,7 +266,7 @@ Up next, we'll explore the prerequisites of **Probability Theory** for machine l
 
 See you in the next one!
 
-### **References:**
+##### **References:**
 
 <!-- - other than pca, where eigen values used in ml. modify that section.
 - basis? add reference and pointer above

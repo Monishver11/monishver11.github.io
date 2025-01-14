@@ -12,11 +12,11 @@ related_posts: false
 #   sidebar: left
 ---
 
-### **Bayes' Rule and Associated Properties: A Key Concept**
+#### **Bayes' Rule and Associated Properties: A Key Concept**
 
 Bayes' Rule is a foundational concept in probability theory that plays a critical role in machine learning, especially in tasks involving classification, decision-making, and model inference. It provides a mathematical framework to update our beliefs about a hypothesis based on new evidence.
 
-#### **What is Bayes' Rule?**
+##### **What is Bayes' Rule?**
 
 Bayes' Rule describes the relationship between conditional probabilities. It allows us to reverse conditional probabilities, which can be very useful in machine learning when we need to compute the probability of a certain hypothesis given observed data.
 
@@ -42,7 +42,7 @@ Imagine you're trying to diagnose whether someone has a certain disease. You hav
 
 Bayes' Rule helps us combine this information to update our belief about the probability of the disease (hypothesis $$ A $$) given the test result (evidence $$ B $$).
 
-#### **Why is Bayes' Rule Crucial in Machine Learning?**
+##### **Why is Bayes' Rule Crucial in Machine Learning?**
 
 Bayes' Rule is central to a variety of machine learning models, particularly in probabilistic and Bayesian approaches. Some key applications include:
 
@@ -52,7 +52,7 @@ Bayes' Rule is central to a variety of machine learning models, particularly in 
    
 3. **Decision Theory**: Bayes' Rule helps in decision-making processes by quantifying the uncertainty associated with different outcomes, especially when there is a probabilistic component to the environment or model.
 
-#### **Associated Properties of Bayes' Rule**
+##### **Associated Properties of Bayes' Rule**
 
 1. **Bayes' Theorem for Multiple Events**: Bayes' Rule can be extended to more complex situations, such as when dealing with multiple hypotheses or events. This is useful when making predictions over many possible outcomes or when dealing with complex models in machine learning.
 
@@ -64,11 +64,11 @@ Bayes' Rule is an indispensable tool in machine learning for reasoning about unc
 
 ---
 
-### **Joint Probability and Independence:**
+#### **Joint Probability and Independence:**
 
 In machine learning, understanding how different events relate to each other is critical. Two key concepts that help us analyze these relationships are **joint probability** and **independence**. 
 
-#### **What is Joint Probability?**
+##### **What is Joint Probability?**
 
 Joint probability refers to the probability of two or more events occurring simultaneously. In other words, it is the likelihood that multiple events happen at the same time, and is often represented as $$ P(A \cap B) $$ for two events $$ A $$ and $$ B $$.
 
@@ -86,7 +86,7 @@ $$ P(\text{Die 1 = 4}) \cdot P(\text{Die 2 = 6}) $$
 
 This product gives the likelihood that both dice will show these values simultaneously.
 
-#### **Why is Joint Probability Important in Machine Learning?**
+##### **Why is Joint Probability Important in Machine Learning?**
 
 Joint probability is used to model relationships between different features or variables in a dataset. Some applications include:
 
@@ -110,7 +110,7 @@ $$
 P(\text{Heads}) \cdot P(\text{Die = 6}) 
 $$
 
-#### **Why is Independence Important in Machine Learning?**
+##### **Why is Independence Important in Machine Learning?**
 
 Independence is a simplifying assumption in many machine learning models and can significantly reduce the complexity of computations:
 
@@ -120,7 +120,7 @@ Independence is a simplifying assumption in many machine learning models and can
     
 3. **Feature Independence**: In feature engineering, assuming that features are independent can help simplify model design and speed up training. It’s often used as a heuristic, particularly when exploring models like Gaussian Mixture Models (GMM) or Hidden Markov Models (HMM).
 
-#### **Conditional Independence**
+##### **Conditional Independence**
 
 While not the same as plain independence, **conditional independence** is another important concept. Two events $$ A $$ and $$ B $$ are conditionally independent given a third event $$ C $$ if:
 
@@ -132,11 +132,11 @@ This property is widely used in Bayesian networks and machine learning models to
 
 ---
 
-### **Conditional Probability and Conditional Distributions: Building Blocks for Predictive Models**
+#### **Conditional Probability and Conditional Distributions: Building Blocks for Predictive Models**
 
 Conditional probability and conditional distributions concepts help us refine predictions based on additional information and allow us to build more accurate, data-driven models by considering how the likelihood of one event changes when we know about the occurrence of another.
 
-#### **What is Conditional Probability?**
+##### **What is Conditional Probability?**
 
 Conditional probability is the probability of an event occurring given that another event has already occurred. In other words, it quantifies the likelihood of an event, assuming that certain information is known. It is expressed as:
 
@@ -157,7 +157,7 @@ Imagine you're at a concert and you're interested in the probability that a pers
 
 This situation is an example of **conditional probability**, where the event $$ A $$ (person wearing a red T-shirt) is conditioned on the event $$ B $$ (person being in the front row). Conditional probability helps refine your predictions based on new information.
 
-#### **Why is Conditional Probability Important in Machine Learning?**
+##### **Why is Conditional Probability Important in Machine Learning?**
 
 Conditional probability is essential in many machine learning models for predicting outcomes based on known data. Key applications include:
 
@@ -189,7 +189,7 @@ Consider a scenario where you're trying to predict a person’s income ($$ X $$)
 
 In this case, $$ P(X \mid Y) $$ would describe the distribution of income ($$ X $$) conditional on a specific level of education ($$ Y $$). The distribution will shift depending on the value of $$ Y $$, helping refine your predictions of income based on known education levels.
 
-#### **Why are Conditional Distributions Important in Machine Learning?**
+##### **Why are Conditional Distributions Important in Machine Learning?**
 
 Conditional distributions are vital in machine learning for understanding relationships between features and predicting outcomes. Some key uses include:
 
@@ -203,11 +203,11 @@ While conditional probability allows us to adjust our expectations based on new 
 
 ---
 
-### **Law of Total Probability: A Fundamental Tool for Dealing with Uncertainty**
+#### **Law of Total Probability: A Fundamental Tool for Dealing with Uncertainty**
 
 The Law of Total Probability is a key principle that allows us to compute the probability of an event by considering all possible ways that event could occur, based on different conditions or scenarios. This law is often used in machine learning when dealing with complex models where outcomes depend on multiple factors, or when some information is missing or unknown.
 
-#### **What is the Law of Total Probability?**
+##### **What is the Law of Total Probability?**
 
 It helps us calculate the probability of an event by partitioning the sample space into different mutually exclusive events and then summing up the probabilities of the event occurring in each of these partitions.
 
@@ -235,7 +235,7 @@ Imagine you are trying to determine the probability that a customer will purchas
 
 In this way, the law allows you to compute the overall probability by considering all relevant scenarios (customer types) and weighing them accordingly.
 
-#### **Why is the Law of Total Probability Important in Machine Learning?**
+##### **Why is the Law of Total Probability Important in Machine Learning?**
 
 In machine learning, the Law of Total Probability is widely used for various tasks, especially in probabilistic modeling, classification, and predictive analytics. Some key applications include:
 
@@ -262,7 +262,7 @@ Here:
 
 This allows you to compute the total probability of a customer buying the product, considering both customer types.
 
-#### **Connection with Conditional Probability**
+##### **Connection with Conditional Probability**
 
 The Law of Total Probability is built on conditional probability. It helps us to marginalize over unknown or unobserved conditions, ensuring we account for all possible scenarios that could influence the event of interest.
 
@@ -273,11 +273,11 @@ Whether you are building a Bayesian model, dealing with missing data, or predict
 
 ---
 
-### **Expectation and Variance: Essential Measures**
+#### **Expectation and Variance: Essential Measures**
 
 They provide valuable insights into the behavior of data and are widely used in machine learning to understand the characteristics of models, assess uncertainty, and make predictions. Here’s a breakdown of each concept and its relevance to machine learning.
 
-#### **What is Expectation?**
+##### **What is Expectation?**
 
 The **expectation** (or **mean**) of a random variable represents its **average** or **central tendency**. It is the weighted average of all possible values that the variable can take, where the weights are given by the probabilities of these values. 
 
@@ -303,7 +303,7 @@ Think of expectation as the "balance point" of a distribution. For example, if y
 
 In machine learning, the expectation helps us understand the **average behavior** of the data. For instance, in regression tasks, the expectation of the target variable provides a baseline prediction.
 
-#### **What is Variance?**
+##### **What is Variance?**
 
 The **variance** of a random variable quantifies the spread or dispersion of the variable around its expectation. A high variance indicates that the values are widely spread out, while a low variance indicates that the values are clustered around the mean.
 
@@ -335,7 +335,7 @@ Variance tells us about the **spread** of the data. Imagine measuring the height
 
 In machine learning, variance provides insights into **model uncertainty**. High variance in a model’s predictions indicates overfitting, while low variance suggests underfitting.
 
-#### **Why Are Expectation and Variance Important in Machine Learning?**
+##### **Why Are Expectation and Variance Important in Machine Learning?**
 
 1. **Expectation**:
     - **Model Evaluation**: Used as a baseline for evaluating model predictions (e.g., in regression tasks).
@@ -350,11 +350,11 @@ In machine learning, variance provides insights into **model uncertainty**. High
 
 ---
 
-### **Covariance and Correlation: Measuring Relationships Between Variables**
+#### **Covariance and Correlation: Measuring Relationships Between Variables**
 
 Covariance and correlation are statistical tools used to understand the relationships between two random variables. In machine learning, these concepts are essential for identifying feature interactions, reducing dimensionality, and improving model performance.
 
-#### **What is Covariance?**
+##### **What is Covariance?**
 
 Covariance measures the **direction** of the linear relationship between two variables, indicating whether they increase or decrease together.
 
@@ -373,7 +373,7 @@ Where:
 - $$\text{Cov}(X, Y) < 0$$: Negative relationship (as $$X$$ increases, $$Y$$ tends to decrease).
 - $$\text{Cov}(X, Y) = 0$$: No linear relationship.
 
-#### **What is Correlation?**
+##### **What is Correlation?**
 
 Correlation is a **scaled version of covariance** that provides the strength and direction of the relationship on a fixed scale $$[-1, 1]$$.
 
@@ -392,7 +392,7 @@ Where:
 - $$\rho(X, Y) = 0$$: No linear relationship.
 
 
-#### **Key Differences**
+##### **Key Differences**
 
 | **Aspect**       | **Covariance**                      | **Correlation**                 |
 |------------------|-------------------------------------|---------------------------------|
@@ -401,7 +401,7 @@ Where:
 | **Use Case**     | Direction of relationship           | Strength and direction combined |
 
 // 
-#### **Applications in Machine Learning**
+##### **Applications in Machine Learning**
 
 1. **Feature Relationships**:
    - Covariance highlights how features interact.
@@ -416,11 +416,11 @@ Where:
 
 ---
 
-### **Central Limit Theorem: The Foundation of Statistical Inference**
+#### **Central Limit Theorem: The Foundation of Statistical Inference**
 
 The **Central Limit Theorem (CLT)** explains why normal distributions appear so frequently in practice and is key for making inferences about data.
 
-#### **What is the Central Limit Theorem?**
+##### **What is the Central Limit Theorem?**
 
 The **Central Limit Theorem** states that for a population with a finite mean $$\mu$$ and variance $$\sigma^2$$, the distribution of the **sample mean** from sufficiently large random samples will approximate a **normal distribution**, regardless of the original distribution of the population. 
 
@@ -441,7 +441,7 @@ Imagine you are sampling from a non-normal distribution, such as the distributio
 
 This phenomenon is like averaging noisy measurements in engineering. A single measurement might be noisy, but averaging multiple measurements reduces the noise, making the result more predictable and normally distributed.
 
-#### **Why is the Central Limit Theorem Important in Machine Learning?**
+##### **Why is the Central Limit Theorem Important in Machine Learning?**
 
 The Central Limit Theorem is foundational in statistics and machine learning for the following reasons:
 
@@ -462,7 +462,7 @@ Imagine you are analyzing **house prices** in a city, and the distribution of ho
     
 - **With CLT**: By taking random samples, computing the mean for each sample, and repeating the process many times, the distribution of sample means will become normal, even though the underlying distribution of house prices is skewed. The sample mean will be a more reliable estimator of the population mean, allowing for more accurate confidence intervals.
 
-#### **Central Limit Theorem in Machine Learning**
+##### **Central Limit Theorem in Machine Learning**
 
 The CLT is useful in several machine learning contexts:
 
@@ -475,7 +475,7 @@ The CLT is useful in several machine learning contexts:
 3. **Confidence Intervals and Hypothesis Testing**:
    - Many machine learning techniques rely on the CLT to estimate confidence intervals and perform hypothesis testing. For example, in regression, the standard error of the coefficients is derived from the CLT.
 
-#### **Conditions for the Central Limit Theorem**
+##### **Conditions for the Central Limit Theorem**
 
 For the CLT to hold, the following conditions are necessary:
 1. **Independence**: The samples must be independent.

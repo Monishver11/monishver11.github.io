@@ -14,7 +14,7 @@ related_posts: false
 
 Machine learning has come a long way, evolving through decades of research and innovation. This timeline highlights the pivotal moments that have defined the field.
 
-#### **1910s–1940s: Early Computational Foundations**
+##### **1910s–1940s: Early Computational Foundations**
  
 - **1913:** `Markov Chains` \\
     Andrey Markov introduces techniques later known as Markov chains, fundamental to many machine learning algorithms.
@@ -33,7 +33,7 @@ Machine learning has come a long way, evolving through decades of research and i
     
 ---
 
-#### **1950s–1960s: Foundations of Artificial Intelligence**
+##### **1950s–1960s: Foundations of Artificial Intelligence**
 
 - **1950:** `Turing Test`  
     Alan Turing proposes the Turing Test, a benchmark for machine intelligence.
@@ -61,7 +61,7 @@ Machine learning has come a long way, evolving through decades of research and i
     
 ---
 
-#### **1970s–1980s: Growth and Challenges**
+##### **1970s–1980s: Growth and Challenges**
 
 - **1970s:** `First AI Winter`  
     Funding and interest in AI declined due to unmet expectations and computational limitations.
@@ -86,7 +86,7 @@ Machine learning has come a long way, evolving through decades of research and i
     
 ---
 
-#### **1990s: Statistical Learning and Commercial AI**
+##### **1990s: Statistical Learning and Commercial AI**
 
 - **1992:** `TD-Gammon`  
     Gerald Tesauro invents TD-Gammon, a backgammon program using neural networks.
@@ -108,7 +108,7 @@ Machine learning has come a long way, evolving through decades of research and i
 
 ---
 
-#### **2000s: Big Data and ML Techniques**
+##### **2000s: Big Data and ML Techniques**
 
 - **2000:** `Nomad Robot`  
     The Nomad robot explores Antarctica, becoming the first robot to discover a meteorite.
@@ -121,7 +121,7 @@ Machine learning has come a long way, evolving through decades of research and i
 
 ---
 
-#### **2010s: The Deep Learning Revolution**
+##### **2010s: The Deep Learning Revolution**
 
 - **2010:** `Kaggle Launch`  
     Kaggle, a platform for machine learning competitions, is launched.
@@ -146,7 +146,7 @@ Machine learning has come a long way, evolving through decades of research and i
 
 ---
 
-#### **2020s: Large-Scale AI and Generative Models**
+##### **2020s: Large-Scale AI and Generative Models**
 
 - **2020:** `GPT-3 Released`  
     OpenAI’s large-scale language model demonstrated the power of generative pre-trained transformers.
@@ -162,7 +162,7 @@ Machine learning has come a long way, evolving through decades of research and i
 
 ---
 
-#### **2024s: Cutting-Edge AI Innovations**
+##### **2024s: Cutting-Edge AI Innovations**
 
 - **2024:** `OpenAI's O1 Model`  
     Advanced reasoning capabilities in mathematics and coding, enhancing AI's problem-solving skills.

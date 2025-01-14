@@ -28,7 +28,6 @@ At its core, machine learning is like **meta-programming**—programming a syste
 
 The goal? Take an input x and predict an output y—it can be a label, a number, or a decision.
 
----
 
 #### **Why Use Machine Learning?**
 
@@ -39,7 +38,7 @@ Machine learning is particularly valuable when:
 - **It outperforms human-built solutions**: Algorithms can detect patterns or nuances humans might miss.
 - **Fairness and privacy are critical**: For example, ranking search results or filtering harmful content.
 
-### **Canonical Examples of Machine Learning**
+#### **Canonical Examples of Machine Learning**
 
 1. **Spam Detection**
    - **Input**: Incoming email
@@ -121,7 +120,7 @@ Though inspired by human cognition, ML differs significantly:
 
 ML systems, like neural networks, borrow ideas from biology but don’t aim to replicate human learning entirely. Instead, their focus remains on solving specialized problems effectively.
 
-#### **Conclusion**
+##### **Conclusion**
 
 Machine learning bridges the gap between raw data and intelligent decision-making. By enabling systems to learn and adapt, ML transforms how we approach problems in healthcare, finance, and beyond. With its foundations rooted in mathematics and its applications spanning diverse domains, ML continues to redefine the boundaries of what technology can achieve.
 

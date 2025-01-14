@@ -20,7 +20,7 @@ Let’s dive in!
 
 ---
 
-### **What is Calculus?**
+#### **What is Calculus?**
 
 Calculus is the study of continuous change, centered on two main concepts:
 
@@ -29,9 +29,8 @@ Calculus is the study of continuous change, centered on two main concepts:
 
 These tools are applied in fields like physics, engineering, economics, and computer science to solve real-world problems involving continuous change.
 
----
 
-### **What is Multivariate Calculus?**
+##### **What is Multivariate Calculus?**
 
 Multivariate calculus, or multivariable calculus, extends single-variable calculus to functions with multiple variables. Key components include:
 
@@ -39,7 +38,7 @@ Multivariate calculus, or multivariable calculus, extends single-variable calcul
 - **Multiple Integration**: Used to calculate volumes and higher-dimensional quantities for functions of multiple variables.
 - **Vector Calculus**: Explores vector fields, gradients, and theorems like Green’s and Stokes’ theorems.
 
-#### **Why Multivariate Calculus Matters**
+##### **Why Multivariate Calculus Matters**
 
 Multivariate calculus is indispensable for:
 
@@ -52,7 +51,7 @@ By extending the tools of calculus to multidimensional problems, multivariate ca
 
 ---
 
-### **Derivatives: A Fundamental Concept**
+#### **Derivatives: A Fundamental Concept**
 
 Derivatives are the backbone of calculus, measuring how a function’s output changes in response to its input. They play a critical role in understanding rates of change and optimizing functions.
 
@@ -65,11 +64,11 @@ Here are some analogies to grasp the concept of derivatives:
 3. **Sensitivity Measure**:  
    A derivative reveals how sensitive a function’s output is to small changes in its input. For example, it’s like determining how much the water level in a bathtub rises when you add a cup of water.
 
-### **Partial Derivatives and Their Role in ML**
+#### **Partial Derivatives and Their Role in ML**
 
 Expanding on the concept of derivatives, **partial derivatives** allow us to analyze how functions of multiple variables change with respect to a single variable while keeping others constant. This is a cornerstone of multivariate calculus and a fundamental tool in machine learning.
 
-#### **What are Partial Derivatives?**
+##### **What are Partial Derivatives?**
 
 A partial derivative extends the idea of a derivative to multivariable functions. It isolates the effect of one variable while treating the others as fixed.
 
@@ -80,7 +79,7 @@ Here are a couple of analogies to help visualize partial derivatives:
 2. **Baking a Cake**:  
    Consider a recipe where the outcome (taste) depends on multiple ingredients (variables). A partial derivative tells you how the taste changes when you adjust one ingredient (e.g., sugar) while keeping all others constant.
 
-#### **Applications in Machine Learning**
+##### **Applications in Machine Learning**
 
 Partial derivatives are indispensable in machine learning, especially when working with models that involve multiple parameters.
 
@@ -100,11 +99,11 @@ By employing partial derivatives, machine learning algorithms can effectively op
 
 ---
 
-### **Gradient Vectors: A Multivariable Power Tool**
+#### **Gradient Vectors: A Multivariable Power Tool**
 
 The **gradient vector** combines partial derivatives to form a powerful tool for analyzing multivariable functions. It indicates both the direction and magnitude of the steepest ascent at any given point.
 
-#### **What is a Gradient Vector?**
+##### **What is a Gradient Vector?**
 
 The gradient vector generalizes the derivative to functions with multiple variables, providing a way to "sense" the terrain of the function.
 
@@ -117,7 +116,7 @@ Here are some analogies to conceptualize gradient vectors:
 3. **Heat-Seeking Missile**:  
    The gradient works like a heat-seeking missile’s guidance system, constantly recalibrating to move toward the function’s maximum.
 
-#### **Applications in Machine Learning**
+##### **Applications in Machine Learning**
 
 Gradient vectors are pivotal in optimization and training algorithms:
 
@@ -134,15 +133,15 @@ You might be wondering why the gradient points in the direction of steepest asce
 
 ---
 
-### **Hessian and Jacobian: Higher-Order Tools**
+#### **Hessian and Jacobian: Higher-Order Tools**
 
 Building on partial derivatives and gradient vectors, **Hessian** and **Jacobian matrices** offer even deeper insights into multivariable functions. These higher-order constructs are essential for advanced optimization techniques and will be explored in detail next down.
 
-#### **Jacobian Matrix**
+##### **Jacobian Matrix**
 
 The Jacobian matrix generalizes the gradient vector for vector-valued functions, capturing how changes in multiple inputs affect multiple outputs.
 
-##### **Definition**
+###### **Definition**
 
 $$
 \text{For a function } \mathbf{f}: \mathbb{R}^n \to \mathbb{R}^m, \text{ the Jacobian matrix } \mathbf{J} \text{ is an } m \times n \text{ matrix defined as:}
@@ -165,11 +164,11 @@ $$
 \text{ with respect to the input variables } x_j.
 $$
 
-#### **Hessian Matrix**
+##### **Hessian Matrix**
 
 The Hessian matrix contains all second-order partial derivatives of a scalar-valued function. It provides information about the curvature of the function, making it essential for understanding the landscape of optimization problems.
 
-##### **Definition**
+###### **Definition**
 
 $$
 \text{For a function } f: \mathbb{R}^n \to \mathbb{R}, \text{ the Hessian matrix } \mathbf{H} \text{ is an } n \times n \text{ symmetric matrix defined as:}
@@ -193,11 +192,11 @@ Both the Jacobian and Hessian matrices extend the concept of partial derivatives
 
 ---
 
-### **Taylor Series**
+#### **Taylor Series**
 
 The Taylor series is a powerful tool that approximates complex functions using simpler polynomial expressions. This approximation is widely used in optimization and machine learning.
 
-#### **Definition**
+###### **Definition**
 
 $$
 \text{For a function } f(x) \text{ that is infinitely differentiable at a point } a,
@@ -227,7 +226,7 @@ Quick analogies to idealize it:
 2. **Prediction Machine**:  
    Think of it as a step-by-step refinement of a guess about the function's behavior. It starts with a constant, then linear, quadratic, cubic, and so on, improving accuracy at each step.
 
-#### **Applications in Machine Learning**
+##### **Applications in Machine Learning**
 
 1. **Function Approximation**:  
    Simplifies complex functions into polynomials that are computationally easier to work with.
@@ -240,7 +239,7 @@ The Taylor series provides a detailed local understanding of functions, facilita
 
 This foundational knowledge from multivariate calculus sets the stage for deeper exploration. If you’ve made it this far, congratulations! You’ve taken an important step in understanding and internalizing key concepts in machine learning. Take a moment to reflect, and when you're ready, let's move forward to the next topic. See you there!
 
-### **References**
+##### **References**
 
 - <a href="https://math.stackexchange.com/questions/223252/why-is-gradient-the-direction-of-steepest-ascent" target="_blank">Why is gradient the direction of steepest ascent?</a>
 - <a href="https://betterexplained.com/articles/calculus-building-intuition-for-the-derivative/" target="_blank">Calculus: Building Intuition for the Derivative – BetterExplained</a>

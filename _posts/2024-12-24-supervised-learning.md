@@ -64,7 +64,6 @@ This sequence is at the heart of most supervised learning frameworks.
 
 ---
 
-
 #### **Formalizing Supervised Learning**
 
 A **prediction function** is a mathematical function $$f: X \to Y$$ that takes an input $$x \in X$$ and produces an output $$\hat{y} \in Y$$.
