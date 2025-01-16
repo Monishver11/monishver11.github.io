@@ -339,9 +339,9 @@ And, Lots more theorems to help you construct new kernels from old.
 
 ---
 
-#### **Popular Kernel Functions**
+##### **Popular Kernel Functions**
 
-##### **Linear Kernel**
+###### **Linear Kernel**
 
 The simplest kernel, corresponding to the standard dot product:
 
@@ -349,7 +349,7 @@ The simplest kernel, corresponding to the standard dot product:
 - **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = \mathbf{x}^\top \mathbf{x}' $$
 
 
-##### **Polynomial Kernel**
+###### **Polynomial Kernel**
 
 Generalizes the linear kernel by including higher-degree interactions:
 
@@ -358,7 +358,7 @@ Generalizes the linear kernel by including higher-degree interactions:
 This kernel maps data to a feature space containing monomials up to degree $$ M $$, but the computational cost of explicit computation grows with $$ M $$.
 
 
-##### **Quadratic Kernel**
+###### **Quadratic Kernel**
 
 A specific case of the polynomial kernel with $$ M = 2 $$:
 
@@ -370,7 +370,7 @@ A specific case of the polynomial kernel with $$ M = 2 $$:
 - **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = (\mathbf{x}^\top \mathbf{x}') + (\mathbf{x}^\top \mathbf{x}')^2 $$.
 
 
-##### **Radial Basis Function (RBF) / Gaussian Kernel**
+###### **Radial Basis Function (RBF) / Gaussian Kernel**
 
 Perhaps the most commonly used nonlinear kernel:
 
@@ -384,12 +384,216 @@ The RBF kernel corresponds to an infinite-dimensional feature space and acts as 
 
 ---
 
-#### **Summary**
+[1]
 
-In this section, we explored the theoretical foundations of kernel functions, how to construct valid kernels, and the properties of popular examples. We’ve seen how kernels enable us to work in high-dimensional spaces efficiently and extend the power of machine learning algorithms.
+#### **Popular Kernel Functions**
 
-Next, we’ll delve into practical considerations: recognizing kernelizable problems, choosing the right kernel, and optimizing models for real-world tasks.
 
-#### **References**
+##### **The Linear Kernel**
+
+The linear kernel is the simplest and most intuitive kernel function. Imagine working with data in an input space represented as $$X = \mathbb{R}^d$$. Here, the feature space, denoted as $$\mathcal{H}$$, is the same as the input space $$\mathbb{R}^d$$. The feature map for this kernel is straightforward: $$\psi(x) = x$$. 
+
+The kernel function itself is defined as:
+
+$$
+k(x, x') = \langle x, x' \rangle = x^\top x',
+$$
+
+where $$\langle x, x' \rangle$$ represents the standard inner product. This simplicity makes the linear kernel computationally efficient and ideal for linear models.
+
+
+##### **The Quadratic Kernel**
+
+The quadratic kernel takes us a step further by mapping the input space $$X = \mathbb{R}^d$$ into a higher-dimensional feature space $$\mathcal{H} = \mathbb{R}^D$$, where $$D$$ is approximately $$d + \binom d2 \approx \frac{d^2}{2}$$. This expanded feature space enables the kernel to capture quadratic relationships in the data.
+
+The feature map for the quadratic kernel is given by:
+
+$$
+\psi(x) = \left(x_1, \dots, x_d, x_1^2, \dots, x_d^2, \sqrt{2}x_1x_2, \dots, \sqrt{2}x_ix_j, \dots, \sqrt{2}x_{d-1}x_d\right)^\top.
+$$
+
+To compute the kernel function, we use the inner product of the feature maps:
+
+$$
+k(x, x') = \langle \psi(x), \psi(x') \rangle.
+$$
+
+Expanding this yields:
+
+$$
+k(x, x') = \langle x, x' \rangle + \langle x, x' \rangle^2.
+$$
+
+
+**Derivation of the Quadratic Kernel:**
+
+The quadratic kernel is defined as the inner product in a higher-dimensional feature space. The feature map $$ \psi(x) $$ includes:
+
+1. Original features: $$ x_1, x_2, \dots, x_d $$
+2. Squared features: $$ x_1^2, x_2^2, \dots, x_d^2 $$
+3. Cross-product terms: $$ \sqrt{2}x_i x_j $$ for $$ i \neq j $$
+
+Thus:
+
+$$
+\psi(x) = \left(x_1, x_2, \dots, x_d, x_1^2, x_2^2, \dots, x_d^2, \sqrt{2}x_1x_2, \sqrt{2}x_1x_3, \dots, \sqrt{2}x_{d-1}x_d\right)^\top
+$$
+
+The kernel is computed as:
+
+$$
+k(x, x') = \langle \psi(x), \psi(x') \rangle
+$$
+
+Expanding this, we have:
+
+1. **Linear terms**:  
+   
+   $$
+   \langle x, x' \rangle = \sum_{i} x_i x_i'
+   $$
+
+2. **Squared terms**:  
+   
+   $$
+   \sum_{i} x_i^2 x_i'^2
+   $$
+
+3. **Cross-product terms**:
+     
+   $$
+   2 \sum_{i \neq j} x_i x_j x_i' x_j'
+   $$
+
+Combining these, the kernel becomes:
+
+$$
+k(x, x') = \langle x, x' \rangle + \sum_{i} x_i^2 x_i'^2 + 2 \sum_{i \neq j} x_i x_j x_i' x_j'
+$$
+
+Recognizing that:
+
+$$
+\langle x, x' \rangle^2 = \left( \sum_{i} x_i x_i' \right)^2 = \sum_{i} x_i^2 x_i'^2 + 2 \sum_{i \neq j} x_i x_j x_i' x_j'
+$$
+
+The kernel simplifies to:
+
+$$
+k(x, x') = \langle x, x' \rangle + \langle x, x' \rangle^2
+$$
+
+
+One of the key advantages of kernel methods is computational efficiency. While the explicit computation of the inner product in the feature space requires $$O(d^2)$$ operations, the implicit kernel calculation only requires $$O(d)$$ operations.
+
+A good example will make it much clearer.
+
+Let $$ x = [1, 2] $$ and $$ x' = [3, 4] $$.
+
+The quadratic kernel is defined as:
+
+$$
+k(x, x') = \langle x, x' \rangle + \langle x, x' \rangle^2
+$$
+
+**Step 1**: Compute $$ \langle x, x' \rangle $$
+$$
+\langle x, x' \rangle = (1)(3) + (2)(4) = 3 + 8 = 11
+$$
+
+**Step 2**: Compute $$ \langle x, x' \rangle^2 $$
+$$
+\langle x, x' \rangle^2 = 11^2 = 121
+$$
+
+**Step 3**: Compute $$ k(x, x') $$
+$$
+k(x, x') = \langle x, x' \rangle + \langle x, x' \rangle^2 = 11 + 121 = 132
+$$
+
+**Step 4**: Verify with the Feature Map
+
+The feature map for the quadratic kernel is:
+
+$$
+\psi(x) = [x_1, x_2, x_1^2, x_2^2, \sqrt{2}x_1x_2]
+$$
+
+For $$ x = [1, 2] $$:
+$$
+\psi(x) = [1, 2, 1^2, 2^2, \sqrt{2}(1)(2)] = [1, 2, 1, 4, 2\sqrt{2}]
+$$
+
+For $$ x' = [3, 4] $$:
+$$
+\psi(x') = [3, 4, 3^2, 4^2, \sqrt{2}(3)(4)] = [3, 4, 9, 16, 12\sqrt{2}]
+$$
+
+Compute the inner product:
+
+$$
+\langle \psi(x), \psi(x') \rangle = (1)(3) + (2)(4) + (1)(9) + (4)(16) + (2\sqrt{2})(12\sqrt{2})
+$$
+$$
+= 3 + 8 + 9 + 64 + 48 = 132
+$$
+
+Thus, the quadratic kernel gives:
+$$
+k(x, x') = 132
+$$
+
+
+##### **The Polynomial Kernel**
+
+Building on the quadratic kernel, the polynomial kernel generalizes the concept by introducing a degree parameter $$M$$. The kernel function is defined as:
+
+$$
+k(x, x') = (1 + \langle x, x' \rangle)^M.
+$$
+
+This kernel corresponds to a feature space that includes all monomials of the input features up to degree $$M$$. Notably, the computational cost of evaluating the kernel function remains constant, regardless of $$M$$. However, explicitly computing the inner product in the feature space grows rapidly as $$M$$ increases.
+
+
+##### **The Radial Basis Function (RBF) or Gaussian Kernel**
+
+The RBF kernel, also known as the Gaussian kernel, is one of the most widely used kernels for nonlinear problems. The input space remains $$X = \mathbb{R}^d$$, but the feature space is infinite-dimensional, making it capable of capturing complex relationships in the data. 
+
+The kernel function is expressed as:
+
+$$
+k(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right),
+$$
+
+where $$\sigma^2$$ is a parameter known as the bandwidth, controlling the smoothness of the kernel.
+
+One might wonder if this kernel still adheres to the principle of inner products in a feature space. The answer is both yes and no. While it acts like a similarity score, it corresponds to the inner product of feature vectors in an infinite-dimensional space.
+
+[Explain it intuitively, and how to make sense of it]
+
+[some visualization needed]
+
+---
+
+#### **Kernelization: The Recipe for Success**
+
+To effectively leverage kernel methods, follow this general recipe:
+
+1. Recognize problems that can benefit from kernelization. These are cases where the feature map $$\psi(x)$$ only appears in inner products $$\langle \psi(x), \psi(x') \rangle$$.
+2. Select an appropriate kernel function('similarity score') that suits the data and the task at hand.
+3. Compute the kernel matrix, a symmetric matrix of size $$n \times n$$ for a dataset with $$n$$ data points.
+4. Use the kernel matrix to optimize the model and make predictions.
+
+This approach allows us to solve problems in high-dimensional feature spaces without the computational burden of explicit mappings.
+
+---
+
+##### **What’s Next?**
+
+ We explored the theoretical foundations of kernel functions, how to construct valid kernels, and the properties of popular kernels. But, a key question remains: under what conditions can we apply kernelization effectively? Understanding this involves diving deeper into the properties of kernel functions and their applicability to different problem domains. In the next post, we will explore these conditions in detail and discuss their implications for solving SVM problems.
+
+Stay tuned!
+
+##### **References**
 - Add some visualization for kernels intuition
 - 
