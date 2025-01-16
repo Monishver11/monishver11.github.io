@@ -333,7 +333,7 @@ Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using 
 4. **Recursion**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = k(\psi(\mathbf{x}), \psi(\mathbf{x}')) $$, for any function $$ \psi(\cdot) $$.
 5. **Feature Mapping**: $$ k_{\text{new}}(\mathbf{x}, \mathbf{x}') = f(\mathbf{x}) f(\mathbf{x}') $$, for any function $$ f(\cdot) $$.
 
-And, Lots more theorems to help you construct new kernels from old.
+And, Lot more ways to help you construct new kernels from old.
 
 [Add reference to mercer theorem]
 
