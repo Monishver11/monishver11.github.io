@@ -339,55 +339,7 @@ And, Lots more theorems to help you construct new kernels from old.
 
 ---
 
-##### **Popular Kernel Functions**
-
-###### **Linear Kernel**
-
-The simplest kernel, corresponding to the standard dot product:
-
-- **Input Space**: $$ X = \mathbb{R}^d $$
-- **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = \mathbf{x}^\top \mathbf{x}' $$
-
-
-###### **Polynomial Kernel**
-
-Generalizes the linear kernel by including higher-degree interactions:
-
-- **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = (1 + \mathbf{x}^\top \mathbf{x}')^M $$, where $$ M $$ is the degree.
-
-This kernel maps data to a feature space containing monomials up to degree $$ M $$, but the computational cost of explicit computation grows with $$ M $$.
-
-
-###### **Quadratic Kernel**
-
-A specific case of the polynomial kernel with $$ M = 2 $$:
-
-- **Feature Map**: Includes all individual terms and pairwise products: 
-  $$
-  \psi(\mathbf{x}) = (x_1, \dots, x_d, x_1^2, \dots, x_d^2, \sqrt{2}x_1x_2, \dots, \sqrt{2}x_{d-1}x_d)^\top.
-  $$
-
-- **Kernel Function**: $$ k(\mathbf{x}, \mathbf{x}') = (\mathbf{x}^\top \mathbf{x}') + (\mathbf{x}^\top \mathbf{x}')^2 $$.
-
-
-###### **Radial Basis Function (RBF) / Gaussian Kernel**
-
-Perhaps the most commonly used nonlinear kernel:
-
-- **Kernel Function**:
-  $$
-  k(\mathbf{x}, \mathbf{x}') = \exp\left(-\frac{\|\mathbf{x} - \mathbf{x}'\|^2}{2\sigma^2}\right),
-  $$
-  where $$ \sigma^2 $$ is the bandwidth parameter.
-
-The RBF kernel corresponds to an infinite-dimensional feature space and acts as a sophisticated similarity measure.
-
----
-
-[1]
-
 #### **Popular Kernel Functions**
-
 
 ##### **The Linear Kernel**
 
@@ -425,7 +377,7 @@ k(x, x') = \langle x, x' \rangle + \langle x, x' \rangle^2.
 $$
 
 
-**Derivation of the Quadratic Kernel:**
+**Derivation of the Quadratic Kernel form:**
 
 The quadratic kernel is defined as the inner product in a higher-dimensional feature space. The feature map $$ \psi(x) $$ includes:
 
@@ -448,19 +400,16 @@ $$
 Expanding this, we have:
 
 1. **Linear terms**:  
-   
    $$
    \langle x, x' \rangle = \sum_{i} x_i x_i'
    $$
 
 2. **Squared terms**:  
-   
    $$
    \sum_{i} x_i^2 x_i'^2
    $$
 
 3. **Cross-product terms**:
-     
    $$
    2 \sum_{i \neq j} x_i x_j x_i' x_j'
    $$
@@ -575,7 +524,7 @@ One might wonder if this kernel still adheres to the principle of inner products
 
 ---
 
-#### **Kernelization: The Recipe for Success**
+#### **Kernelization: The Recipe**
 
 To effectively leverage kernel methods, follow this general recipe:
 
@@ -586,7 +535,6 @@ To effectively leverage kernel methods, follow this general recipe:
 
 This approach allows us to solve problems in high-dimensional feature spaces without the computational burden of explicit mappings.
 
----
 
 ##### **What’s Next?**
 
