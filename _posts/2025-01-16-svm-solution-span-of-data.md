@@ -338,9 +338,6 @@ The Representer Theorem provides a unifying framework for kernelization. By reco
 3. **Representer Theorem**: The span property generalizes to all norm-regularized linear models, forming the theoretical foundation for kernelization and advocates that linear models can be kernelized.
 4. **Kernel Trick**: By kernelizing models, we can solve complex problems in high-dimensional spaces efficiently and without the need to represent $$\phi(x)$$ explicitly.
 
-In the next post, we will explore specific applications of kernelized algorithms and how they can handle non-linear decision boundaries with remarkable ease.
-
-
 Understanding the span property and its implications is not just a mathematical curiosity—it’s a foundational principle that unifies many machine learning models and opens up practical avenues for efficient computation in challenging scenarios.
 
 Next, we’ll dive deeper into specific topics related to SVM, focusing on building intuitive understanding for each concept. Stay tuned!
