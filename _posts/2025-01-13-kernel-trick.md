@@ -60,6 +60,7 @@ $$
 
 An important observation here is that the feature map $$ \psi(\mathbf{x}) $$ appears only through inner products of the form $$ \psi(\mathbf{x}_j)^T \psi(\mathbf{x}_i) $$. This means we don’t actually need the explicit feature representation $$ \psi(\mathbf{x}) $$; instead, we just need the ability to compute these inner products efficiently.
 
+---
 
 #### **Computing Inner Products in Practice**
 
@@ -97,6 +98,7 @@ $$
 
 It is worth noting that the coefficients of the monomials in $$\psi(x)$$ may vary depending on the specific feature map.
 
+---
 
 #### **Efficiency of the Kernel Trick: From Exponential to Linear Complexity**
 
@@ -306,7 +308,25 @@ is positive semidefinite.
 2. The kernel matrix needs to be positive semidefinite for any finite set of points. 
 3. Equivalently: $$ \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j k(\mathbf{x}_i, \mathbf{x}_j) \geq 0 $$, for all $$ \alpha_i \in \mathbb{R}$$ $$  \forall i$$.
 
-[How, better way of stating it!]
+
+###### **Think of it this way:**
+
+1. **Symmetry**:  
+   Symmetry ensures the kernel measures similarity consistently between any two points:  $$k(\mathbf{x}, \mathbf{x}') = k(\mathbf{x}', \mathbf{x}).$$  
+   For example, the similarity between $$ \mathbf{x} $$ and $$ \mathbf{x}' $$ is the same as that between $$ \mathbf{x}' $$ and $$ \mathbf{x} $$.
+
+2. **Positive Semidefiniteness**:  
+   Positive semidefiniteness ensures the kernel corresponds to a **valid inner product** in some (possibly high-dimensional or infinite-dimensional) feature space.  
+   - Think of the kernel as a measure of similarity: this property ensures that the relationships it captures are geometrically valid in that feature space.  
+   - Intuitively, this means the kernel matrix does not produce "negative energy," ensuring a consistent representation of the data.
+
+
+**Simpler Way to State It:**
+
+- A kernel is **PD** if it acts like an inner product in some feature space.
+- For any set of points, the kernel matrix must be symmetric and positive semidefinite.
+- Symmetry ensures the similarity is consistent in both directions, while positive semidefiniteness guarantees geometrically valid relationships in the feature space.
+
 
 ##### **Mercer’s Theorem**
 
@@ -322,7 +342,6 @@ Mercer’s Theorem provides a foundational result for kernels. It states:
 
 While proving that a kernel is **PD** can be challenging, we can use known kernels to construct new ones.
 
-
 ##### **Constructing New Kernels from Existing Ones**
 
 Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using the following operations:
@@ -335,13 +354,13 @@ Given valid PD kernels $$ k_1 $$ and $$ k_2 $$, we can create new kernels using 
 
 And, Lot more ways to help you construct new kernels from old.
 
-[Add reference to mercer theorem]
+It should be noted that Mercer’s theorem only tells us when a candidate similarity function is admissible for use. It tells nothing about how good such a kernel function is.
+
+Next, we'll dive into some of the most widely used kernel functions.
 
 ---
 
-#### **Popular Kernel Functions**
-
-##### **The Linear Kernel**
+#### **The Linear Kernel**
 
 The linear kernel is the simplest and most intuitive kernel function. Imagine working with data in an input space represented as $$X = \mathbb{R}^d$$. Here, the feature space, denoted as $$\mathcal{H}$$, is the same as the input space $$\mathbb{R}^d$$. The feature map for this kernel is straightforward: $$\psi(x) = x$$. 
 
@@ -354,7 +373,7 @@ $$
 where $$\langle x, x' \rangle$$ represents the standard inner product. This simplicity makes the linear kernel computationally efficient and ideal for linear models.
 
 
-##### **The Quadratic Kernel**
+#### **The Quadratic Kernel**
 
 The quadratic kernel takes us a step further by mapping the input space $$X = \mathbb{R}^d$$ into a higher-dimensional feature space $$\mathcal{H} = \mathbb{R}^D$$, where $$D$$ is approximately $$d + \binom d2 \approx \frac{d^2}{2}$$. This expanded feature space enables the kernel to capture quadratic relationships in the data.
 
@@ -493,7 +512,7 @@ k(x, x') = 132
 $$
 
 
-##### **The Polynomial Kernel**
+#### **The Polynomial Kernel**
 
 Building on the quadratic kernel, the polynomial kernel generalizes the concept by introducing a degree parameter $$M$$. The kernel function is defined as:
 
@@ -504,23 +523,131 @@ $$
 This kernel corresponds to a feature space that includes all monomials of the input features up to degree $$M$$. Notably, the computational cost of evaluating the kernel function remains constant, regardless of $$M$$. However, explicitly computing the inner product in the feature space grows rapidly as $$M$$ increases.
 
 
-##### **The Radial Basis Function (RBF) or Gaussian Kernel**
+---
 
-The RBF kernel, also known as the Gaussian kernel, is one of the most widely used kernels for nonlinear problems. The input space remains $$X = \mathbb{R}^d$$, but the feature space is infinite-dimensional, making it capable of capturing complex relationships in the data. 
+#### **The Radial Basis Function (RBF) Kernel**
 
-The kernel function is expressed as:
+
+The **Radial Basis Function (RBF) kernel**, also known as the **Gaussian kernel**, is one of the most widely used kernels for solving nonlinear problems. Unlike the linear and polynomial kernels, the RBF kernel maps data into an **infinite-dimensional feature space**, enabling it to capture highly complex relationships. 
+
+The RBF kernel function is mathematically expressed as:
 
 $$
 k(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right),
 $$
 
-where $$\sigma^2$$ is a parameter known as the bandwidth, controlling the smoothness of the kernel.
+where:
+- $$ x, x' \in \mathbb{R}^d $$ are data points in the input space,
+- $$ \|x - x'\| $$ is the Euclidean distance between $$ x $$ and $$ x' $$,
+- $$ \sigma^2 $$ (the **bandwidth**) controls how quickly the kernel value decays with distance.
 
-One might wonder if this kernel still adheres to the principle of inner products in a feature space. The answer is both yes and no. While it acts like a similarity score, it corresponds to the inner product of feature vectors in an infinite-dimensional space.
 
-[Explain it intuitively, and how to make sense of it]
+##### **How the RBF Kernel Works**
 
-[some visualization needed]
+The RBF kernel measures **similarity** between two points based on their distance. Here's a breakdown:
+
+1. **Close Points**:
+   - If $$ x $$ and $$ x' $$ are close, $$ \|x - x'\| $$ is small. The exponential term $$ \exp(-\|x - x'\|^2 / 2\sigma^2) $$ is close to 1, meaning the points are highly similar.
+
+2. **Distant Points**:
+   - When $$ x $$ and $$ x' $$ are far apart, $$ \|x - x'\| $$ becomes large, and the kernel value approaches 0. This indicates little to no similarity.
+
+3. **Smoothness Control with $$ \sigma^2 $$**:
+   - A smaller $$ \sigma^2 $$ leads to sharper drops in similarity, making the kernel more sensitive to nearby points.
+   - A larger $$ \sigma^2 $$ smooths the decay, creating broader generalization.
+
+
+The RBF kernel is powerful because it implicitly maps data into an **infinite-dimensional feature space**. However, thanks to the **kernel trick**, we don’t need to compute these features explicitly. Instead, the kernel function $$ k(x, x') $$ directly computes the equivalent of the dot product in this space.
+
+###### **What Does This Mean?**
+- In this infinite space, even simple algorithms (like linear classifiers) can create highly complex and nonlinear decision boundaries in the original input space.
+
+
+##### **Intuition Behind the RBF Kernel**
+
+To understand the RBF kernel, let’s break it down with some simple analogies.
+
+
+###### **1. A Bubble of Influence**
+
+Imagine every data point in your dataset creates an invisible "bubble" around itself. The size and shape of this bubble depend on the kernel's parameter $$ \sigma^2 $$ (the bandwidth):
+
+- **Small $$ \sigma^2 $$**: The bubble is tight and localized, meaning each point influences only its immediate neighbors. This captures fine-grained details.
+- **Large $$ \sigma^2 $$**: The bubble is wide and smooth, allowing points to influence data further away. This leads to broader generalization.
+
+When we compute $$ k(x, x') $$, we’re essentially asking, *“How much does the bubble around $$ x $$ overlap with the bubble around $$ x' $$?”* The more overlap, the higher the similarity score.
+
+
+###### **2. Analogy: Dropping Pebbles in a Pond**
+
+Imagine dropping pebbles into a still pond:
+
+- Each pebble creates ripples that spread outward.
+- The strength of the ripples diminishes as they travel further from the pebble.
+
+The kernel function $$ k(x, x') $$ measures how much the ripples from one pebble (data point $$ x $$) interfere or overlap with those from another pebble ($$ x' $$).
+
+- **Close pebbles**: Their ripples interfere constructively (high similarity, $$ k(x, x') $$ close to 1).
+- **Distant pebbles**: Their ripples barely touch (low similarity, $$ k(x, x') $$ close to 0).
+
+The parameter $$ \sigma^2 $$ controls the rate at which the ripples fade:
+- **Small $$ \sigma^2 $$**: Ripples fade quickly, leading to sharp, localized interference.
+- **Large $$ \sigma^2 $$**: Ripples fade slowly, allowing broader interference.
+
+
+###### **3. The Infinite-Dimensional Perspective**
+
+Now imagine these ripples aren’t confined to the surface of the pond but instead exist in an infinite-dimensional space. Each data point generates a unique "wave" in this space. 
+
+The RBF kernel computes the similarity between these waves without explicitly constructing them. It’s like a shortcut for comparing the interference patterns of ripples in an infinitely deep and wide pond.
+
+
+###### **4. Why Does This Matter?**
+
+This ripple analogy helps explain why the RBF kernel is so effective:
+- **Localized Influence**: Points that are closer together naturally exert more influence on each other.
+- **Nonlinear Relationships**: The ripple effect in the transformed feature space allows the kernel to capture intricate patterns in data.
+- **Flexibility**: By tuning $$ \sigma^2 $$, you can adjust the model to balance between fine details (small $$ \sigma^2 $$) and broad generalization (large $$ \sigma^2 $$).
+
+
+**Key Takeaway:** The RBF kernel creates a ripple effect around every data point and measures how much these ripples overlap. This process enables us to handle nonlinear relationships and create complex decision boundaries, all while staying computationally efficient.
+
+##### **Why is the RBF Kernel Infinite-Dimensional?**
+
+The RBF kernel maps data into an **infinite-dimensional feature space** because of its connection to the **Taylor series expansion** of the exponential function. The kernel is expressed as:
+
+$$
+k(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)
+$$
+
+The exponential function can be expanded as a Taylor series:
+
+$$
+\exp(-t) = \sum_{n=0}^{\infty} \frac{(-t)^n}{n!}
+$$
+
+Applying this to the RBF kernel:
+
+$$
+k(x, x') = \sum_{n=0}^{\infty} \frac{1}{n!} \left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)^n
+$$
+
+Each term in this infinite series corresponds to a basis function in the feature space. Since the series includes terms of all powers $$ n $$, the feature space has an **infinite number of dimensions**.
+
+
+###### **Key Intuition:**
+
+1. **Infinite Series**:
+   The kernel includes contributions from all possible degrees of interaction between features (e.g., quadratic, cubic, quartic terms, etc.), up to infinity.
+
+2. **Feature Representation**:
+   The mapping $$ \phi(x) $$ to the feature space involves infinitely many components derived from the series expansion.
+
+3. **Kernel Trick**:
+   Instead of explicitly constructing these infinite features, the RBF kernel directly computes their inner product, $$ \langle \phi(x), \phi(x') \rangle $$, through $$ k(x, x') $$.
+
+This infinite-dimensional nature is what gives the RBF kernel its remarkable flexibility to model complex, nonlinear patterns.
+
 
 ---
 
@@ -538,10 +665,11 @@ This approach allows us to solve problems in high-dimensional feature spaces wit
 
 ##### **What’s Next?**
 
- We explored the theoretical foundations of kernel functions, how to construct valid kernels, and the properties of popular kernels. But, a key question remains: under what conditions can we apply kernelization effectively? Understanding this involves diving deeper into the properties of kernel functions and their applicability to different problem domains. In the next post, we will explore these conditions in detail and discuss their implications for solving SVM problems.
-
-Stay tuned!
+ We explored the theoretical foundations of kernel functions, how to construct valid kernels, and the properties of popular kernels. But, a key question remains: **under what conditions can we apply kernelization effectively?** Understanding this requires exploring one more crucial concept: how the solution to certain optimization problems is spanned by the input data itself. Next, we'll delve into this idea and explore how it connects with kernels to solve the SVM problem we've been discussing. Stay tuned!
 
 ##### **References**
 - Add some visualization for kernels intuition
-- 
+- [Kernels and Kernel Methods - Princeton University](https://www.cs.princeton.edu/~bee/courses/scribe/lec_10_09_2013.pdf)
+- [Radial Basis Function (RBF) Kernel: The Go-To Kernel](https://towardsdatascience.com/radial-basis-function-rbf-kernel-the-go-to-kernel-acf0d22c798a)
+- [The Gaussian RBF Kernel in Non Linear SVM](https://medium.com/@suvigya2001/the-gaussian-rbf-kernel-in-non-linear-svm-2fb1c822aae0)
+- [The Radial Basis Function Kernel: University of Wisconsin–Madison](https://pages.cs.wisc.edu/~matthewb/pages/notes/pdf/svms/RBFKernel.pdf)
