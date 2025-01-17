@@ -119,7 +119,7 @@ You may wonder how we arrived at this specific form for $$w^*$$ at the start $$(
 
 We use the following lemma:
 
-**If $$A$$ and $$A + B$$ are non-singular, then:**
+If $$A$$ and $$A + B$$ are non-singular, then:
 
 $$
 (A + B)^{-1} = A^{-1} - A^{-1} B (A + B)^{-1}
@@ -198,7 +198,7 @@ $$
 This completes the proof of the lemma and justifies its use in our derivation.
 
 
-#### **Key Takeaway:**
+##### **Core Takeaway:**
 
 Both SVMs and ridge regression share the property that their solutions lie in the span of the training data. For SVMs, this emerges naturally from the dual-primal connection, highlighting how support vectors define the decision boundary. In ridge regression, the span property arises through matrix algebra and the closed-form solution.
 
@@ -340,7 +340,7 @@ The Representer Theorem provides a unifying framework for kernelization. By reco
 
 Understanding the span property and its implications is not just a mathematical curiosity—it’s a foundational principle that unifies many machine learning models and opens up practical avenues for efficient computation in challenging scenarios.
 
-Next, we’ll dive deeper into specific topics related to SVM, focusing on building intuitive understanding for each concept. Stay tuned!
+Next, we'll delve into specific topics related to SVM that we've touched on briefly. We'll explore them in more depth to build an intuitive understanding of each concept, as many of these form the foundation for more advanced ML techniques. Mastering them is well worth the effort. Stay tuned!
 
 ##### **References**
 - Representer Theorem
