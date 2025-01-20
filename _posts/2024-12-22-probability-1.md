@@ -361,7 +361,7 @@ Choosing the appropriate probability distribution for a given machine learning (
 
 - **Poisson/Exponential Distributions:** These distributions model events that occur over time or space, where the events happen at a constant average rate. The **Poisson distribution** models the number of events happening in a fixed interval of time or space (e.g., the number of customer arrivals at a service station). The **Exponential distribution** is often used to model the time between events in a Poisson process. Both distributions are important in scenarios involving queues or event-based systems, like predicting the time between customer purchases or server failures in network systems.
   
-##### Why Does Choosing the Right Distribution Matter?
+##### **Why Does Choosing the Right Distribution Matter?**
 
 1. **Tailoring Models to Data:** Understanding the underlying distribution of the data helps in selecting the right model for your problem. For example, if the data is normally distributed, using models like **linear regression** (which assumes normality of residuals) can result in more accurate predictions. On the other hand, when data is binary (e.g., yes/no outcomes), a **logistic regression** or **Bernoulli distribution** approach would be more appropriate.
 2. **Improving Model Efficiency:** When we align the assumptions of a machine learning algorithm with the real-world distribution of the data, models tend to be more efficient and require less computation. For instance, algorithms that work with Gaussian-distributed data can be optimized to take advantage of the symmetry of the distribution, leading to faster convergence in training.
