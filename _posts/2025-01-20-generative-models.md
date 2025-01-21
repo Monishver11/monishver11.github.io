@@ -322,6 +322,14 @@ This estimate corresponds to the fraction of examples with $$ y = 1 $$ in which 
    
 2. **Estimate $$ p(y) $$**: You'll also need to compute the class prior probability $$ p(y) $$, which is simply the proportion of each class in the training data. This can be done by counting how many times each class label appears and normalizing by the total number of examples.
 
+$$
+\theta_0 = \frac{\sum_{n=1}^N \mathbb{I}\{y^{(n)} = 1\}}{N}
+$$
+
+   - $$ \theta_0 $$ is the proportion of samples in the dataset that belong to the class $$ y = 1 $$.
+   - It serves as the prior probability of $$ y = 1 $$.
+
+
 **Substituting the Probabilities for Binary Features:**
 
 The likelihood of the joint probability $$ p(x, y) $$ can be expressed as:
