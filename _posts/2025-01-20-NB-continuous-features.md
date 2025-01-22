@@ -14,6 +14,9 @@ related_posts: false
 
 In the previous blog, we explored the Naive Bayes (NB) model for binary features and how it works under the assumption of conditional independence. However, real-world datasets often include continuous features. How can we extend the NB framework to handle such cases? Let’s dive into Gaussian Naive Bayes (GNB), a variant of NB that uses Gaussian distributions to model continuous inputs.
 
+**Before we start:** I know this might be challenging to follow just by reading through, especially for this part. So, grab a pen and paper and work through it yourself. You'll notice that within the summations, all terms except the one you're differentiating with respect to are constants and will drop out (i.e., become zero). As you write it out, you'll also understand why certain steps involve a change in sign. Working through it once will make everything much clearer and easier to grasp.
+
+---
 
 Consider a multiclass classification problem where each input feature $$ x_i $$ is continuous. To model $$ p(x_i \mid y) $$, we assume that the feature values follow a Gaussian (normal) distribution:
 
@@ -212,32 +215,78 @@ $$
 - The sample variance $$ \sigma_{j,k}^2 $$ measures the spread of feature $$ x_j $$ for class $$ k $$, derived using MLE.
 - The class prior $$ \theta_k $$ represents the proportion of data points in class $$ k $$, computed directly from the dataset.
 
+
 ---
 
-#### **Decision Boundary of Gaussian Naive Bayes**
+#### **Decision Boundary of the Gaussian Naive Bayes (GNB) Model**
 
-Now that we have the model parameters, let’s examine the decision boundary of GNB. For binary classification ($$ y \in \{0, 1\} $$), the log odds ratio is given by:
+**General Formulation of the Decision Boundary:**
+
+For binary classification ($$ y \in \{0, 1\} $$), the **log odds ratio** is expressed as:
 
 $$
 \log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \log \frac{p(x \mid y=1)p(y=1)}{p(x \mid y=0)p(y=0)}.
 $$
 
-Substituting the Gaussian distributions for $$ p(x \mid y) $$, this simplifies to:
+
+If you're unclear about what the log odds ratio is, it represents the logarithm of the ratio of the probabilities of the two classes. By setting the log odds ratio to zero, we identify the points where the model is equally likely to classify a sample as belonging to either class.
+
+In Gaussian Naive Bayes, this involves substituting the Gaussian distributions for $$p(x \mid y)$$, simplifying the expression, and determining whether the resulting decision boundary is quadratic or linear based on the assumptions about the variances.
+
+Thus, the log odds ratio serves as a straightforward mathematical tool to derive the decision boundary by locating the regions where the probabilities of the two classes are equal.
+
+
+So, the conditional distributions $$ p(x_i \mid y) $$ are Gaussian:
 
 $$
-\log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \log \frac{\theta_1}{\theta_0} + \sum_{i=1}^d \left[\log \frac{\sigma_{i,0}^2}{\sigma_{i,1}^2} + \frac{\left(x_i - \mu_{i,0}\right)^2}{2\sigma_{i,0}^2} - \frac{\left(x_i - \mu_{i,1}\right)^2}{2\sigma_{i,1}^2}\right].
+p(x_i \mid y) = \frac{1}{\sqrt{2\pi \sigma_{i,y}^2}} \exp\left(-\frac{(x_i - \mu_{i,y})^2}{2\sigma_{i,y}^2}\right).
 $$
 
-##### **Linear vs. Quadratic Decision Boundary**
+Substituting this into the log odds equation, we get:
 
-1. **General Case**: If the variances ($$ \sigma_{i,0}^2 $$ and $$ \sigma_{i,1}^2 $$) differ between classes, the decision boundary is **quadratic**.
-2. **Shared Variance Assumption**: If we assume that variances are equal for all classes ($$ \sigma_{i,0}^2 = \sigma_{i,1}^2 = \sigma_i^2 $$), the decision boundary becomes **linear**:
-   
-   $$
-   \log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \sum_{i=1}^d \frac{\mu_{i,1} - \mu_{i,0}}{\sigma_i^2} x_i + \sum_{i=1}^d \frac{\mu_{i,0}^2 - \mu_{i,1}^2}{2\sigma_i^2}.
-   $$
+$$
+\log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \log \frac{\theta_1}{\theta_0} + \sum_{i=1}^d \left[\log \sqrt{\frac{\sigma_{i,0}^2}{\sigma_{i,1}^2}} + \frac{(x_i - \mu_{i,0})^2}{2\sigma_{i,0}^2} - \frac{(x_i - \mu_{i,1})^2}{2\sigma_{i,1}^2}\right].
+$$
 
-   This form resembles the decision boundary of logistic regression, emphasizing the close connection between the two models.
+This equation represents the **general case** of the GNB decision boundary.
+
+
+##### **Linear vs. Quadratic Decision Boundaries**
+
+###### **Quadratic Decision Boundary:**
+In the general case, where the variances $$ \sigma_{i,0}^2 $$ and $$ \sigma_{i,1}^2 $$ differ between classes, the decision boundary is **quadratic**. This is due to the presence of quadratic terms in the numerator:
+
+$$
+\frac{(x_i - \mu_{i,0})^2}{2\sigma_{i,0}^2} - \frac{(x_i - \mu_{i,1})^2}{2\sigma_{i,1}^2}.
+$$
+
+###### **Linear Decision Boundary:**
+When we assume the variances are equal for both classes $$ (\sigma_{i,0}^2 = \sigma_{i,1}^2 = \sigma_i^2) $$, the quadratic terms cancel out. Simplifying the log odds equation yields:
+
+$$
+\log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \sum_{i=1}^d \frac{\mu_{i,1} - \mu_{i,0}}{\sigma_i^2} x_i + \sum_{i=1}^d \frac{\mu_{i,0}^2 - \mu_{i,1}^2}{2\sigma_i^2}.
+$$
+
+In matrix form, this becomes:
+
+$$
+\log \frac{p(y=1 \mid x)}{p(y=0 \mid x)} = \theta^\top x + \theta_0,
+$$
+
+where:
+
+- $$ \theta_i = \frac{\mu_{i,1} - \mu_{i,0}}{\sigma_i^2}, \quad i \in [1, d] $$
+- $$ \theta_0 = \sum_{i=1}^d \frac{\mu_{i,0}^2 - \mu_{i,1}^2}{2\sigma_i^2}. $$
+
+Thus, under the shared variance assumption, the decision boundary is **linear**.
+
+
+**Takeaways:**
+- **Quadratic Boundary**: The difference in variances between the two classes introduces curvature, resulting in a nonlinear boundary.
+- **Linear Boundary**: Equal variances lead to a linear boundary, making the model behave similarly to logistic regression.
+
+This derivation connects Gaussian Naive Bayes to logistic regression and helps to understand its behavior under different assumptions.
+
 
 ---
 
@@ -245,24 +294,59 @@ $$
 
 Both Naive Bayes and logistic regression are popular classifiers, but they differ fundamentally in their approach:
 
-| Feature                 | Naive Bayes            | Logistic Regression      |
-|-------------------------|------------------------|--------------------------|
-| **Model Type**          | Generative             | Discriminative           |
-| **Parametrization**     | $$ p(x \mid y), p(y) $$| $$ p(y \mid x) $$        |
-| **Assumptions on $$ y $$** | Bernoulli              | Bernoulli                |
-| **Assumptions on $$ x $$** | Gaussian (in GNB)      | None                     |
-| **Decision Boundary**   | Linear or Quadratic    | Linear                   |
+---
 
-Interestingly, when GNB's assumptions hold (e.g., Gaussian features, independent dimensions, shared variance), it converges to the same decision boundary as logistic regression asymptotically. However, GNB often converges faster on smaller datasets, while logistic regression achieves lower asymptotic error on larger datasets.
+|                     | **Logistic Regression**       | **Gaussian Naive Bayes**    |
+|---------------------|--------------------------------|-----------------------------|
+| **Model Type**      | Conditional/Discriminative    | Generative                  |
+| **Parametrization** | $$p(y \mid x)$$               | $$p(x \mid y), p(y)$$       |
+| **Assumptions on Y**| Bernoulli                     | Bernoulli                   |
+| **Assumptions on X**| —                            | Gaussian                    |
+| **Decision Boundary**| $$\theta_{LR}^\top x$$       | $$\theta_{GNB}^\top x$$     |
 
 ---
 
-#### **Generative vs. Discriminative Models: A Broader Perspective**
+- **Logistic Regression (LR)** is a discriminative model that directly models the conditional probability $$p(y \mid x)$$. It does not make assumptions about the distribution of features $$X$$ but instead focuses on finding a decision boundary that separates the classes based on the observed data.
+  
+- **Gaussian Naive Bayes (GNB)**, on the other hand, is a generative model that explicitly models the joint distribution $$p(x, y)$$ by assuming that the features $$X$$ are conditionally Gaussian given the class $$y$$. 
+
+A few questions to address before we wrap up.
+
+**Question 1:**
+Given the same training data, is $$\theta_{LR} = \theta_{GNB}$$?
+
+- This is a critical question to explore the relationship between discriminative and generative models. While the forms of the decision boundary (e.g., linear) may look similar under certain assumptions (e.g., shared variance in GNB), the parameters $$\theta_{LR}$$ and $$\theta_{GNB}$$ are generally not the same due to differences in how the two models approach the learning process.
+
+**Question 2:** Relationship Between LR and GNB
+- Logistic regression and Gaussian naive Bayes **converge to the same classifier asymptotically**, assuming the GNB assumptions hold:
+  1. Data points are generated from Gaussian distributions for each class.
+  2. Each dimension of the feature vector is generated independently.
+  3. Both classes share the same variance for each feature (shared variance assumption).
+
+- Under these conditions, the decision boundary derived from GNB becomes identical to that of logistic regression as the amount of data increases.
+
+**Question 3:** What Happens if the GNB Assumptions Are Not True?
+- If the assumptions of GNB are violated (e.g., features are not Gaussian, dimensions are not independent, or variances are not shared), the decision boundary derived by GNB can deviate significantly from the optimal boundary. In such cases:
+  - **Logistic Regression** is likely to perform better, as it does not rely on specific assumptions about the feature distributions.
+  - **GNB** may produce suboptimal results because its assumptions are hardcoded into the model and do not adapt to the true data distribution.
+
+Thus, the choice between LR and GNB depends heavily on whether the data aligns with GNB's assumptions.
+
+---
+
+#### **Generative vs. Discriminative Models: Trade-offs**
 
 The contrast between Naive Bayes and logistic regression highlights the differences between **generative** and **discriminative** models. Generative models like Naive Bayes model the joint distribution $$ p(x, y) $$, allowing them to generate data as well as make predictions. In contrast, discriminative models like logistic regression focus directly on $$ p(y \mid x) $$, optimizing for classification accuracy.
 
-This tradeoff is explored in the classic paper by Ng and Jordan (2002), which shows that generative models converge faster but may have higher asymptotic error compared to their discriminative counterparts.
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/Generative_vs_Discriminative_models.png" title="Generative_vs_Discriminative_models" class="img-fluid rounded z-depth-1" %}
+   </div>
+</div>
+
+
+This tradeoff is explored in the classic paper by Ng, A. and Jordan, M. (2002), On discriminative versus generative classifiers: A comparison of logistic regression and naive Bayes., which shows that generative models converge faster but may have higher asymptotic error compared to their discriminative counterparts.
 
 ---
 
-In the next section, we’ll dive deeper into practical implementations of generative models and explore their applications across various domains. Stay tuned!
+In the next section, we’ll explore the Multivariate Gaussian Distribution and the Gaussian Bayes Classifier in greater detail. Stay tuned👋!
