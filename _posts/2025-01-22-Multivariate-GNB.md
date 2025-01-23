@@ -33,8 +33,6 @@ Here, $$d$$ represents the dimensionality of the input $$x$$, $$\vert \Sigma \ve
 
 The term $$(x - \mu)^\top \Sigma^{-1} (x - \mu)$$ is referred to as the **Mahalanobis distance**, which measures the distance of a point $$x$$ from the mean $$\mu$$. Unlike the Euclidean distance, the Mahalanobis distance normalizes for differences in variances and accounts for correlations between the dimensions. This normalization makes it particularly useful in multivariate data analysis.
 
-[Add a better way to understand this + an analogy/intuition to think of this multivariate gaussian]
-
 
 ##### **Intuition and Analogy for Multivariate Gaussian**
 
@@ -235,10 +233,6 @@ $$
 - **Euclidean distance** treats each dimension as independent, ignoring correlations, which can lead to an overestimation of how unusual a point is.
 - **Mahalanobis distance**, by using the inverse covariance matrix $$\Sigma^{-1}$$, adjusts for correlations and scales the deviations accordingly. This results in a more accurate measure of how far a point is from the mean, considering the underlying structure of the data (e.g., the correlation between height and weight in this example).
 
-
-
-
-
 ---
 
 ##### **Grasping Better with Bivariate Normal Distributions**
@@ -337,22 +331,79 @@ where each class $$k$$ has its own mean vector $$\mu_k$$ and covariance matrix $
 
 Estimating the parameters for each class becomes computationally challenging in high dimensions, as the covariance matrix has $$O(d^2)$$ parameters. This complexity often necessitates simplifying assumptions to make the model tractable.
 
-[How $$O(d^2)$$ parameters, and more explanation]
+**How do we arrive at this complexity, and why is it considered computationally challenging?**
+
+In the Gaussian Bayes Classifier, each class $$ k $$ has its own covariance matrix $$ \Sigma_k $$, which is a $$ d \times d $$ matrix where $$ d $$ is the dimensionality of the feature space. For a single class, this covariance matrix has $$ \frac{d(d+1)}{2} $$ unique parameters. This is because a covariance matrix is symmetric, meaning that the upper and lower triangular portions are mirrors of each other. Specifically, the diagonal elements represent the variances, while the off-diagonal elements represent the covariances between different features.
+
+For $$ K $$ classes, the total number of parameters required to estimate all the covariance matrices would be:
+$$
+K \times \frac{d(d+1)}{2}
+$$
+
+This can become computationally expensive, especially when $$ d $$ (the number of features) is large.
+
+This large number of parameters is the reason why the Gaussian Bayes Classifier faces challenges in high-dimensional settings, as the model needs to estimate these parameters from data, and estimating a large number of parameters requires a substantial amount of data. Moreover, when the dimensionality $$ d $$ is large relative to the number of training samples, the covariance matrix can become ill-conditioned or singular, which might lead to poor performance.
+
+To handle this, simplifications such as assuming diagonal covariance matrices (where off-diagonal covariances are set to zero) or sharing a common covariance matrix across all classes are often made, which reduces the number of parameters that need to be estimated.
+
+
+---
 
 ##### **Special Cases of Gaussian Bayes Classifier**
 
 To address the computational challenges, we consider the following special cases of the Gaussian Bayes Classifier:
 
 1. **Full Covariance Matrix**  
-   Each class has its own covariance matrix. While this allows for flexible modeling, the decision boundary is quadratic, and the computational cost can be prohibitive.
+   Each class has its own covariance matrix $$ \Sigma_k $$. This allows for flexible modeling of the class distributions, as it can capture correlations between different features. The decision boundary, however, is quadratic, as the posterior probability depends on the quadratic term involving $$ (x - \mu_k)^\top \Sigma_k^{-1} (x - \mu_k) $$.  
+   
+   **Decision Boundary Derivation**:  
+   The decision rule is based on the ratio of the posterior probabilities:
+
+   $$
+   \frac{p(x \vert t = k)}{p(x \vert t = l)} > 1
+   $$
+
+   which leads to a quadratic expression involving the covariance matrices $$ \Sigma_k $$ and $$ \Sigma_l $$. This quadratic form creates a curved decision boundary.
+
+   **Insight**:  
+   Since each class can have a different covariance matrix, the decision boundary can bend and adapt to the data's true distribution, allowing for accurate classification even in complex scenarios. However, the computational cost is high because each class requires estimating a full covariance matrix with $$ O(d^2) $$ parameters.
 
 2. **Shared Covariance Matrix**  
-   If all classes share a common covariance matrix, the decision boundary becomes linear. This simplification reduces computational complexity and is effective when data approximately follows a Gaussian distribution.
+   If all classes share a common covariance matrix $$ \Sigma $$, the decision boundary becomes linear. This assumption simplifies the model by treating all classes as having the same spread, reducing the number of parameters to estimate.  
+
+   **Decision Boundary Derivation**:  
+   In this case, the likelihood for each class is given by:
+
+   $$
+   p(x \vert t = k) = \frac{1}{(2\pi)^{d/2} |\Sigma|^{1/2}} \exp\left(-\frac{1}{2}(x - \mu_k)^\top \Sigma^{-1} (x - \mu_k)\right)
+   $$
+
+   The decision rule between two classes $$ k $$ and $$ l $$ simplifies to:
+
+   $$
+   (x - \mu_k)^\top \Sigma^{-1} (x - \mu_k) - (x - \mu_l)^\top \Sigma^{-1} (x - \mu_l) = \text{constant}
+   $$
+
+   which is linear in $$ x $$. This results in a linear decision boundary between the classes.
+
+   **Insight**:  
+   By assuming a common covariance matrix, we treat the class distributions as having the same shape and orientation. This simplifies the model and makes the decision boundary linear, leading to reduced computational cost and faster training. However, this may be less flexible if the true distributions of the classes are significantly different.
 
 3. **Naive Bayes Assumption**  
-   The Naive Bayes classifier assumes a diagonal covariance matrix, meaning the features are conditionally independent given the class. Despite this strong assumption, the decision boundary remains quadratic due to feature-wise variances.
+   The Naive Bayes classifier assumes that the features are conditionally independent given the class, meaning that the covariance matrix is diagonal. This leads to a model where each feature is treated independently when making class predictions.
 
-[Add how we got this decision boundaries on each case, little derivation or proof and intuition]
+   **Decision Boundary Derivation**:  
+   Under the Naive Bayes assumption, the covariance matrix is diagonal, so the likelihood for each class becomes:
+
+   $$
+   p(x \vert t = k) = \prod_{i=1}^{d} \frac{1}{\sqrt{2\pi \sigma_{k,i}^2}} \exp\left(-\frac{(x_i - \mu_{k,i})^2}{2\sigma_{k,i}^2}\right)
+   $$
+
+   The decision rule between two classes $$ k $$ and $$ l $$ leads to a quadratic expression for each feature, but since the features are independent, the decision boundary remains quadratic overall, as the product of exponentials leads to terms that depend on the squares of the feature values.
+
+   **Insight**:  
+   Even though the features are assumed to be independent, the decision boundary remains quadratic because of the feature-wise variances. The strong independence assumption makes the model computationally efficient, as it reduces the number of parameters to estimate (each class only requires $$ d $$ variances), but it limits the model's flexibility to capture interactions between features.
+
 
 <div class="row justify-content-center">
     <div class="col-sm-8 mt-3 mt-md-0">
@@ -361,23 +412,29 @@ To address the computational challenges, we consider the following special cases
 </div>
 
 
----
-
 ##### **Gaussian Bayes Classifier vs. Logistic Regression**
 
 One interesting connection between GBC and logistic regression arises when the data is truly Gaussian. If we assume shared covariance matrices, the decision boundaries produced by GBC become identical to those of logistic regression. However, logistic regression is more versatile since it does not rely on Gaussian assumptions and can learn other types of decision boundaries.
 
+**Note:** Even though both methods produce the same linear decision boundary under the Gaussian assumption with shared covariance, the actual parameter values (weights and means) will be different because they are derived from different models and assumptions.
 
-[How?]
-
+---
 
 ##### **Final Thoughts**
 
 The multivariate Gaussian distribution provides a probabilistic framework for understanding data with correlated features. By extending this to classification tasks, the Gaussian Bayes Classifier offers an elegant and interpretable approach to modeling. However, its reliance on assumptions like Gaussianity and the complexity of covariance estimation in high dimensions present practical challenges.
 
-Generative models, like GBC, aim to model the joint distribution $$p(x, y)$$, which contrasts with discriminative models, such as logistic regression, that focus directly on $$p(y \vert x)$$. While generative models offer a principled way to derive loss functions via maximum likelihood, they can struggle with small datasets, where estimating the joint distribution becomes difficult.
+Generative models, like GBC, aim to model the joint distribution $$p(x, y)$$, which contrasts with discriminative models, such as logistic regression, that focus directly on $$p(y \vert x)$$. While generative models offer a principled way to derive loss functions via maximum likelihood, they can struggle with small datasets, where estimating the joint distribution becomes difficult. **Why?**
 
+Generative models typically use the product of the likelihood and the prior. Specifically, the likelihood $$ p(x \mid y) $$, can become challenging with small datasets because:
 
-[Need a practical example to think of it. like how its used in case of non-independent features and how we tackle it and then because of using it, whats the computational complexity?]
+- **Insufficient data for accurate parameter estimation**: With limited data, the model may not have enough examples to accurately estimate the parameters of the distribution (such as the means and variances in the case of Gaussian distributions).
+- **Overfitting risk**: With small datasets, the model may overfit to noise or specific patterns that don't generalize well, leading to poor estimates of the joint distribution.
+
+In contrast, discriminative models like logistic regression focus directly on $$ p(y \mid x) $$ and are less affected by small sample sizes because they only need to model the decision boundary between classes, making them more robust in such situations.
+
 
 As you delve deeper into probabilistic frameworks, a question worth pondering is: Do generative models have an equivalent form of regularization to mitigate overfitting? This opens up avenues for exploring how these models can be made more robust in practice.
+
+[Ans to this or whats next for this question]
+[Next topic in the series - wording]
