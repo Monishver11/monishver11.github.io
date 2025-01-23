@@ -436,5 +436,4 @@ In contrast, discriminative models like logistic regression focus directly on $$
 
 As you delve deeper into probabilistic frameworks, a question worth pondering is: Do generative models have an equivalent form of regularization to mitigate overfitting? This opens up avenues for exploring how these models can be made more robust in practice.
 
-[Ans to this or whats next for this question]
-[Next topic in the series - wording]
+To address this question, we’ll next explore **Bayesian Inference**, where generative models can incorporate priors over their parameters. For instance, in a Gaussian Bayes Classifier, instead of relying on point estimates for means and variances, Bayesian methods treat these parameters as distributions. This approach naturally regularizes the model by spreading probability mass over plausible parameter values, reducing the risk of overfitting. Stay tuned—we’ll dive into this in the next post!
