@@ -262,7 +262,7 @@ jekyll-archives:
     category: "/blog/category/:name/"
 
 display_tags: ["ML", "Math", "Code", "Misc"] # these tags will be displayed on the front page of your blog
-display_categories: ["ML-NYU"] # these categories will be displayed on the front page of your blog
+display_categories: ["ML-NYU", "ADV-ML-NYU"] # these categories will be displayed on the front page of your blog
 
 # -----------------------------------------------------------------------------
 # Jekyll Scholar
