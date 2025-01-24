@@ -63,8 +63,6 @@ One of the most popular methods for point estimation is the **maximum likelihood
 
 Let's consider the simple yet illustrative problem of estimating the probability of a coin landing on heads. 
 
-**Parametric Family**
-
 Here, the parametric family of mass functions is given by:
 
 $$
@@ -97,7 +95,7 @@ Let's break this down with intuition:
 3. **Why is this useful?**  
    It simplifies modeling. Instead of treating each flip as random and unconnected, we assume there's a fixed bias, $$\theta$$, that governs the coin's behavior. Once we observe enough flips (data), we can estimate $$\theta$$ and predict future outcomes.
 
-**Real-Life Analogy**
+**A relatable example might be...**
 
 Imagine a factory making coins with varying biases. Each coin is labeled with its bias, $$\theta$$, ranging between 0 (always tails) and 1 (always heads). If you're handed a coin without a label, your job is to figure out its bias by flipping it multiple times and observing the outcomes.
 
@@ -294,7 +292,7 @@ $$
 $$
 
 
-**A Way to Think of This Distribution**
+**A Way to Think of This Distribution:**
 
 Imagine you're trying to estimate the probability of rain on a given day in a city you’ve never visited. You don’t have any direct weather data yet, but you do have some general knowledge about the region. Based on this, you form an initial belief about how likely it is to rain—maybe you're unsure, so you assume it's equally likely to rain or not, or maybe you’ve heard that it’s usually dry there.
 
@@ -378,6 +376,12 @@ $$
 
 This reflects our updated belief about the probability of heads after observing the data.
 
-As we mentioned, there's one more important reason for choosing the Beta distribution—its technical term is conjugate priors. In the next blog, we'll explore that and dive into Bayesian point estimates, seeing how they align with our frequentist MLE estimate. Stay tuned as we continue building intuition and delving deeper into Bayesian inference 👋!
+---
+
+##### **Wrapping Up**
+
+In this blog, we explored the essence of Bayesian statistics, focusing on how priors, likelihoods, and posteriors interact to update our beliefs. Using the coin-flipping example, we demonstrated key Bayesian tools like the Beta distribution and how to compute posterior updates. Also, as we mentioned, there's one more important reason for choosing the Beta distribution—its technical term is **conjugate priors**. In the next blog, we’ll dive deeper into this concept and explore Bayesian point estimates, comparing them to the frequentist MLE estimate. Stay tuned as we continue to build intuition and delve further into Bayesian inference! 👋
 
 
+##### **References**
+- Bayesian Statistics
