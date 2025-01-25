@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DP on Strings (Patterns and Problems)
-date: 2025-01-20 13:52:00-0400
+date: 2025-01-25 00:27:00-0400
 featured: false
 description: A structured reference set of DP on Strings problems, directly adapted from Striver's DP playlist.
 tags: DP Code
