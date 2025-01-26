@@ -12,6 +12,8 @@ related_posts: false
 #   sidebar: left
 ---
 
+#### **Problems:**
+
 [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)
 ```c++
 class Solution {
