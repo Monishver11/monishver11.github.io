@@ -46,17 +46,17 @@ layout: default
 
     <!-- News -->
     {% if page.news and site.announcements.enabled %}
-      <h2>
-        <a href="{{ '/news/' | relative_url }}" style="color: inherit">news</a>
-      </h2>
+      <h4>
+        <a href="{{ '/news/' | relative_url }}" style="color: inherit; font-weight: 500;">News</a>
+      </h4>
       {% include news.liquid limit=true %}
     {% endif %}
 
     <!-- Latest posts -->
     {% if site.latest_posts.enabled %}
-      <h2>
-        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">latest posts</a>
-      </h2>
+      <h4>
+        <a href="{{ '/blog/' | relative_url }}" style="color: inherit; font-weight: 500;">Latest Posts</a>
+      </h4>
       {% include latest_posts.liquid %}
     {% endif %}
 
