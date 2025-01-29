@@ -233,6 +233,8 @@ Continuous distributions are used when the random variable can take any value wi
 2. **Inference and Prediction**: In probabilistic models, such as Bayesian inference or Hidden Markov Models, understanding the probability distributions of variables allows for reasoning about uncertainty and making predictions based on observed data.
 3. **Risk Analysis**: Distributions help quantify the risk or uncertainty in machine learning predictions. For example, a model's output might be a probability distribution over potential outcomes, providing insights into the confidence of predictions.
 
+---
+
 #### **Cumulative Distribution Function (CDF)**
 
 CDF is closely related to the **Probability Density Function (PDF)** in the case of continuous random variables and the **Probability Mass Function (PMF)** for discrete variables. The CDF gives the cumulative probability that a random variable takes a value less than or equal to a particular point.
@@ -351,6 +353,8 @@ $$
     f_X(x) = \frac{d}{dx} F_X(x) 
     $$
 
+---
+
 #### **Choosing the Right Distribution in ML**
 
 Choosing the appropriate probability distribution for a given machine learning (ML) problem is crucial to making accurate predictions. Each probability distribution captures a unique set of characteristics regarding the randomness and uncertainty in the data. A proper understanding of these distributions can directly influence the performance and efficiency of your model. Here's a more detailed look at the various distributions commonly used in ML:
@@ -376,5 +380,4 @@ If you're eager to explore further, we will be diving deeper into these distribu
 **See you in the next post!**
 
 ##### **References:**
-- Add links for common distributions for making it visually imaginable and relatable!
-- Go through it one more last time for corrections.
+- [Exploring Probability Distributions](https://benhay.es/posts/exploring-distributions/)
