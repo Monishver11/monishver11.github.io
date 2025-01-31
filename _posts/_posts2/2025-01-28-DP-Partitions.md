@@ -119,7 +119,7 @@ public:
     }
 };
 ```
-**Key:** Refer to the [Link]()
+**Key:** Refer to the [Link](https://www.youtube.com/watch?v=xwomavsC86c)
 
 
 [Burst Balloons](https://leetcode.com/problems/burst-balloons/)
@@ -172,7 +172,7 @@ public:
     }
 };
 ```
-**Key:** Refer to the [Link]()
+**Key:** Refer to the [Link](https://www.youtube.com/watch?v=Yz4LlDSlkns)
 
 
 [Boolean Evaluation](https://www.naukri.com/code360/problems/boolean-evaluation_1214650?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf)
@@ -240,9 +240,6 @@ int evaluateExp(string & exp) {
     //Tabulation:
     vector<vector<vector<ll>>> dp(n+1, vector<vector<ll>>(n+1, vector<ll>(2, 0)));
     //Base case;
-    for(int i=0; i<n; i++) {
-        
-    }
     //Recurrence;
     for(int i=n-1; i>=0; i--) {
         for(int j=0; j<=n-1; j++) {
@@ -289,7 +286,7 @@ int evaluateExp(string & exp) {
     return dp[0][n-1][1];
 }
 ```
-**Key:** Refer to the [Link]()
+**Key:** Refer to the [Link](https://www.youtube.com/watch?v=MM7fXopgyjw)
 
 
 [Palindrome Partitioning II](https://leetcode.com/problems/palindrome-partitioning-ii/)
@@ -346,7 +343,7 @@ public:
     }
 };
 ```
-**Key:** Refer to the [Link]()
+**Key:** Refer to the [Link](https://www.youtube.com/watch?v=_H8V5hJUGd0)
 
 
 [Partition Array for Maximum Sum](https://leetcode.com/problems/partition-array-for-maximum-sum/)
@@ -399,7 +396,7 @@ public:
     }
 };
 ```
-**Key:** Refer to the [Link]()
+**Key:** Refer to the [Link](https://www.youtube.com/watch?v=PhWWJmaKfMc)
 
 ---
 
