@@ -349,7 +349,7 @@ By integrating over possible hypotheses rather than committing to one, Bayesian 
 
 ---
 
-Questions:
+Questions to answer:
 - How its integrated in ML or how to use it with all that we learned?
 - where it's practically applied?
 
