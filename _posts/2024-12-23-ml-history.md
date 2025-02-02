@@ -140,6 +140,12 @@ Machine learning has come a long way, evolving through decades of research and i
     
 - **2013:** `Word2Vec`  
     Google introduces Word2Vec, a tool for vectorizing natural language.
+
+- **2017:** `Attention is All You Need`  
+    Vaswani et al. introduce the Transformer architecture, revolutionizing natural language processing
+
+- **2017:** `BERT`  
+    Google releases BERT (Bidirectional Encoder Representations from Transformers), a pre-trained Transformer-based model that significantly improves NLP tasks
     
 - **2018:** `Alibaba's AI`  
     Alibaba's AI outscores humans on Stanford University's reading comprehension test.
@@ -151,7 +157,7 @@ Machine learning has come a long way, evolving through decades of research and i
 - **2020:** `GPT-3 Released`  
     OpenAI’s large-scale language model demonstrated the power of generative pre-trained transformers.
     
-- **2020:** `Turing NLG` 
+- **2020:** `Turing NLG`  
     Microsoft introduces Turing Natural Language Generation.
     
 - **2022:** `AlphaFold Breakthrough`  
