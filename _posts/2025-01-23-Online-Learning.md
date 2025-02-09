@@ -264,8 +264,9 @@ In upcoming posts, we’ll delve deeper into other online learning algorithms an
 
 
 ##### **References**
-- PAC
-- Online Learning Intro
+- [The PAC Learning Model](https://www.cs.utexas.edu/~klivans/f06lec2.pdf)
+- [A Modern Introduction to Online Learning](https://arxiv.org/pdf/1912.13213) [To Check]
+- [Overview of Online Learning](https://haipeng-luo.net/courses/CSCI659/2022_fall/lectures/lecture1.pdf) [To Read]
 
 
 

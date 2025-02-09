@@ -224,3 +224,6 @@ This algorithm cleverly combines subgradient updates with a decreasing step size
 Subgradients are a powerful tool for dealing with non-differentiable convex functions, and subgradient descent provides a straightforward yet effective way to optimize such functions. While slower than gradient descent, subgradient descent shines in scenarios where gradients are unavailable. 
 
 In the next part of this series, we’ll delve into the **dual problem** and uncover its connection to the primal SVM formulation. Stay tuned for more insights into the fascinating world of ML!
+
+##### References
+- [Subgradient Methods](https://web.stanford.edu/class/ee392o/subgrad_method.pdf) [To Read]
