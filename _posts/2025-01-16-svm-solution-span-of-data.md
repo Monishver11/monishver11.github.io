@@ -340,8 +340,8 @@ The Representer Theorem provides a unifying framework for kernelization. By reco
 
 Understanding the span property and its implications is not just a mathematical curiosity—it’s a foundational principle that unifies many machine learning models and opens up practical avenues for efficient computation in challenging scenarios.
 
-Next, we'll delve into specific topics related to SVM that we've touched on briefly. We'll explore them in more depth to build an intuitive understanding of each concept, as many of these form the foundation for more advanced ML techniques. Mastering them is well worth the effort. Stay tuned!
+<!-- Next, we'll delve into specific topics related to SVM that we've touched on briefly. We'll explore them in more depth to build an intuitive understanding of each concept, as many of these form the foundation for more advanced ML techniques. Mastering them is well worth the effort. Stay tuned! -->
 
-##### **References**
+##### **References(To Add)**
 - Representer Theorem
 - Visualization elements
