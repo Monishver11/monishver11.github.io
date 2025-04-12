@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Multiclass Logistic Regression & Multiclass Perceptron Algorithm
-date: 2025-02-22 22:15:00-0400
+date: 2025-04-11 20:32:00-0400
 featured: false
 description: Learn the essentials of multiclass classification, focusing on logistic regression, perceptron algorithms, and efficient model building techniques.
 tags: ML Math
