@@ -435,5 +435,5 @@ We’ve now built a clear understanding of how compatibility scores work in stru
 
 In the **next section**, we’ll dive into **Structured Perceptron** and **Structured SVMs**, where we learn how to train these models using mistake-driven updates and margin-based losses.
 
-Stay tuned!
+Take care!
 
