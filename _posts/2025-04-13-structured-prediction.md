@@ -20,8 +20,7 @@ Structured prediction is a powerful framework used when our output space is comp
 
 In standard classification, we predict a single label for each input—like identifying whether an image contains a cat or a dog.
 
-But what if our outputs aren’t that simple?  
-What if the prediction itself has structure?
+But what if our outputs aren’t that simple? What if the prediction itself has structure?
 
 That’s where **structured prediction** comes in. It refers to machine learning tasks where the output is not a single label but a **structured object**—like a sequence, a tree, or even a segmentation map. These outputs have dependencies and internal organization that we want to model directly.
 
