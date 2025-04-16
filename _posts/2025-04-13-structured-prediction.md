@@ -12,7 +12,7 @@ related_posts: false
 #   sidebar: left
 ---
 
-Structured prediction is a powerful framework used when our output space is complex and structured — such as sequences, trees, or graphs — rather than simple class labels. This post continues from multiclass SVMs to delve deeper into structured prediction, how we define and learn over complex output spaces, and how the structured hinge loss extends ideas from standard classification.
+Structured prediction is a powerful framework used when our output space is complex and structured — such as sequences, trees, or graphs — rather than simple class labels. This post builds on multiclass SVMs to delve deeper into structured prediction, exploring how we define and learn over complex output spaces, as well as the notions of joint feature representations and local compatibility scores.
 
 ---
 
