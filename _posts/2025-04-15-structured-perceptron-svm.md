@@ -233,7 +233,7 @@ That’s what loss-augmented inference does: it focuses on **mistakes the model 
 
 ---
 
-That wraps up our exploration of multiclass classification. Up next: **Decision Trees**, our first inherently non-linear classifier. Stay tuned, and see you!
+That wraps up our exploration of structured prediction. Up next: **Decision Trees**, our first inherently non-linear classifier. Stay tuned, and see you!
 
 
 
