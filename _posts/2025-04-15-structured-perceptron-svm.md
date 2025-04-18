@@ -29,7 +29,7 @@ In this post, we’ll walk through two popular algorithms for learning structure
 
 Let’s dive in!
 
-##### **Learning with Structured Perceptron**
+##### **Structured Perceptron**
 
 To learn the weight vector $$w$$ that scores correct outputs higher than incorrect ones, we can use the **structured perceptron algorithm**.
 
@@ -66,10 +66,10 @@ Up to this point, we've seen how to score structured outputs and how to train wi
 
 So, what if we want a **more principled way to penalize incorrect outputs** based on how different they are from the correct one?
 
-This brings us to **structured hinge loss**.
+This brings us to **structured hinge loss** and **structured SVM**.
 
 
-##### **Generalized Hinge Loss**
+##### **Structured SVM**
 
 In structured prediction, we want the correct output to **not only score highest**, but to **beat all incorrect outputs by a margin**.
 
@@ -223,22 +223,6 @@ So you correct them in a way that says:
 
 That’s what loss-augmented inference does: it focuses on **mistakes the model is confident about but shouldn’t be**.
 
-To close things out, here’s a clear comparison between Structured Perceptron and Structured SVM to highlight their key differences.
-
-##### **Structured Perceptron vs Structured SVM**
-
----
-
-| **Aspect**              | **Structured Perceptron**           | **Structured SVM**                          |
-|-------------------------|--------------------------------------|---------------------------------------------|
-| **Loss Function**       | Zero-one (mistake-driven)            | Hinge loss with structured margin            |
-| **Optimization**        | Perceptron-style updates             | Convex optimization                          |
-| **Margin**              | No explicit margin                   | Enforces margin via structured hinge loss    |
-| **Regularization**      | None                                 | $$\ell_2$$ regularization                    |
-| **Stability**           | Less stable                          | More stable and generalizes better           |
-
----
-
 ##### **Summary**
 
 - Structured prediction is essential when outputs are **interdependent**—such as sequences or trees.
@@ -249,9 +233,7 @@ To close things out, here’s a clear comparison between Structured Perceptron a
 
 ---
 
-In upcoming posts, we’ll dive into **Conditional Random Fields (CRFs)** and other practical models for sequence labeling and NLP tasks.
-
-Stay tuned!
+That wraps up our exploration of multiclass classification. Up next: **Decision Trees**, our first inherently non-linear classifier. Stay tuned, and see you!
 
 
 
