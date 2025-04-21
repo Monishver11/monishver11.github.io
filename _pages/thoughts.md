@@ -7,7 +7,7 @@ nav: true
 nav_order: 4
 ---
 
-These thoughts are ruminations and realizations as I walk through my journey of life. Some of them could be inspired by others, and you might find connections to something else as well. I feel most of them arise from the human-made complexities of life, which is something we’re doomed to live by with all its richness.
+These notions are ruminations and realizations as I walk through my journey of life. Some of them could be inspired by others, and you might find connections to something else as well. I feel most of them arise from the human-made complexities of life, which is something we’re doomed to live by with all its richness.
 
 Some of it could be happy, sad, or whatever form human emotions may take, and these thoughts could take any of those forms when I pen them down. The exact thought is forever with the one penning it down—for god knows what reason.
 
