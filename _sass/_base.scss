@@ -67,6 +67,7 @@ blockquote {
     margin-bottom: 0;
   }
 
+
   /* Tips, warnings, and dangers blockquotes */
   &.block-tip {
     border-color: var(--global-tip-block);
@@ -130,6 +131,12 @@ blockquote {
       color: var(--global-danger-block-title);
     }
   }
+}
+
+.small-quote {
+  font-size: 0.90em;
+  color: #000000;
+  font-weight: 450;
 }
 
 // Checklist
