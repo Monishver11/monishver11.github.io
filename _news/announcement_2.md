@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Sharing personal reflections - Thoughts Tab
+Sharing personal reflections - [Thoughts Tab](/thoughts/)
