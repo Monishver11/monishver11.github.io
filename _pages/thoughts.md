@@ -21,6 +21,13 @@ So, if you have thoughts that are raw, genuine, and come from a place that doesn
 
 As it’s said: this is life, your life, and your only life—so live it to the fullest.
 
+---
+
+<div class="small-quote">
+  <p>But, human beings, you see - what we carry, after all? Nothing. Only sweet memories.</p>
+  <span class="author">- Raghuvaran, 24/04/25</span>
+</div>
+
 <div class="small-quote">
   <p>Human beings are fragile, yet they can beautifully manifest throughout time.</p>
   <span class="author">- 20/04/2025</span>
