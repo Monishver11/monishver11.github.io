@@ -202,6 +202,21 @@ As it’s said: this is life, your life, and your only life—so live it to the 
     <span class="author">- Anonymous</span>
   </div>
 
+  <div class="small-quote">
+    <p>Artists are people driven by the tension between the desire to communicate and the desire to hide.</p>
+    <span class="author">- D.W. Winnicott</span>
+  </div>
+
+  <div class="small-quote">
+    <p>“The catastrophe you fear will happen has already happened.” That catastrophe was so devastating and traumatizing  that we’ve forgotten it, so it is lurking in the shadows of our unconscious, making us sick with fear and worry.</p>
+    <span class="author">- D.W. Winnicott</span>
+  </div>
+
+  <div class="small-quote">
+    <p>It is a joy to be hidden, and disaster not to be found.</p>
+    <span class="author">- D.W. Winnicott</span>
+  </div>
+
 
 
 
