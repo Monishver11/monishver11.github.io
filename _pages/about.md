@@ -30,7 +30,7 @@ A quick intro: I’m a graduate student at NYU’s Courant Institute of Mathemat
 
 -
 
-On a more personal note, I value curiosity, meaningful work, and connecting with others. Outside academia, you might find me thinking about philosophy and life, sometimes at sports—I’m an avid tennis player—and at times exploring my artistic side through digital and physical mediums. Feel free to check out my creations on Instagram: @knotted.arts.
+On a more personal note, I value curiosity, meaningful work, and connecting with others. Outside academia, you might find me thinking about philosophy and life, sometimes at sports—I’m an avid tennis player—and at times exploring my artistic side through digital and physical mediums. Feel free to check out my creations on Instagram: [@knotted.arts](https://www.instagram.com/knotted.arts?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==).
 
 I believe learning is a lifelong journey, and this blog reflects that view. While I’m still early in my path, I hope my experiences, struggles, and successes can inspire others navigating similar challenges. Whether you’re a fellow student, a professional transitioning into machine learning, or simply curious about the field, I hope you find something valuable here.
 
