@@ -62,8 +62,6 @@ This approach builds on a rich body of research using human data to guide AI sys
 
 #### **Technical Approach**
 
-##### **Overall Architecture:**
-
 The system architecture consists of three integrated components working in harmony:
 
 - **Gaze Prediction Model:** A deep learning model that predicts human attention patterns for visual inputs
@@ -167,7 +165,7 @@ By combining these components, we create a comprehensive system for gaze-guided 
 
 Our project explores three distinct methods for integrating gaze information with visual inputs for reinforcement learning. Each method represents a different approach to combining attention data with RGB observations.
 
-##### **Method 1: Channel Integration**
+##### **Method 1: Channel Integration:**
 
 **Technical Approach**
 
@@ -213,7 +211,7 @@ Channel integration offers several advantages:
 
 The main theoretical basis is that early fusion allows the convolutional layers to learn correlations between visual features and attention patterns from the beginning of the processing pipeline.
 
-##### **Method 2: Bottleneck Integration**
+##### **Method 2: Bottleneck Integration:**
 
 **Technical Approach** 
 
@@ -265,7 +263,7 @@ Bottleneck integration offers several advantages:
 
 The theoretical basis is that attention mechanisms are well-suited for modeling the relationship between gaze and visual features, as they naturally capture the notion of focusing on specific regions.
 
-##### **Method 3: Weighted Integration**
+##### **Method 3: Weighted Integration:**
 
 **Technical Approach**
 
@@ -315,7 +313,7 @@ Weighted integration offers several advantages:
 
 The theoretical foundation is that attention acts as a filter or gain control mechanism in human visual processing, enhancing relevant signals and suppressing irrelevant ones before detailed processing.
 
-##### **Comparison and Insights**
+##### **Comparison and Insights:**
 
 Each integration method represents a different hypothesis about how gaze information should influence visual processing:
 
@@ -329,16 +327,130 @@ Our experiments showed that all three methods improved over the baseline, but we
 
 #### **Experimental Setup and Metrics**
 
-**Environments:** Types of rooms and object search tasks
+##### **Environments:**
 
-**Training Configuration:** Number of steps, episodes, hyperparameters
+Our experiments were conducted in the AI2-THOR simulator, which provides photorealistic 3D household environments. Specifically, we focused on kitchen scenes for our object search tasks:
 
-**Evaluation Metrics:**
+```python
+kitchen_scenes = [f"FloorPlan{i}" for i in range(1, 31) if i <= 5 or 25 <= i <= 30]
+```
 
-- Success rate
-- Efficiency (steps to completion)
-- Sample efficiency (learning curve)
-- Comparison methodology
+This selection provided us with 11 distinct kitchen layouts with varying complexity and furniture arrangements. Each kitchen contains multiple objects in their natural locations, creating a challenging but realistic search environment.
+
+For our primary experiments, we selected the "Microwave" as the target object, as it:
+
+- Is present in all kitchen scenes
+- Can be located in different positions (counter, island, above stove)
+- Has distinctive visual features
+- Represents a realistic household search target
+
+To ensure robust evaluation, we randomized:
+
+- The starting position of the agent in each episode
+- The orientation of the agent (random rotation)
+- The specific kitchen scene for each episode
+
+This randomization prevented the agent from memorizing specific paths and forced it to develop generalizable search strategies.
+
+##### **Training Configuration:**
+
+We used the following training configuration as specified in our default.yaml file:
+
+```yaml
+# Training settings
+training:
+    n_envs: 4                  # Number of parallel environments
+    total_timesteps: 1000000   # Total environment interactions
+    save_freq: 10000           # Checkpoint frequency
+    eval_freq: 5000            # Evaluation frequency
+```
+
+For our PPO algorithm, we used these hyperparameters:
+
+```yaml
+# Model settings
+model:
+    # PPO hyperparameters
+    lr: 3.0e-4                 # Learning rate
+    n_steps: 128               # Steps per update
+    batch_size: 64             # Mini-batch size
+    n_epochs: 4                # Epochs per update
+    gamma: 0.99                # Discount factor
+    gae_lambda: 0.95           # GAE parameter
+    clip_range: 0.2            # PPO clip range
+    ent_coef: 0.01             # Entropy coefficient
+    vf_coef: 0.5               # Value function coefficient
+    max_grad_norm: 0.5         # Gradient clipping
+```
+
+Each training run:
+
+- Used 4 parallel environments to improve sample efficiency
+- Trained for 1 million timesteps (approximately 2,000 episodes)
+- Used a maximum episode length of 200 steps
+- Saved checkpoints every 10,000 steps for analysis
+- Evaluated performance every 5,000 steps
+
+We conducted experiments for:
+
+1. Baseline agent (no gaze guidance)
+2. Channel integration agent
+3. Bottleneck integration agent
+4. Weighted integration agent
+
+Each configuration was trained with 3 different random seeds to account for training variability, resulting in 12 total training runs.
+
+##### **Evaluation Metrics:**
+
+We used several metrics to evaluate the performance of our agents:
+
+**Success Rate**
+
+The primary metric was success rate, defined as the percentage of episodes where the agent successfully found the target object. Success was determined by:
+
+- The target object being visible in the agent's field of view
+- The agent being within 1.5 meters of the object
+- The object occupying at least 5% of the agent's visual field
+
+This success definition ensured that the agent not only found the object but was also in a position to potentially interact with it.
+
+**Efficiency (Steps to Completion)**
+
+We measured the average number of steps taken to find the target object in successful episodes. This metric evaluates the efficiency of the search strategy, with fewer steps indicating a more direct path to the target.
+
+**Learning Curve**
+
+We plotted the success rate and average reward as functions of training timesteps to evaluate sample efficiency. This showed how quickly each method learned effective search strategies.
+
+**Exploration Coverage**
+
+We tracked the number of unique positions visited by the agent during an episode, divided by the total number of navigable positions in the scene. This metric evaluates how thoroughly the agent explores the environment.
+
+```python
+"exploration_coverage": len(self.visited_positions) / 100.0  # Normalize by approximate reachable positions
+```
+
+**Gaze-Object Alignment**
+
+For gaze-guided methods, we measured the average IoU (Intersection over Union) between the predicted gaze heatmap and object regions. This metric evaluates how well the gaze prediction aligns with actual object locations.
+
+**Comparison Methodology**
+
+To ensure fair comparison between methods, we:
+
+1. Used identical environment configurations for all agents
+2. Initialized each agent with the same network architecture (except for gaze integration)
+3. Used the same hyperparameters across all methods when possible
+4. Evaluated each method with multiple random seeds (3) to account for training variability
+5. Conducted statistical significance tests (t-tests) on the results
+
+For our final evaluation, we tested each trained agent on 100 new episodes with:
+
+- Random starting positions
+- Previously unseen kitchen configurations
+- Random target object placements
+
+This thorough evaluation methodology allowed us to rigorously compare the different integration methods and determine which approach most effectively leveraged gaze information for visual search.
 
 ---
 
