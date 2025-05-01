@@ -12,6 +12,8 @@ This blog explores how we can make AI agents search for objects more efficiently
 
 Our experiments in simulated indoor environments demonstrate that these gaze-guided agents learn more efficiently and navigate more effectively than traditional approaches. By bridging cognitive science and machine learning, this project offers insights into how biologically-inspired attention mechanisms can enhance AI systems for robotics, assistive technologies, and autonomous navigation.
 
+This project was developed as part of the **Deep Decision Making and Reinforcement Learning** course during the Spring 2025 semester in the **MSCS program at NYU Courant**. Our team — **Lokesh Gautham Boominathan Muthukumar**, **Yu Minematsu**, **Muhammad Mukthar**, and myself.
+
 ---
 
 #### **Introduction and Motivation**
