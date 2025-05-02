@@ -8,6 +8,12 @@ category: Work
 related_publications: false
 ---
 
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/project-2-intro-pic.png" title="project-2-intro-pic" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 This blog explores how we can make AI agents search for objects more efficiently by mimicking human visual attention patterns. Using a gaze prediction model trained on human eye-tracking data, we've developed three innovative approaches to integrate this visual attention information into a reinforcement learning framework: channel integration (adding gaze as a fourth input channel), bottleneck integration (processing RGB and gaze separately before combining), and weighted integration (using gaze to modulate visual inputs).
 
 Our experiments in simulated indoor environments demonstrate that these gaze-guided agents learn more efficiently and navigate more effectively than traditional approaches. By bridging cognitive science and machine learning, this project offers insights into how biologically-inspired attention mechanisms can enhance AI systems for robotics, assistive technologies, and autonomous navigation.
@@ -63,6 +69,12 @@ This approach builds on a rich body of research using human data to guide AI sys
 ---
 
 #### **Technical Approach**
+
+<div class="row justify-content-center">
+    <div class="col-sm-7 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/system-arch.png" title="system-arch" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
 The system architecture consists of three integrated components working in harmony:
 
@@ -167,7 +179,7 @@ By combining these components, we create a comprehensive system for gaze-guided 
 
 Our project explores three distinct methods for integrating gaze information with visual inputs for reinforcement learning. Each method represents a different approach to combining attention data with RGB observations.
 
-##### **Method 1: Channel Integration:**
+##### **Method 1: Channel Integration**
 
 **Technical Approach**
 
@@ -213,7 +225,7 @@ Channel integration offers several advantages:
 
 The main theoretical basis is that early fusion allows the convolutional layers to learn correlations between visual features and attention patterns from the beginning of the processing pipeline.
 
-##### **Method 2: Bottleneck Integration:**
+##### **Method 2: Bottleneck Integration**
 
 **Technical Approach** 
 
@@ -265,7 +277,7 @@ Bottleneck integration offers several advantages:
 
 The theoretical basis is that attention mechanisms are well-suited for modeling the relationship between gaze and visual features, as they naturally capture the notion of focusing on specific regions.
 
-##### **Method 3: Weighted Integration:**
+##### **Method 3: Weighted Integration**
 
 **Technical Approach**
 
@@ -359,12 +371,16 @@ This randomization prevented the agent from memorizing specific paths and forced
 We used the following training configuration as specified in our default.yaml file:
 
 ```yaml
-# Training settings
-training:
-    n_envs: 4                  # Number of parallel environments
-    total_timesteps: 1000000   # Total environment interactions
-    save_freq: 10000           # Checkpoint frequency
-    eval_freq: 5000            # Evaluation frequency
+# Environment settings
+environment:
+  scene_type: "FloorPlan"
+  target_object: "Microwave"  # Default target
+  grid_size: 0.25             # Navigation grid resolution
+  rotation_step: 45           # Agent rotation angle per step
+  field_of_view: 90           # Agent's camera FOV
+  max_steps: 500              # Maximum episode length
+  visibility_distance: 1.5    # Object detection threshold
+  done_on_target_found: True  # Episode terminates on success
 ```
 
 For our PPO algorithm, we used these hyperparameters:
@@ -372,35 +388,38 @@ For our PPO algorithm, we used these hyperparameters:
 ```yaml
 # Model settings
 model:
-    # PPO hyperparameters
-    lr: 3.0e-4                 # Learning rate
-    n_steps: 128               # Steps per update
-    batch_size: 64             # Mini-batch size
-    n_epochs: 4                # Epochs per update
-    gamma: 0.99                # Discount factor
-    gae_lambda: 0.95           # GAE parameter
-    clip_range: 0.2            # PPO clip range
-    ent_coef: 0.01             # Entropy coefficient
-    vf_coef: 0.5               # Value function coefficient
-    max_grad_norm: 0.5         # Gradient clipping
+  # PPO hyperparameters
+  lr: 3.0e-4                        # Learning rate
+  n_steps: 128                      # Steps per update
+  batch_size: 64                    # Mini-batch size
+  n_epochs: 4                       # Epochs per update
+  gamma: 0.99                       # Discount factor
+  gae_lambda: 0.95                  # GAE parameter
+  clip_range: 0.2                   # PPO clip range
+  ent_coef: 0.01                    # Entropy coefficient
+  vf_coef: 0.5                      # Value function coefficient
+  max_grad_norm: 0.5                # Gradient clipping
+  features_extractor: "WeightedCNN" # {"ChannelCNN", BottleneckCNN", "WeightedCNN"}
+  use_gaze: False                   # Toggled for gaze experiments
 ```
 
 Each training run:
 
-- Used 4 parallel environments to improve sample efficiency
-- Trained for 1 million timesteps (approximately 2,000 episodes)
-- Used a maximum episode length of 200 steps
-- Saved checkpoints every 10,000 steps for analysis
-- Evaluated performance every 5,000 steps
+- Used a single environment wrapped with DummyVecEnv for Stable Baselines compatibility
+- Trained for 100,000 timesteps per experiment (approximately 200 episodes)
+- Used a maximum episode length of 500 steps
+- Logged detailed metrics including episode rewards, success rates, and navigation efficiency
+- Used TensorBoard for visualizing learning progress
+- Created unique experiment directories for each run with timestamped IDs
 
-We conducted experiments for:
+For our gaze integration research, we conducted experiments with:
 
-1. Baseline agent (no gaze guidance)
-2. Channel integration agent
-3. Bottleneck integration agent
-4. Weighted integration agent
+1. Baseline agent (standard PPO with no gaze information)
+2. Channel integration (gaze as 4th input channel)
+3. Bottleneck integration (separate RGB and gaze processing paths)
+4. Weighted integration (gaze-modulated RGB input)
 
-Each configuration was trained with 3 different random seeds to account for training variability, resulting in 12 total training runs.
+All configurations were evaluated across three environment types with increasing complexity to test generalization capabilities and the impact of visual distractions on search efficiency.
 
 ##### **Evaluation Metrics:**
 
@@ -419,10 +438,6 @@ This success definition ensured that the agent not only found the object but was
 **Efficiency (Steps to Completion)**
 
 We measured the average number of steps taken to find the target object in successful episodes. This metric evaluates the efficiency of the search strategy, with fewer steps indicating a more direct path to the target.
-
-**Learning Curve**
-
-We plotted the success rate and average reward as functions of training timesteps to evaluate sample efficiency. This showed how quickly each method learned effective search strategies.
 
 **Exploration Coverage**
 
@@ -443,10 +458,8 @@ To ensure fair comparison between methods, we:
 1. Used identical environment configurations for all agents
 2. Initialized each agent with the same network architecture (except for gaze integration)
 3. Used the same hyperparameters across all methods when possible
-4. Evaluated each method with multiple random seeds (3) to account for training variability
-5. Conducted statistical significance tests (t-tests) on the results
 
-For our final evaluation, we tested each trained agent on 100 new episodes with:
+For our final evaluation, we tested each trained agent on 50 new episodes with:
 
 - Random starting positions
 - Previously unseen kitchen configurations
@@ -458,64 +471,305 @@ This thorough evaluation methodology allowed us to rigorously compare the differ
 
 #### **Results and Analysis**
 
-**Performance Comparison:** How each integration method performed against the baseline
+##### **Performance Comparison:** 
 
-**Sample Efficiency:** Learning curves showing training progress
+Our experiments across different environments and integration methods yielded several key findings:
 
-**Ablation Studies:** Effects of different components on performance
+**General Performance Trends**
 
-**Qualitative Analysis:** Visual examples of agent behavior with/without gaze guidance
+The integration of gaze information significantly improved agent performance across all tested environments. Gaze integration consistently provided a substantial baseline reward increase compared to the standard PPO agent without gaze guidance. This performance gain was evident early in training, suggesting that gaze information provides useful priors for exploration.
 
-**Insights and Interpretations:** What the results tell us about attention in reinforcement learning
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/comparison_plots_train_general_new.png" title="comparison_plots_train_general_new" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+comparison_plots_train_general_new
+</div>
+
+Environment complexity played a crucial role in determining the relative advantages of gaze integration:
+
+<div class="row justify-content-center">
+    <div class="col-sm-4 mt-3">
+        {% include figure.liquid path="assets/img/project_2/comparison_plots_train_floorplan1_all.png" title="comparison_plots_train_floorplan1_all" class="img-fluid rounded z-depth-1" %}
+    </div>
+    <div class="col-sm-4 mt-3">
+        {% include figure.liquid path="assets/img/project_2/comparison_plots_train_floorplan30_all.png" title="comparison_plots_train_floorplan30_all" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+comparison_plots_train_floorplan1_all & comparison_plots_train_floorplan30_all
+</div>
+
+**Simple Environments (FloorPlan1):** In simpler floor plans with minimal distractions, the baseline agent learned effective policies relatively quickly. The gaze-integrated models, being more complex, required additional training time to fully leverage their capabilities. However, once trained sufficiently, they still outperformed the baseline.
+
+**Complex Environments (FloorPlan30):** In more complicated environments with numerous visual distractions, the advantage of gaze integration became more pronounced. These models helped agents start with a reasonable prior rather than navigating randomly, significantly reducing the exploration space. The baseline agent often wasted time exploring irrelevant areas of the environment.
+
+##### **Ablation Studies:**
+
+We conducted several ablation studies to understand the contribution of different gaze integration components:
+
+**Gaze Features vs. Gaze Rewards**
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/comparison_plots_train_floorplan30_all_table_case.png" title="comparison_plots_train_floorplan30_all_table_case" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+comparison_plots_train_floorplan30_all_table_case
+</div>
+
+Our experiments revealed that gaze features alone did not significantly improve performance. However, when combined with gaze-based reward incentives, performance improved substantially. This suggests a synergistic effect between perception (gaze features) and motivation (reward structure).
+
+**Integration Methods Comparison**
+
+Each integration method showed distinct advantages:
+
+1. **Channel Integration:** The simplest approach, providing solid performance improvements with minimal architectural changes.
+2. **Bottleneck Integration:** Offered better feature representation but required more training time to converge.
+3. **Weighted Integration:** Showed the most promising results in complex environments by effectively focusing attention on relevant regions.
+
+**Training Duration Effects**
+
+All gaze integration methods required more training timesteps to reach optimal performance compared to the baseline. This reflects the increased model complexity and the need to learn effective representations of the gaze information. However, this investment in training time translated to superior performance, especially in challenging environments.
+
+##### **Qualitative Analysis:**
+
+Visual examination of agent behavior revealed striking differences between baseline and gaze-guided agents:
+
+>TODO: Add Training Videos with Caption
+
+**Navigation Patterns**
+
+- **Baseline Agents:** Often exhibited wandering behavior, moving in inefficient patterns and frequently revisiting already explored areas.
+- **Gaze-Guided Agents:** Demonstrated more directed navigation, with clear purpose in movement and fewer redundant actions.
+
+**Policy Stability**
+
+An unexpected benefit of gaze integration was increased policy stability. The variance in performance across episodes was notably reduced when using gaze guidance, suggesting that human attention patterns provide a stabilizing influence on learning.
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/comparison_plots_eval_floorplan30_all.png" title="comparison_plots_eval_floorplan30_all" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+comparison_plots_eval_floorplan30_all
+</div>
+
+
+##### **Insights and Interpretations:** 
+
+Our results provide several important insights about attention in reinforcement learning:
+
+**The Synergy Effect**
+
+The most significant finding is that gaze features must be paired with appropriate reward incentives to be effective. This reveals a fundamental principle: agents need both a map (where to look) and a reason (why to look there). This parallels human cognition, where attention and motivation are deeply interconnected.
+
+**Complexity-Performance Relationship**
+
+The advantage of gaze guidance scales with environment complexity. In simple environments, standard RL approaches can efficiently discover solutions, but as complexity increases, human-like attention becomes increasingly valuable as a focusing mechanism.
+
+The performance advantages demonstrated by gaze-guided agents, particularly in complex environments, strongly support the hypothesis that human attention patterns can significantly improve reinforcement learning for visual search tasks.
 
 ---
 
 #### **Challenges and Solutions**
 
-**Technical Challenges:** Issues you encountered with environment, gaze integration, etc.
+##### **Technical Challenges:**
 
-**Solutions:** How you overcame these challenges
+Implementing gaze-guided reinforcement learning presented several significant technical challenges that required innovative solutions:
 
-**Lessons Learned:** What you discovered about the development process
+**Environment Integration Challenges**
+
+One of the primary challenges was integrating the gaze prediction model with the AI2Thor environment while maintaining compatibility with Stable Baselines 3's PPO implementation. 
+
+AI2Thor's observation space and Stable Baselines' expectations didn't align directly, creating several integration issues:
+
+1. **Observation Space Incompatibility:** AI2Thor provides RGB observations, but we needed to add a gaze channel while keeping everything compatible with Stable Baselines' expected formats.
+2. **Reward Signal Modification:** Incorporating gaze-based rewards required intercepting and modifying the environment's reward calculation without disrupting the training loop.
+3. **Feature Extractor Complexity:** Each integration method required a custom feature extractor that could process both RGB and gaze information correctly.
+4. **Memory Management:** AI2Thor instances consumed substantial memory, causing occasional crashes during extended training runs.
+
+**Gaze Integration Challenges**
+
+The integration of gaze information into the reinforcement learning pipeline presented several architectural challenges:
+
+1. **Neural Network Architecture:** Designing effective architectures for each integration method required balancing complexity with performance.
+2. **Training Stability:** The more complex models showed higher variance during early training phases.
+3. **Hyperparameter Tuning:** Finding optimal hyperparameters across different integration methods proved challenging.
+4. **Feature Representation:** Ensuring that gaze features were properly normalized and represented within the model.
+
+##### **Solutions:** 
+
+We implemented several solutions to address these challenges:
+
+**Environment Wrapper Architecture**
+
+We developed a multi-layered wrapper architecture to seamlessly integrate gaze prediction with the AI2Thor environment:
+
+```python
+# Create environment with gaze
+env_fn = create_env(config, args.target, gaze_model=gaze_model)
+env = DummyVecEnv([env_fn])
+```
+
+The `create_env` function implemented a series of wrappers:
+
+- **GazeEnvWrapper:** This wrapper intercepted observations from AI2Thor, ran them through the gaze prediction model, and augmented the observation with a gaze heatmap.
+- **GazePreprocessEnvWrapper:** Ensured that observations were properly formatted with the correct shape and channel ordering.
+- **FlattenObservationWrapper:** Made the observations compatible with Stable Baselines 3's expectations.
+
+This layered approach allowed us to maintain clean separation of concerns while ensuring compatibility across all components.
+
+**Custom Feature Extractors**
+
+For each integration method, we implemented specialized feature extractors that properly handled the combined RGB and gaze information:
+
+```python
+class ChannelGazeExtractor(BaseFeaturesExtractor):
+    def __init__(self, observation_space, features_dim=512):
+        super().__init__(observation_space, features_dim)
+        self.cnn = CNN(use_gaze=True)
+    
+    def forward(self, observations):
+        # Process observations
+        if isinstance(observations, np.ndarray):
+            observations = torch.FloatTensor(observations)
+        
+        # Normalize RGB and extract gaze
+        rgb = observations[:, :3].float() / 255.0
+        gaze = observations[:, 3:4].float() / 255.0 if observations.shape[1] > 3 else torch.zeros(...)
+        
+        # Forward pass
+        return self.cnn(rgb, gaze)
+```
+
+Similar extractors were implemented for bottleneck and weighted integration methods, each handling the observation processing appropriately.
+
+**Reward Augmentation**
+
+To incorporate gaze guidance into the reward structure, we implemented a reward augmentation mechanism:
+
+```python
+def _augment_reward(self, reward, observation, success):
+    """Augment reward based on gaze alignment with important regions"""
+    if success:
+        return reward  # Don't modify success reward
+    
+    # Generate gaze heatmap
+    gaze_heatmap = self._predict_gaze(observation)
+    
+    # Calculate reward based on alignment of agent's view with gaze predictions
+    alignment_score = self._compute_alignment(observation, gaze_heatmap)
+    
+    # Scale and add to base reward
+    gaze_reward = self.gaze_reward_scale * alignment_score
+    return reward + gaze_reward
+```
+
+This allowed us to guide the agent's exploration without interfering with the base environment reward structure.
+
+**Error Handling and Training Management**
+
+To address the stability issues with AI2Thor and extended training runs, we implemented several robustness improvements:
+
+1. **Checkpoint Saving:** Regular checkpoints to resume training after crashes
+2. **Error Recovery:** Try-except blocks with clean environment shutdown
+3. **Resource Monitoring:** Memory usage tracking and graceful degradation
+4. **Training Resumption:** Ability to continue training from saved checkpoints
+
+```python
+try:
+    model.learn(
+        total_timesteps=total_timesteps,
+        callback=progress_callback
+    )
+except Exception as e:
+    logger.error(f"\nERROR during training: {e}")
+    import traceback
+    logger.error(traceback.format_exc())
+finally:
+    # Clean up
+    try:
+        if 'env' in locals():
+            env.close()
+            logger.info("Environment closed")
+    except Exception as cleanup_error:
+        logger.error(f"Error during cleanup: {cleanup_error}")
+```
+
+
+##### **Lessons Learned:**
+
+Through the development and experimentation process, we discovered several important insights:
+
+- **Training Duration Requirements:** The more complex gaze-integrated models required significantly more training time than our initial estimates. For these complex environments and neural architectures, at least a million timesteps would be necessary to see optimal performance. Our experiments of 100,000 timesteps provided promising initial results but likely undersell the full potential of gaze integration.
+- **Simulator Limitations:** AI2Thor, while powerful for realistic indoor navigation, had stability issues during extended runs. These crashes limited our ability to conduct the longer training sessions that would likely further demonstrate the advantages of gaze integration.
+- **Observation Preprocessing Importance:** Proper normalization and preprocessing of observations proved critical for stable training, especially with the combined RGB and gaze inputs.
+- **Feature Extraction Architecture Impact:** The choice of feature extraction architecture had a significant impact on both training stability and ultimate performance. Simpler architectures trained more quickly but had lower performance ceilings.
+
+Despite the limited training duration, our results showed clear signals that gaze integration provides substantial benefits, particularly in complex environments. With more training time, the performance gap would likely widen further in favor of gaze-guided approaches.
+
 
 ---
 
 #### **Future Directions**
 
-**Potential Improvements:** How your approach could be enhanced
+##### **Potential Improvements:**
 
-**Applications:** Where this technology could be applied
+Our work points to several promising avenues for improvement:
 
-**Research Possibilities:** New questions opened by your work
+**Extended Training Duration**
 
-**Scaling Considerations:** How this approach might work in more complex environments
+The most immediate improvement would be to extend training duration to at least 1 million timesteps. Our preliminary results with 50,000 timesteps already showed significant promise, and the learning curves suggested that performance would continue to improve with additional training. More extensive training would likely reveal the full potential of gaze integration, particularly for the more complex integration methods.
+
+**Architectural Refinements**
+
+The neural network architectures could be further refined to better leverage gaze information. More sophisticated attention mechanisms could better integrate gaze with visual features. Transformer-based architectures could be particularly effective for this purpose.
+
+**Improved Gaze Prediction Models**
+
+Our current gaze prediction model could be enhanced in several ways:
+- Training gaze models specifically for object search tasks could provide more relevant attention patterns.
+-  Incorporating additional modalities like depth information could improve gaze prediction accuracy.
+
+
+##### **Scaling Considerations:** 
+
+Scaling this approach to more complex environments presents both challenges and opportunities:
+
+- More complex environments and extended training would require significant computational resources. Techniques like distributed training and more efficient implementations would be necessary for large-scale deployment.
+- As environments become more complex (e.g., multi-room buildings, outdoor settings), the value of gaze guidance likely increases, but so does the challenge of providing accurate gaze predictions. Research into more sophisticated gaze models would be needed.
+- Extending beyond object search to more complex tasks like manipulation or sequential decision-making would require more sophisticated integration of gaze information throughout the task structure.
 
 ---
 
 #### **Conclusion**
 
-**Summary of Contributions:** The key innovations in your work
+Our project demonstrates that integrating human visual attention patterns into reinforcement learning creates agents that navigate and search more efficiently. By developing three different integration methods—channel, bottleneck, and weighted, we've shown how gaze information can guide visual search in various environmental contexts.
 
-**Broader Impact:** How this research contributes to the field
+##### **Key Message:**
 
-**Take-Home Message:** The most important insight from your project
+>Human attention is a powerful guide for artificial intelligence, but unlocking its full potential requires more than simply showing an agent where to look—it requires teaching the agent why looking there matters. By aligning what an agent sees with what it values through a combination of perceptual guidance and reward shaping, we can create systems that navigate complex visual environments with greater purpose and efficiency. This approach represents a step toward more human-like artificial intelligence that doesn't just mimic human behavior but inherits the underlying cognitive principles that make human visual search so remarkably efficient.
 
 ---
 
 #### **Resources**
 
 - **Code Repository:** Link to GitHub
+- **Data/Checkpoints:** Link to Drive
 - **Paper/Documentation:** Any publications or documentation
 - **Demo:** Any videos or interactive demonstrations
 - **References:** Key papers and resources that informed your work
 
----
-
-#### **Visual Elements to Include**
+<!-- #### **Visual Elements to Include**
 
 - System Architecture Diagram: Overall flow from gaze prediction to RL agent
 - Integration Method Diagrams: Visual representations of the three integration approaches
 - Learning Curves: Comparison of sample efficiency across methods
 - Heat Maps: Visualizations of gaze predictions and agent attention
 - Code Snippets: Key implementation details
-- Agent Navigation Paths: Visual examples of improved paths with gaze guidance
+- Agent Navigation Paths: Visual examples of improved paths with gaze guidance -->
