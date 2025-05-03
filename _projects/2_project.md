@@ -30,6 +30,8 @@ This project explores a novel approach: leveraging human gaze patterns to enhanc
 
 The motivation behind this research stems from a simple observation: humans use sophisticated attention mechanisms developed through evolution to efficiently prioritize visual information. When we search for objects, our eyes don't scan uniformly across a scene; instead, we rapidly focus on relevant locations based on context, object relationships, and prior knowledge. For instance, when looking for a microwave in a kitchen, humans instinctively focus on countertops and walls rather than floors or ceilings.
 
+While gaze prediction has been explored in computer vision research, and various attention mechanisms have been applied to object detection, our work makes a novel contribution by specifically integrating human gaze patterns into reinforcement learning for embodied visual search in 3D environments. Previous studies have primarily focused on using gaze for image classification, intention prediction, or as auxiliary signals, but our approach represents one of the first comprehensive attempts to integrate gaze information at both perceptual and motivational levels for embodied agents performing active search tasks.
+
 This gaze-guided approach has significant practical applications:
 
 - **Household robots** that can efficiently find and manipulate objects
@@ -54,9 +56,15 @@ Visual search in AI presents numerous challenges that humans solve intuitively. 
 Humans excel at visual search through sophisticated attentional mechanisms. Our visual system employs both bottom-up attention (driven by salient features like color and motion) and top-down attention (guided by goals and prior knowledge). When searching for objects, we don't scan uniformly across scenes but rather prioritize locations where target objects are likely to appear. For example, when searching for a microwave in a kitchen, we instinctively focus on countertops and cabinet areas while ignoring floors or ceilings. These attentional shortcuts dramatically reduce the search space and make human visual search remarkably efficient.
 
 
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/proj2-pic2.png" title="proj2-pic2" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 **Reinforcement Learning for Navigation**
 
-Traditional approaches to visual navigation using reinforcement learning typically rely on end-to-end training where agents learn to map raw visual inputs directly to actions. In our implementation, we see this in the baseline train_with_progress_logging.py script, which uses a standard PPO algorithm with CNN-based policies to learn search behaviors. While effective, these approaches often require millions of environment interactions and struggle with the exploration-exploitation dilemma. Agents must spend significant time exploring to discover rewards, leading to inefficient learning, especially in large, complex environments with sparse rewards.
+Traditional approaches to visual navigation using reinforcement learning typically rely on end-to-end training where agents learn to map raw visual inputs directly to actions. In our implementation, we see this in the baseline `train_with_progress_logging.py` script, which uses a standard PPO algorithm with CNN-based policies to learn search behaviors. While effective, these approaches often require millions of environment interactions and struggle with the exploration-exploitation dilemma. Agents must spend significant time exploring to discover rewards, leading to inefficient learning, especially in large, complex environments with sparse rewards.
 
 **Gaze as Guidance** 
 
@@ -70,19 +78,19 @@ This approach builds on a rich body of research using human data to guide AI sys
 
 #### **Technical Approach**
 
-<div class="row justify-content-center">
-    <div class="col-sm-7 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/project_2/system-arch.png" title="system-arch" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-
 The system architecture consists of three integrated components working in harmony:
 
 - **Gaze Prediction Model:** A deep learning model that predicts human attention patterns for visual inputs
 - **Environment:** A modified AI2-THOR environment with custom wrappers that integrate gaze information
-**RL Agent:** A customized PPO-based agent that learns to navigate using both visual inputs and gaze information
+- **RL Agent:** A customized PPO-based agent that learns to navigate using both visual inputs and gaze information
 
 The information flows through this system sequentially - the environment provides RGB observations, which are fed to the gaze model to predict attention heatmaps. These heatmaps are incorporated into the agent's observations, which the agent then processes to make navigation decisions. The reward function uses both search success and gaze-object overlap to guide learning effectively.
+
+<div class="row justify-content-center">
+    <div class="col-sm-10 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/sys-arch.jpeg" title="sys-arch" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
 ##### **Gaze Prediction Model:** 
 
@@ -118,6 +126,7 @@ Our implementation wraps the AI2-THOR simulator in a Gymnasium-compatible enviro
 
 **Object Search Task Design**
 
+
 The object search task is implemented in the `reset()` and `step()` methods of our environment class. We create challenging scenarios by:
 
 - Randomly selecting a kitchen scene from a predefined list
@@ -125,11 +134,23 @@ The object search task is implemented in the `reset()` and `step()` methods of o
 - Placing target objects (e.g., "Microwave") in their natural locations
 - Defining success as finding the object with sufficient visibility (>5%) and proximity (<1.5m)
 
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/env-1.png" title="env-1" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 The episode terminates when either the object is found or the maximum step limit (default: 200 steps) is reached.
 
 **Observation and Action Spaces**
 
 The observation space consists of RGB images (224×224×3) from the agent's perspective. The action space is discrete with 7 possible actions: moving in four directions (forward, backward, left, right), rotating left and right, and looking up. This action space provides sufficient flexibility for the agent to search the environment effectively.
+
+<div class="row justify-content-center">
+    <div class="col-sm-7 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/project_2/env-2.png" title="env-2" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
 
 ##### **Reinforcement Learning Framework:**
 
@@ -341,8 +362,6 @@ Our experiments showed that all three methods improved over the baseline, but we
 
 #### **Experimental Setup and Metrics**
 
-##### **Environments:**
-
 Our experiments were conducted in the AI2-THOR simulator, which provides photorealistic 3D household environments. Specifically, we focused on kitchen scenes for our object search tasks:
 
 ```python
@@ -471,8 +490,6 @@ This thorough evaluation methodology allowed us to rigorously compare the differ
 
 #### **Results and Analysis**
 
-##### **Performance Comparison:** 
-
 Our experiments across different environments and integration methods yielded several key findings:
 
 **General Performance Trends**
@@ -491,10 +508,10 @@ comparison_plots_train_general_new
 Environment complexity played a crucial role in determining the relative advantages of gaze integration:
 
 <div class="row justify-content-center">
-    <div class="col-sm-4 mt-3">
+    <div class="col-sm-6 mt-3">
         {% include figure.liquid path="assets/img/project_2/comparison_plots_train_floorplan1_all.png" title="comparison_plots_train_floorplan1_all" class="img-fluid rounded z-depth-1" %}
     </div>
-    <div class="col-sm-4 mt-3">
+    <div class="col-sm-6 mt-3">
         {% include figure.liquid path="assets/img/project_2/comparison_plots_train_floorplan30_all.png" title="comparison_plots_train_floorplan30_all" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
@@ -577,8 +594,6 @@ The performance advantages demonstrated by gaze-guided agents, particularly in c
 ---
 
 #### **Challenges and Solutions**
-
-##### **Technical Challenges:**
 
 Implementing gaze-guided reinforcement learning presented several significant technical challenges that required innovative solutions:
 
@@ -717,8 +732,6 @@ Despite the limited training duration, our results showed clear signals that gaz
 ---
 
 #### **Future Directions**
-
-##### **Potential Improvements:**
 
 Our work points to several promising avenues for improvement:
 
