@@ -6,6 +6,8 @@ img: assets/img/proj2-1.jpg
 importance: 1
 category: Work
 related_publications: false
+toc:
+  sidebar: left
 ---
 
 <div class="row justify-content-center">
