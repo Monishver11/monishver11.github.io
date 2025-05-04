@@ -24,6 +24,16 @@ As it’s said: this is life, your life, and your only life—so live it to the 
 ---
 
 <div class="small-quote">
+  <p>Why does anyone even get married? Because they’re lonely and because they’re hopeful.</p>
+  <span class="author">- Materialists Film</span>
+</div>
+
+<div class="small-quote">
+  <p>The truth is not simply what you think it is; it is also the circumstances in which it is said, and to whom, why, and how it is said.</p>
+  <span class="author">- Vaclav Havel</span>
+</div>
+
+<div class="small-quote">
   <p>But, human beings, you see - what we carry, after all? Nothing. Only sweet memories.</p>
   <span class="author">- Raghuvaran, 24/04/25</span>
 </div>
@@ -54,12 +64,22 @@ As it’s said: this is life, your life, and your only life—so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>We all share a commonality that we often overlook throughout our lives. Even if you grasp it early on, you may still choose to ignore it for a while.</p>
-  <span class="author">- 20/04/2025</span>
+  <p>But how could you live and have no story to tell?</p>
+  <span class="author">- Fyodor Dostoevsky, White Nights</span>
 </div>
 
 <div class="small-quote">
-  <p>Human beings are fragile, yet they can beautifully manifest throughout time.</p>
+  <p>The mystery of human existence lies not in just staying alive, but in finding something to live for.</p>
+  <span class="author">- Fyodor Dostoevsky, The Brothers Karamazov</span>
+</div>
+
+<div class="small-quote">
+  <p>Much unhappiness has come into the world because of bewilderment and things left unsaid.</p>
+  <span class="author">- Fyodor Dostoevsky</span>
+</div>
+
+<div class="small-quote">
+  <p>We all share a commonality that we often overlook throughout our lives. Even if you grasp it early on, you may still choose to ignore it for a while.</p>
   <span class="author">- 20/04/2025</span>
 </div>
 
@@ -119,6 +139,11 @@ As it’s said: this is life, your life, and your only life—so live it to the 
   </div>
 
   <div class="small-quote">
+    <p>Power is given only to him who dares to stoop and take it ... one must have the courage to dare.</p>
+    <span class="author">- Fyodor Dostoevsky, Crime and Punishment</span>
+  </div>
+
+  <div class="small-quote">
     <p>The test of a first-rate intelligence is the ability to hold two opposing ideas in mind at the same time and still retain the ability to function. One should, for example, be able to see that things are hopeless yet be determined to make them otherwise.</p>
     <span class="author">- F. Scott Fitzgerald</span>
   </div>
@@ -174,6 +199,11 @@ As it’s said: this is life, your life, and your only life—so live it to the 
   </div>
 
   <div class="small-quote">
+    <p>Pain and suffering are always inevitable for a large intelligence and a deep heart. The really great men must, I think, have great sadness on earth.</p>
+    <span class="author">- Fyodor Dostoevsky, Crime and Punishment</span>
+  </div>
+
+  <div class="small-quote">
     <p>Some people are born with tornadoes in their lives, but constellations in their eyes. Other people are born with stars at their feet, but their souls are lost at sea.</p>
     <span class="author">- Nikita Gill</span>
   </div>
@@ -216,14 +246,3 @@ As it’s said: this is life, your life, and your only life—so live it to the 
     <p>It is a joy to be hidden, and disaster not to be found.</p>
     <span class="author">- D.W. Winnicott</span>
   </div>
-
-
-
-
-
-
-
-
-
-
-
