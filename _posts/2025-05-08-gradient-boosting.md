@@ -3,7 +3,7 @@ layout: post
 title: Gradient Boosting / "Anyboost"
 date: 2025-05-08 12:56:00-0400
 featured: false
-description: From FSAM to Gradient Boosting - Extending Beyond Exponential Loss
+description: A clear and intuitive walkthrough of gradient boosting as functional gradient descent, with detailed explanations of residuals, step directions, and algorithmic structure.
 tags: ML Math
 categories: ML-NYU
 giscus_comments: false
