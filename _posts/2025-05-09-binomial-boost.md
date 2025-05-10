@@ -14,6 +14,8 @@ related_posts: false
 
 In the previous post, we introduced the **Gradient Boosting framework** as functional gradient descent, where we minimize a loss function by iteratively adding base learners that approximate the negative gradient (pseudo-residuals) of the loss. We demonstrated this with the squared loss, where residuals had a direct and intuitive interpretation. In this post, we extend that idea to **logistic loss**, which is more appropriate for binary classification tasks. This special case is often referred to as **BinomialBoost**.
 
+---
+
 ##### **Logistic Loss and Pseudo-Residuals**
 
 For binary classification with labels $$ Y = \{-1, 1\} $$, the **logistic loss** is given by:
