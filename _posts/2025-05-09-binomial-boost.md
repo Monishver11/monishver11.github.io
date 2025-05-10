@@ -6,7 +6,7 @@ featured: false
 description: See how the gradient boosting framework naturally extends to binary classification using the logistic loss.
 tags: ML Math
 categories: ML-NYU
-giscus_comments: false
+giscus_comments: true
 related_posts: false
 # toc:
 #   sidebar: left
