@@ -107,7 +107,7 @@ giscus:
   repo: Monishver11/monishver11.github.io
   repo_id: R_kgDONe9Wkw
   category: General # name of the category under which discussions will be created
-  category_id: DIC_kwDONe9Wk84Cp-bg # leave empty or specify your category_id (see https://giscus.app/)
+  category_id: DIC_kwDONe9Wk84Cp-bh # leave empty or specify your category_id (see https://giscus.app/)
   mapping: title # identify discussions by post title
   strict: 1 # use strict identification mode
   reactions_enabled: 1 # enable (1) or disable (0) emoji reactions
