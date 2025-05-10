@@ -57,7 +57,7 @@ $$
 Because only the $$i$$-th term depends on $$f(x_i)$$, this simplifies to:
 
 $$
-\frac{\partial}{\partial f(x_i)} J(f) = \frac{1}{n} \cdot (-2)(y_i - f(x_i)) = -\frac{2}{n}(y_i - f(x_i)) \tag{20}
+\frac{\partial}{\partial f(x_i)} J(f) = \frac{1}{n} \cdot (-2)(y_i - f(x_i)) = -\frac{2}{n}(y_i - f(x_i))
 $$
 
 The term $$y_i - f(x_i)$$ is the **residual** at point $$x_i$$. So we see:
@@ -78,8 +78,10 @@ This process mimics the behavior of **gradient descent in function space**.
 
 We can now draw an analogy:
 
-- **Boosting update:**  $$f \leftarrow f + v h$$
-- **Gradient descent:** $$f \leftarrow f - \alpha \nabla_f J(f)$$
+- **Boosting update:**  $$f \leftarrow f + \textcolor{red}{v} \textcolor{green}{h}$$
+- **Gradient descent:** $$f \leftarrow f - \textcolor{red}{\alpha} \textcolor{green}{\nabla_f J(f)}$$
+  
+**Note: Observe the variables highlighted in red and green.**
 
 Where:
 - $$h$$ approximates the direction of steepest descent (the gradient),
@@ -148,7 +150,6 @@ So we find the **function $$h \in \mathcal{H}$$** that best fits the negative gr
 
 $$
 h = \arg\min_{h \in \mathcal{H}} \sum_{i=1}^n \left( -g_i - h(x_i) \right)^2
-\tag{26}
 $$
 
 This is just **least squares regression** of pseudo-residuals.
@@ -157,7 +158,6 @@ Once we have $$h$$, we take a step:
 
 $$
 f \leftarrow f + v h
-\tag{27}
 $$
 
 where $$v$$ is a step size, which can either be fixed (e.g., shrinkage factor $$\lambda$$) or found via line search.
@@ -168,7 +168,6 @@ where $$v$$ is a step size, which can either be fixed (e.g., shrinkage factor $$
 - **Objective**:
   $$
   J(f) = \sum_{i=1}^n \ell(y_i, f(x_i))
-  \tag{24}
   $$
 
 - **Unconstrained gradient**:
@@ -186,7 +185,6 @@ where $$v$$ is a step size, which can either be fixed (e.g., shrinkage factor $$
 - **Boosting update**:
   $$
   f \leftarrow f + v h
-  \tag{27}
   $$
 
 This gives a general recipe for boosting: **approximate the negative gradient with a weak learner and take a small step in that direction** — hence the name **gradient boosting**.
@@ -209,7 +207,6 @@ To **regularize** and control overfitting, we scale the step size with a **shrin
 
 $$
 f_m(x) = f_{m-1}(x) + \lambda v_m h_m(x)
-\tag{28}
 $$
 
 This shrinkage slows down learning and typically improves generalization. A common choice is $$\lambda = 0.1$$.
@@ -236,7 +233,6 @@ Putting everything together, the gradient boosting algorithm proceeds as follows
 
       $$
       r_{im} = -\left[ \frac{\partial}{\partial f(x_i)} \ell(y_i, f(x_i)) \right]_{f(x_i) = f_{m-1}(x_i)}
-      \tag{29}
       $$
 
    2. **Fit a base learner** $$h_m$$ (e.g., regression tree) to the dataset $$\{(x_i, r_{im})\}_{i=1}^n$$ using squared error.
@@ -267,4 +263,6 @@ To implement gradient boosting, you need:
 
 Once these ingredients are in place, you're ready to build powerful models with **Gradient Boosting Machines (GBMs)**!
 
-In the next post, we’ll explore specific loss functions like **logistic loss** for classification and how gradient boosting compares to other ensemble methods.
+In the next post, we’ll explore specific loss functions like **logistic loss** for classification and how gradient boosting works in this setting. 
+
+Take care!
