@@ -13,7 +13,7 @@ related_posts: false
 ---
 
 
-In the previous post, we introduced Gradient Boosting with logistic loss, discussing how weak learners can be sequentially combined to minimize differentiable loss functions using functional gradient descent. Now, we turn our attention to how this elegant theory translates into robust, high-performing models in practice — particularly focusing on regularization techniques that help control overfitting and improve generalization.
+In the previous post, we introduced Gradient Boosting with logistic loss, discussing how weak learners can be sequentially combined to minimize differentiable loss functions using functional gradient descent. Now, we turn our attention to how this elegant theory translates into robust, high-performing models in practice, particularly focusing on regularization techniques that help control overfitting and improve generalization.
 
 ---
 
@@ -22,7 +22,7 @@ In the previous post, we introduced Gradient Boosting with logistic loss, discus
 While **gradient boosting** is often surprisingly resistant to overfitting compared to other ensemble methods like bagging, it is not immune. Its resilience stems from several key characteristics of the boosting process:
 
 - **Implicit Feature Selection**:  
-  One of the reasons gradient boosting is relatively resistant to overfitting is that it performs **feature selection implicitly** during training. At each boosting iteration, the algorithm fits a weak learner — often a decision tree — to the current pseudo-residuals (the gradients of the loss). 
+  One of the reasons gradient boosting is relatively resistant to overfitting is that it performs **feature selection implicitly** during training. At each boosting iteration, the algorithm fits a weak learner often a decision tree to the current pseudo-residuals (the gradients of the loss). 
 
   Decision trees naturally perform feature selection: they evaluate all available features and choose the one that offers the best split (i.e., the greatest reduction in loss). This means that only the most predictive features are chosen at each step. Over multiple rounds, this leads to an ensemble that selectively and adaptively focuses on the most informative parts of the input space.
 
@@ -30,14 +30,14 @@ While **gradient boosting** is often surprisingly resistant to overfitting compa
 
 
 - **Localized Additive Updates**:  
-  In gradient boosting, each weak learner (such as a shallow decision tree) is trained to correct the mistakes of the current model. Because these learners are typically low-capacity (e.g., stumps or small trees), their predictions only affect specific regions of the input space — they're "localized" in that sense.
+  In gradient boosting, each weak learner (such as a shallow decision tree) is trained to correct the mistakes of the current model. Because these learners are typically low-capacity (e.g., stumps or small trees), their predictions only affect specific regions of the input space - they're "localized" in that sense.
 
   As boosting progresses, the model becomes more accurate, and the residuals (errors) it tries to fix get smaller and more focused. Consequently, the subsequent learners make increasingly smaller and more targeted updates. This means that instead of making large, sweeping changes to the model, later learners adjust predictions only in regions where the model is still wrong.
 
-  This gradual, fine-grained updating process helps avoid overfitting, as the model doesn't overreact to noise or outliers — it incrementally improves where it matters most.
+  This gradual, fine-grained updating process helps avoid overfitting, as the model doesn't overreact to noise or outliers - it incrementally improves where it matters most.
 
 
-Together, these mechanisms help gradient boosting maintain a balance between flexibility and generalization. However, it can still overfit when models are overly complex or trained for too many iterations — which is why regularization techniques such as shrinkage, subsampling, and tree size constraints are essential in practice. 
+Together, these mechanisms help gradient boosting maintain a balance between flexibility and generalization. However, it can still overfit when models are overly complex or trained for too many iterations - which is why regularization techniques such as shrinkage, subsampling, and tree size constraints are essential in practice. 
 
 - **Shrinkage**: Use a small learning rate (step size) $$\lambda$$ to scale the contribution of each weak learner:
   
@@ -69,7 +69,7 @@ This effect is clearly observed in tasks like **Sinc function regression**(which
 
 ##### **Stochastic Gradient Boosting**
 
-To improve efficiency and reduce overfitting, we can employ **stochastic gradient boosting** — a strategy analogous to minibatch gradient descent in optimization. So in minibatch, for each boosting round:
+To improve efficiency and reduce overfitting, we can employ **stochastic gradient boosting** - a strategy analogous to minibatch gradient descent in optimization. So in minibatch, for each boosting round:
 
 - Randomly sample a subset of the training data.
 - Fit the base learner using this subset.
@@ -109,4 +109,4 @@ Gradient Boosting is a **flexible and powerful meta-algorithm**:
 - Applicable to **classification, regression, ranking, multiclass tasks**, and more
 - Highly **scalable** with implementations like **XGBoost**, **LightGBM**, and **CatBoost**
 
-With proper regularization, including shrinkage, stochastic updates, and feature subsampling — Gradient Boosting becomes one of the most effective tools in the machine learning toolkit.
+With proper regularization, including shrinkage, stochastic updates, and feature subsampling - Gradient Boosting becomes one of the most effective tools in the machine learning toolkit.
