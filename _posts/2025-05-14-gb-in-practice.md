@@ -109,4 +109,4 @@ Gradient Boosting is a **flexible and powerful meta-algorithm**:
 - Applicable to **classification, regression, ranking, multiclass tasks**, and more
 - Highly **scalable** with implementations like **XGBoost**, **LightGBM**, and **CatBoost**
 
-With proper regularization — including shrinkage, stochastic updates, and feature subsampling — Gradient Boosting becomes one of the most effective tools in the machine learning toolkit.
+With proper regularization, including shrinkage, stochastic updates, and feature subsampling — Gradient Boosting becomes one of the most effective tools in the machine learning toolkit.
