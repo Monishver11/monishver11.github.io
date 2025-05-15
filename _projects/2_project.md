@@ -558,7 +558,23 @@ All gaze integration methods required more training timesteps to reach optimal p
 
 Visual examination of agent behavior revealed striking differences between baseline and gaze-guided agents:
 
->TODO: Add Training Videos with Caption
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 d-flex justify-content-center">
+      <div style="max-width: 960px; width: 50%;">
+        {% include video.liquid 
+          path="assets/img/project_2/episode-success.mp4" 
+          class="img-fluid rounded z-depth-1 w-100" 
+          controls=true 
+          autoplay=true 
+        %}
+      </div>
+    </div>
+  </div>
+  <div class="caption text-center mt-2">
+    A successful episode of locating the target microwave using gaze guidance.
+  </div>
+</div>
 
 **Navigation Patterns**
 
@@ -774,11 +790,10 @@ Our project demonstrates that integrating human visual attention patterns into r
 
 #### **Resources**
 
-- **Code Repository:** Link to GitHub
-- **Data/Checkpoints:** Link to Drive
+- **Code Repository:** [Link to GitHub Repository](https://github.com/Monishver11/Gaze-RL)
+- **Data/Checkpoints:** [Link to Drive](https://drive.google.com/drive/folders/1zZxV_rkoEhV5sZV9cidnpqYMvq0FwDUe?usp=sharing)
 - **Paper/Documentation:** Any publications or documentation
-- **Demo:** Any videos or interactive demonstrations
-- **References:** Key papers and resources that informed your work
+- **References:** Key papers and resources
 
 <!-- #### **Visual Elements to Include**
 
