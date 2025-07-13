@@ -9,7 +9,7 @@ nav_order: 4
 
 These notions are ruminations and realizations as I walk through my journey of life. Some may be inspired by others, and you might find connections to different ideas or directly to individuals, which I find relatable and interesting. I feel most of them arise from the human-made complexities of life, which is something we’re doomed to live by with all its richness.
 
-Some of it could be happy, sad, or whatever form human emotions may take, and these thoughts could take any of those forms when I pen them down. The exact thought is forever with the one penning it down—for god knows what reason.
+Some of it could be happy, sad, or whatever form human emotions may take, and these thoughts could take any of those forms when I pen them down. The exact thought is forever with the one penning it down, for god knows what reason.
 
 Everyone sees life through their unique lens and the experiences they’ve gained in the time being, and that opens and closes doors for them to move forward. I wish more people took the time to see more holistically what life has to offer.
 
@@ -17,9 +17,9 @@ This is my way of sharing my learnings as I navigate and explore this world for 
 
 I truly believe there are people out there who will resonate with one another, even in the slightest ways and that’s the beauty of it. We’re all unique in subtle ways, yet often separated by distances for which we haven’t found meaningful ways to bridge connection.
 
-So, if you have thoughts that are raw, genuine, and come from a place that doesn’t intend harm—express them.
+So, if you have thoughts that are raw, genuine, and come from a place that doesn’t intend harm - express them.
 
-As it’s said: this is life, your life, and your only life—so live it to the fullest.
+As it’s said: this is life, your life, and your only life - so live it to the fullest.
 
 ---
 
