@@ -23,6 +23,112 @@ As it’s said: this is life, your life, and your only life—so live it to the 
 
 ---
 
+###### **July 2025**
+
+<div class="small-quote">
+  <p>The solace of being unfiltered makes us at peace and happy, and being careless is one way of getting there.</p>
+  <span class="author">- 12/07/25</span>
+</div>
+
+<div class="small-quote">
+  <p>Aim to explore and experience for what life truly has to offer.</p>
+  <span class="author">- 07/07/25</span>
+</div>
+
+<div class="small-quote">
+  <p>Abra-ca-dabra – I create as I speak.</p>
+</div>
+
+<div class="small-quote">
+  <p>When love comes knocking at your door, be the best version of yourself possible.</p>
+</div>
+
+<div class="small-quote">
+  <p>Nowadays, people aren’t following their gut or instinct. Two things: one, people need to sit with their thoughts without distractions, and second, they need the conviction to pursue that decision and make it right. People who find it difficult to follow their instinct suffer from either or both of these problems.</p>
+</div>
+
+<div class="small-quote">
+  <p>Purposeful struggle adds both meaning and beauty to life.</p>
+</div>
+
+<div class="small-quote">
+  <p>There are infinite right answers to the single question of what life is.</p>
+</div>
+
+<div class="small-quote">
+  <p>Love is war and life is the battlefield, that’s kind of what we’ve made it into.</p>
+  <span class="author">- 09/07/25</span>
+</div>
+
+<div class="small-quote">
+  <p>The gift of empathetic people is that they get to know life a lot faster and better, and live a fuller circle of life than most people.</p>
+</div>
+
+<div class="small-quote">
+  <p>We are all born so beautiful. The greatest tragedy is being convinced we are not.</p>
+</div>
+
+<div class="small-quote">
+  <p>You cannot make everyone think and feel as deeply as you do. This is your tragedy, because you understand them but they do not understand you.</p>
+  <span class="author">- Daniel Saint</span>
+</div>
+
+<div class="small-quote">
+  <p>Love is not easy, but love is not hard either. It just takes time and effort to be patient and listen.</p>
+</div>
+
+<div class="small-quote">
+  <p>Life is too big to narrow it down.</p>
+</div>
+
+<div class="small-quote">
+  <p>The heart just needs time to heal, but the mind needs more than time, it needs conviction, devoid of uncertainty.</p>
+</div>
+
+---
+<div class="small-quote">
+  <p>No good story happens from things going right.</p>
+  <span class="author">- Top Gun Actor</span>
+</div>
+
+<div class="small-quote">
+  <p>If something burns your soul with purpose and desire, it's your duty to be reduced to ashes by it.</p>
+  <span class="author">- Bukowski</span>
+</div>
+
+<div class="small-quote">
+  <p>Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child’s?</p>
+  <span class="author">- Alan Turing</span>
+</div>
+
+<div class="small-quote">
+  <p>Every observer alters what they observe. In quantum mechanics, this is formalized. In human life, it’s more apparent.</p>
+  <span class="author">- Shashank Sharma</span>
+</div>
+
+<div class="small-quote">
+  <p>In the right eyes, you will be art.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>The most impressive people I know spent their time with their head down, getting shit done for a long, long time.</p>
+  <span class="author">- Sam Altman</span>
+</div>
+
+<div class="small-quote">
+  <p>Both lock and key are needed, no value with just one.</p>
+</div>
+
+<div class="small-quote">
+  <p>The heart just needs time to heal, but the mind needs more than time, it needs conviction, devoid of uncertainty.</p>
+</div>
+
+<div class="small-quote">
+  <p>He was her warmth, she was his peace.</p>
+  <span class="author">- The Better Man Project</span>
+</div>
+
 <div class="small-quote">
   <p>Why does anyone even get married? Because they’re lonely and because they’re hopeful.</p>
   <span class="author">- Materialists Film</span>
