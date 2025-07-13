@@ -66,6 +66,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 <div class="small-quote">
   <p>We are all born so beautiful. The greatest tragedy is being convinced we are not.</p>
+  <span class="author">- Rupi Kaur</span>
 </div>
 
 <div class="small-quote">
