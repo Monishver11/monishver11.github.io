@@ -26,6 +26,66 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 ###### **July 2025**
 
 <div class="small-quote">
+  <p>Everything is subjective in life until it can’t be. You learn, unlearn, accept, reject, and change with your experience of life to finally settle into what is truly you.</p>
+</div>
+
+<div class="small-quote">
+  <p>Learn to uncomplicate life. Even if you overthink and complicate, things are what they are—so why do it? Accept what something is and go chase what you want.</p>
+</div>
+
+<div class="small-quote">
+  <p>Life lies in between knowing nothing matters, and knowing that if nothing matters, then life will be boring.</p>
+</div>
+
+<div class="small-quote">
+  <p>I think life should never be limited by someone else's definition. Live and define it for yourself, allowing it to evolve as you grow and gain more experiences.</p>
+</div>
+
+<div class="small-quote">
+  <p>If reality is solely based on how you feel, then you should open your eyes wider before you feel it’s too late. You’re missing out on a more beautiful view that you’re blocking yourself from for no good reason.</p>
+</div>
+
+<div class="small-quote">
+  <p>Just live the present, don’t anticipate the future, and don’t regret the past. Just be present in the moment.</p>
+</div>
+
+<div class="small-quote">
+  <p>The ultimate goal of life is to find yourself. The journey of life is to get you there. While doing so, you get to fulfil a purpose that helps all of humanity in even the slightest way possible. By today, we’ve off-tracked and gotten distracted.</p>
+</div>
+
+<div class="small-quote">
+  <p>Knowing yourself is the highest form of intelligence.</p>
+</div>
+
+<div class="small-quote">
+  <p>Isn’t it the duty of oneself to find himself or herself through the process called life?</p>
+</div>
+
+<!-- <div class="small-quote">
+  <p>Why don’t we have basic guidelines for developing a good conscience? Why isn’t this taught to children at an early age? Why do we assume that they will learn these values through life experiences as they grow? Without a solid foundation, it's challenging to cultivate a great human being. Our ancestors have provided us with clear principles of right and wrong for healthy living, so there are definitely lessons that can be taught for the betterment of everyone.</p>
+</div> -->
+
+<div class="small-quote">
+  <p>If life is not meant to be fully understood but rather felt, then why do we expect someone to understand or complete us in any way?</p>
+</div>
+
+<div class="small-quote">
+  <p>We’re all just lost wanderers in the vastness of life and the universe.</p>
+</div>
+
+<div class="small-quote">
+  <p>Enjoy being in the process of becoming.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>We judge others by their actions, but ourselves by our intentions.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+---
+
+<div class="small-quote">
   <p>The solace of being unfiltered makes us at peace and happy, and being careless is one way of getting there.</p>
   <span class="author">- 12/07/25</span>
 </div>
@@ -119,10 +179,6 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 <div class="small-quote">
   <p>Both lock and key are needed, no value with just one.</p>
-</div>
-
-<div class="small-quote">
-  <p>The heart just needs time to heal, but the mind needs more than time, it needs conviction, devoid of uncertainty.</p>
 </div>
 
 <div class="small-quote">
