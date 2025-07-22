@@ -83,8 +83,6 @@ As it’s said: this is life, your life, and your only life - so live it to the 
   <span class="author">- Anonymous</span>
 </div>
 
----
-
 <div class="small-quote">
   <p>The solace of being unfiltered makes us at peace and happy, and being careless is one way of getting there.</p>
   <span class="author">- 12/07/25</span>
