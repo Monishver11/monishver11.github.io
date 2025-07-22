@@ -30,7 +30,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>Learn to uncomplicate life. Even if you overthink and complicate, things are what they are—so why do it? Accept what something is and go chase what you want.</p>
+  <p>Learn to uncomplicate life. Even if you overthink and complicate, things are what they are, so why do it? Accept what something is and go chase what you want.</p>
 </div>
 
 <div class="small-quote">
