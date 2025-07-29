@@ -26,6 +26,61 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 ###### **July 2025**
 
 <div class="small-quote">
+  <p>Today, human actions aren’t bound by the universality of nature as they used to be. But if we can possibly and unitedly agree on at least one thing, then it’s attainable and leads to a better balance.</p>
+</div>
+
+<div class="small-quote">
+  <p>You may find yourself to be a culmination of different personalities that resonate, relate, admire, hate, and have likes and dislikes similar to you. Similarly, some may find parts of you within them, and if you attain fame, more people may find your pieces in them. So, if you take all of them and piece them together, there is no way to connect them all to make you the way you are. That missing connection is your unique personality that you need to build and strengthen.</p>
+</div>
+
+<div class="small-quote">
+  <p>Right intent protects you. It’s like the shade that assists you in your long, hard path. It also inhibits unwanted thoughts that may drain your energy.</p>
+</div>
+
+<div class="small-quote">
+  <p>Find your interpretation of ‘Balance’. For someone, following a proper routine is balance. At the same time, there is someone who works tirelessly for days and then takes the same amount as rest. Both may be odd and extreme to each other, but that is what they find to be balance for them—and neither is wrong. Find your sweet spot.</p>
+</div>
+
+<div class="small-quote">
+  <p>We really don’t have to worry about anything that’s on the emotional side as long as the sun’s gonna rise the next morning. It’s quite strange that what you feel deeply today and find very hard to experience is about to fade or be forgotten, and always loses its power over you.</p>
+</div>
+
+<div class="small-quote">
+  <p>Freedom from the desire for an answer is essential to the understanding of a problem.</p>
+  <span class="author">- Jiddu Krishnamurti</span>
+</div>
+
+<div class="small-quote">
+  <p>In that very demand that I must be happy is unhappiness.</p>
+  <span class="author">- Jiddu Krishnamurti</span>
+</div>
+
+<div class="small-quote">
+  <p>Everything that irritates us about others can lead us to an understanding of ourselves.</p>
+  <span class="author">- Carl Gustav Jung</span>
+</div>
+
+<div class="small-quote">
+  <p>The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.</p>
+  <span class="author">- Carl Gustav Jung</span>
+</div>
+
+<div class="small-quote">
+  <p>Knowing your own darkness is the best method for dealing with the darknesses of other people.</p>
+  <span class="author">- Carl Gustav Jung</span>
+</div>
+
+<div class="small-quote">
+  <p>No tree, it is said, can grow to heaven unless its roots reach down to hell.</p>
+  <span class="author">- Carl Jung</span>
+</div>
+
+<div class="small-quote">
+  <p>The soul is healed by being with children.</p>
+  <span class="author">- Fyodor Dostoevsky</span>
+</div>
+
+<div class="small-quote">
   <p>Everything is subjective in life until it can’t be. You learn, unlearn, accept, reject, and change with your experience of life to finally settle into what is truly you.</p>
 </div>
 
