@@ -42,7 +42,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>We really don’t have to worry about anything that’s on the emotional side as long as the sun’s gonna rise the next morning. It’s quite strange that what you feel deeply today and find very hard to experience is about to fade or be forgotten, and always loses its power over you.</p>
+  <p><strong>We really don’t have to worry about anything that’s on the emotional side as long as the sun’s gonna rise the next morning. It’s quite strange that what you feel deeply today and find very hard to experience is about to fade or be forgotten, and always loses its power over you.</strong></p>
 </div>
 
 <div class="small-quote">
@@ -81,7 +81,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>Everything is subjective in life until it can’t be. You learn, unlearn, accept, reject, and change with your experience of life to finally settle into what is truly you.</p>
+  <p><strong>Everything is subjective in life until it can’t be. You learn, unlearn, accept, reject, and change with your experience of life to finally settle into what is truly you.</strong></p>
 </div>
 
 <div class="small-quote">
@@ -89,7 +89,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>Life lies in between knowing nothing matters, and knowing that if nothing matters, then life will be boring.</p>
+  <p>Life lies in between knowing nothing matters, and knowing that if nothing matters, then life will be boring.</strong></p>
 </div>
 
 <div class="small-quote">
