@@ -89,7 +89,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p>Life lies in between knowing nothing matters, and knowing that if nothing matters, then life will be boring.</strong></p>
+  <p><strong>Life happens in between knowing nothing matters, and knowing that if nothing matters, then life will be boring.</strong></p>
 </div>
 
 <div class="small-quote">
