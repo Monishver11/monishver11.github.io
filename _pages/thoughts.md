@@ -23,7 +23,53 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **August 2025**
+
+<div class="small-quote">
+  <p><strong>Life seems to be a river, and we are a small twig. It emerges from a source and ends in a sink. A twig empowered by wind and other twigs, by things that push, and by obstacles to either fight through or take as hints to redirect. It’s up to the twig to use what it has to work its way to the bank it desires. And as a twig is part of the big tree, you carry with you the traits of it. You can stop at any bank you want with the effort to reach it, but the flow of the river still takes you through all the stages of life one by one and at the right time. Sometimes your river can be entirely different from the one someone else is riding. But two things are common anyway: you’ll drift with the life of the river and end up in the oneness sink of the ocean. Just try not to hold on to a single bank, take in as much as you need and go with the flow with the drift you want to have.</strong></p>
+</div>
+
+<div class="small-quote">
+  <p>Focus empowers, and drifting dilutes the power of manifestation.</p>
+</div>
+
+<div class="small-quote">
+  <p>It’s quite paradoxical yet amazing that we’re infinitesimal in this universe and hold a vastness within ourselves that’s beyond any richness the universe can offer.</p>
+</div>
+
+<div class="small-quote">
+  <p>Why do we miss out on living life, to see its rich, bright, beautiful, amazing colours? Where and what are we running for if we don’t even have time to sit, think, and enjoy the present? I don’t have an answer and don’t intend to find one. Instead, I’ll live my life in the present with whatever it has to offer. No thinking or searching for an answer will equal it.</p>
+</div>
+
+<div class="small-quote">
+  <p>Acceptance gives you freedom and power in the pursuit of anything, despite situations and inabilities.</p>
+</div>
+
+<div class="small-quote">
+  <p>Conflict of thoughts paves the way for clarity of thought.</p>
+</div>
+
 ###### **July 2025**
+
+<div class="small-quote">
+  <p>Love and death are the only two things to be left for destiny to handle. All others are up to you to make up in your life. That’s the freedom we get to enjoy.</p>
+</div>
+
+<div class="small-quote">
+  <p>We need to take turns and switch roles rather than wear masks in the situations and circumstances of life. Being you is the freedom that you always have, and you can take attitudes and behave in the best way possible.</p>
+</div>
+
+<div class="small-quote">
+  <p>We don’t realise how interesting the game of life can be.</p>
+</div>
+
+<div class="small-quote">
+  <p>Train your mind to reframe thoughts towards goodness, righteousness, and betterment. As said, thoughts build your reality, and you hold the power over your thoughts.</p>
+</div>
+
+<div class="small-quote">
+  <p>Everyone and no one except yourself holds power over your thoughts. And it’s up to you to choose.</p>
+</div>
 
 <div class="small-quote">
   <p>Today, human actions aren’t bound by the universality of nature as they used to be. But if we can possibly and unitedly agree on at least one thing, then it’s attainable and leads to a better balance.</p>
