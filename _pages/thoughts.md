@@ -26,6 +26,99 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 ###### **August 2025**
 
 <div class="small-quote">
+  <p>Does the true self get blurred in the facade we play to live by and fit in?</p>
+</div>
+
+<div class="small-quote">
+  <p>Some can’t afford to be temperamental with the portrayal of their anger. People can bear what rouses out of them, but not others.</p>
+</div>
+
+<div class="small-quote">
+  <p>Is life all about outgrowing ourselves out of every circumstance we’ve got ourselves into? And learning, feeling, and understanding are all just part of this process?</p>
+</div>
+
+<div class="small-quote">
+  <p>The complexity of human connections arises from the mental complexes that we’ve unknowingly acquired as we grow.</p>
+</div>
+
+<div class="small-quote">
+  <p>The perceptual rigidity of self and the world is the most powerful limiting factor there is, and even supersedes and magnifies all socioeconomic factors.</p>
+</div>
+
+<div class="small-quote">
+  <p>If you look at human nature and history, our perception of time was very predictable. But we live as we don’t abide by it, only to experience most of it ourselves all over again. And as always, some exceptions push boundaries, but not too far yet and all at once.</p>
+</div>
+
+<div class="small-quote">
+  <p>All that you miss to feel at the moment is added to the backlog for you to feel later, which mostly turns into an emotional burden that’s hard to feel and regret.</p>
+</div>
+
+<div class="small-quote">
+  <p>The delicacy of one’s heart commands the kind of fortress that will be forged upon to guard it.</p>
+</div>
+
+<div class="small-quote">
+  <p>Our fragile hearts are placed within the ribs of the body. It’s also called the rib cage. Now, my heart fathoms why so and what for.</p>
+</div>
+
+<div class="small-quote">
+  <p>The sanctity of your conscience must neither be misused nor compromised by anyone, and you’ve to know it first, protect it, and even fight for it.</p>
+</div>
+
+<div class="small-quote">
+  <p>Both fixating on oneself and refraining from the social nature of humankind lead to loss of self.</p>
+</div>
+
+<div class="small-quote">
+  <p>If the contingency of human nature is to never settle, then why do we want to settle in life before a certain age set by society or someone else’s?</p>
+</div>
+
+<div class="small-quote">
+  <p><strong>Why is it that love is so special? Is it that they weren’t insignificant in the eyes of the person, even though we’re insignificant to the world?</strong></p>
+</div>
+
+<div class="small-quote">
+  <p>We’re always at a loss for words when it comes to explaining our love. And we’ve gracefully accepted it to acknowledge that we can’t. To confine and encapsulate it isn't achievable as the true essence is only ever known, felt and lies between the souls of the receiver and the giver.</p>
+</div>
+
+<div class="small-quote">
+  <p>What are your thoughts on life? There are so many aspects to it that I always get lost in its wilderness.</p>
+</div>
+
+<div class="small-quote">
+  <p>Craft it so well that it’s hard to be unnoticed.</p>
+</div>
+
+<div class="small-quote">
+  <p><strong>How can parents endure the unrequited love of children as they age? How does this attachment get transformed? I’m guilty of it, and I guess many unknowingly. That love to them is something they deserve more than we ever can know.</strong></p>
+</div>
+
+<div class="small-quote">
+  <p>Questions and doubts arise only for those who’re in the middle of the ocean. Ignore and keep swimming. If you want to take a little rest, then float and don’t drown. You already know what one end looks like, and there’s no point in returning back.</p>
+</div>
+
+<div class="small-quote">
+  <p>What does it mean to love? What does it mean to be loved? Finally, what is love? Is the answer a trifecta of these three united? You tell?</p>
+</div>
+
+<div class="small-quote">
+  <p>Often startled by the peculiarities of life, only to rediscover myself more and over.</p>
+</div>
+
+<div class="small-quote">
+  <p>Learn different perspectives. Not to judge but to understand the reality that people often miss to see in one another. Give equal importance as you would for experiencing something new, because it actually is.</p>
+</div>
+
+<div class="small-quote">
+  <p>At some point in life, you ought to acknowledge the privilege you got to have. Only then can you detach yourself from it and see what it has made you as a person and what it has made someone devoid of it. Anyone’s world is never the same, even with it, but not accepting this blinds you from ever being able to truly understand the other world.</p>
+</div>
+
+<div class="small-quote">
+  <p>I feel that we’re so complex and profound beyond any of our comprehension yet.</p>
+</div>
+
+
+<div class="small-quote">
   <p><strong>Life seems to be a river, and we are a small twig. It emerges from a source and ends in a sink. A twig empowered by wind and other twigs, by things that push, and by obstacles to either fight through or take as hints to redirect. It’s up to the twig to use what it has to work its way to the bank it desires. And as a twig is part of the big tree, you carry with you the traits of it. You can stop at any bank you want with the effort to reach it, but the flow of the river still takes you through all the stages of life one by one and at the right time. Sometimes your river can be entirely different from the one someone else is riding. But two things are common anyway: you’ll drift with the life of the river and end up in the oneness sink of the ocean. Just try not to hold on to a single bank, take in as much as you need and go with the flow with the drift you want to have.</strong></p>
 </div>
 
