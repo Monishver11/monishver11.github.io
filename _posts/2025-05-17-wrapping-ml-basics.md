@@ -2,7 +2,7 @@
 layout: post
 title: Wrapping Up Our ML Foundations Journey
 date: 2025-05-17 15:45:00-0400
-featured: false
+featured: true
 description: A reflection on our exploration of machine learning fundamentals, from mathematical prerequisites to gradient boosting.
 tags: ML Math
 categories: ML-NYU

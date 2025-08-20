@@ -2,7 +2,7 @@
 layout: post
 title: Introduction to Machine Learning(ML)
 date: 2024-12-19 15:44:00-0400
-featured: true
+featured: false
 description: An easy guide to machine learning, its applications, and how it connects to AI and human learning.
 tags: ML
 categories: ML-NYU
