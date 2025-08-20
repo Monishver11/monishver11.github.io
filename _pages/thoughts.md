@@ -74,11 +74,11 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 </div>
 
 <div class="small-quote">
-  <p><strong>Why is it that love is so special? Is it that they weren’t insignificant in the eyes of the person, even though we’re insignificant to the world?</strong></p>
+  <p><strong>Why is it that love is so special? Is it that we weren’t insignificant in the eyes of the person, even though we’re to the world?</strong></p>
 </div>
 
 <div class="small-quote">
-  <p>We’re always at a loss for words when it comes to explaining our love. And we’ve gracefully accepted it to acknowledge that we can’t. To confine and encapsulate it isn't achievable as the true essence is only ever known, felt and lies between the souls of the receiver and the giver.</p>
+  <p>We’re always at a loss for words when it comes to explaining our love. And we’ve gracefully accepted it to acknowledge that we can’t. To confine and encapsulate it isn't totally achievable as the true essence is only ever known, felt and lies between the souls of the receiver and the giver.</p>
 </div>
 
 <div class="small-quote">
