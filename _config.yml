@@ -88,7 +88,7 @@ bing_site_verification: 9O0EoPaLhgFjSIvAkDDoQK0gr49C2Wuxtgl3c0bXObM # out your b
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: Data + Machine Learning # blog_name will be displayed in your blog page
+blog_name: Data + ML # blog_name will be displayed in your blog page
 blog_description: Concepts, Notes and Intuitions
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
