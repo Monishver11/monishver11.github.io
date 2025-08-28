@@ -25,6 +25,34 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **August 2025**
 
+<div class="small-quote"><p><strong>Maybe you haven’t fallen in love yet, but haven't you fallen in the thought of love every single time?</strong></p></div>
+
+<div class="small-quote"><p>Is love a wishful curiosity to be willing to know and willing to share each other’s journey? And is it up to the journey to surprise you with what may unfold?</p></div>
+
+<div class="small-quote"><p>Indeed, to love someone truly is a long, very long walk in life. It’s hard, but soul-enriching, and only some can afford to endure it last. Why so? Maybe it’s because we’ve to face our own inner demons along the way, to acknowledge them and pacify them. Maybe it’s to lose your ego. Maybe it’s to love without reciprocity at times. Maybe it’s just to be there and empathise, even though you wish the same. Maybe it’s to know the fine line between giving them their personal space without encroaching. More maybes and maybe whatnot. Anyone can start the walk, but can you walk all the way through, to know yourself better, to know the other person better, to share lives together and …?</p></div>
+
+<div class="small-quote"><p>Why do we romanticise life? Why do we try to justify everything with meaning and in accordance with god, belief, religion, faith and hope? Isn’t life just and only just the present moment stripped of everything else? Maybe it’s hard to digest that we choose to ignore and believe the things that make living worthwhile.</p></div>
+
+<div class="small-quote"><p>Love is truly imperfectly perfect.</p></div>
+
+<div class="small-quote"><p><strong>People have to do what they need to do and what they like to do. Nothing else, nothing much and its not a either one option.</strong></p></div>
+
+<div class="small-quote"><p>Be welcoming to people. Some might hold the treasure within, like you and might be willing to share as well, but only if you let yourself allow it.</p></div>
+
+<div class="small-quote"><p>Life isn’t supposed to be a movie for us to be a hero/heroine. Instead, I think of it as we being the protagonist, trying to create and build our story to tell to the world, share some spaces with our close ones' stories, and try to make the best one out of what we can. Some parts may not be as attractive as others, but the whole is much beautiful than the parts.</p></div>
+
+<div class="small-quote"><p>If we can’t find meaning in what we set out to do, we make meaning out of what we got. Because the meaninglessness of life isn’t glorified yet.</p></div>
+
+<div class="small-quote"><p>We’re all lying about something to ourselves. But who are we really trying to fool with this?</p></div>
+
+<div class="small-quote"><p>Being true to yourself and following your heart unravels innumerous gifts in life, and one of its greatest is wisdom.</p></div>
+
+<div class="small-quote"><p>There something as depths of the person. Only some can withstand the pressure at such depths so as even dare try to enter it and only a very few can possibly acclimatise and thrive.</p></div>
+
+<div class="small-quote"><p>Haven’t we all got work to do with our emotions at least?</p></div>
+
+<div class="small-quote"><p>If predominantly, men want purpose and support, and women want safety and trust. Where and how does love fit in this picture? Or it’s the invisible natural force that binds everything together where they were meant to be.</p></div>
+
 <div class="small-quote">
   <p>Does the true self get blurred in the facade we play to live by and fit in?</p>
 </div>
