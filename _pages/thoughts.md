@@ -25,7 +25,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **August 2025**
 
-<div class="small-quote"><p><strong>Maybe you haven’t fallen in love yet, but haven't you fallen in the thought of love every single time?</strong></p></div>
+<div class="small-quote"><p><strong>Maybe you haven’t fallen in love yet, but haven't you fallen for the thought of love every single time?</strong></p></div>
 
 <div class="small-quote"><p>Is love a wishful curiosity to be willing to know and willing to share each other’s journey? And is it up to the journey to surprise you with what may unfold?</p></div>
 
