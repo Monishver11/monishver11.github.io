@@ -4,7 +4,7 @@ permalink: /thoughts/
 title: Thoughts
 description: 
 nav: true
-nav_order: 4
+nav_order: 5
 ---
 
 These notions are ruminations and realizations as I walk through my journey of life. Some may be inspired by others, and you might find connections to different ideas or directly to individuals, which I find relatable and interesting. I feel most of them arise from the human-made complexities of life, which is something we’re doomed to live by with all its richness.
