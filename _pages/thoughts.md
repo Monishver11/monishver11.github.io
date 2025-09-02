@@ -23,7 +23,20 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **September 2025**
+
+<div class="small-quote"><p>Aren’t we all kings and queens, who have forgotten or misunderstood what it is that we supposedly hold the power to rule? That kingdom to conquer and control is neither the people nor the world; instead, it’s the real self, the powerful mind and the magnificent consciousness.</p></div>
+
+<div class="small-quote"><p>At some point in life, you’ll have to take a stand, your own stand devoid of anyone’s feelings, judgments and emotions.</p></div>
+
+<div class="small-quote"><p>How can we not be humbled by the foolish and selfish actions we’ve made along the way? It’s true that you’ve to make mistakes along the way of life to learn, but shouldn’t those mistakes be acknowledged at a later point in time, apologise if it had hurt anyone, learn something from it on why we did that and take note not to repeat again?</p></div>
+
+
 ###### **August 2025**
+
+<div class="small-quote"><p>How can something be terrifically beautiful yet dishearteningly painful? Maybe that's love.</p></div>
+
+<div class="small-quote"><p>Doesn’t not having a direction cause most trouble?</p></div>
 
 <div class="small-quote"><p><strong>Maybe you haven’t fallen in love yet, but haven't you fallen for the thought of love every single time?</strong></p></div>
 
