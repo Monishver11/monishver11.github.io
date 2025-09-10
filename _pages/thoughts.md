@@ -25,6 +25,31 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **September 2025**
 
+<div class="small-quote"><p>You need to have something to stabilise you, from everything except you. It can be a person, a routine or anything, but something.</p></div>
+
+<div class="small-quote"><p>Extremities crumble us, but balancing some of those extremities crystallises us.</p></div>
+
+<div class="small-quote"><p>Just keep doing the right and necessary things for your goals. All other things that are beyond your control will eventually fall into place.</p></div>
+
+<div class="small-quote"><p>At least for men, isn't the highest form of love they can truly show you is respect? Respecting you, your space, your boundaries, your dreams, your struggles, your vulnerabilities, your everything in every aspect. Not because they can, but because it’s hard to break the generational bias of superiority and complexity that one gender took for granted on the other, to reign over all this to give you what you deserved to be treated from the very beginning.</p></div>
+
+<div class="small-quote"><p>It should be nothing about you for it to become everything about you.</p></div>
+
+<div class="small-quote"><p>The volatility of the mind is what makes us unpredictable.</p></div>
+
+<div class="small-quote"><p>Don’t do anything for the sake of it, and never do anything with the wrong intent.</p></div>
+
+<div class="small-quote"><p><strong>One task at a time to focus, one day at a time to live, goals and dreams span across days, and life spans across years.</strong></p></div>
+
+<div class="small-quote"><p><strong>As we age, our thoughts mature too, so why didn’t we make it a practice/habit to document it, acknowledge it and learn from it?</strong></p></div>
+
+<div class="small-quote"><p>There is so much profundity to life to a point where we may not even be able to take it. So, we try to simplify it, only to confine it to a narrow point of focus, which again may or may not be justifiable and meaningful. So, you expand, and that may again only bring you back to this loop once more.</p></div>
+
+<div class="small-quote"><p>Learn anything through and thorough.</p></div>
+
+<div class="small-quote"><p>Isn’t it the fact that it’s easier to face the world than to face our true, raw and real self? Maybe that’s why people made it to give such importance to power and status, to avoid confronting the weaknesses and vulnerabilities of the self. The weight of the world is something that can be measured to be weighted upon us and neglected if you don’t want it to weigh you down. But the weight of the thoughts and the self is insurmountable and may only be conquered by knowing everything you know about yourself, only to know it’s not quite all of it.</p></div>
+
+
 <div class="small-quote"><p>Aren’t we all kings and queens, who have forgotten or misunderstood what it is that we supposedly hold the power to rule? That kingdom to conquer and control is neither the people nor the world; instead, it’s the real self, the powerful mind and the magnificent consciousness.</p></div>
 
 <div class="small-quote"><p>At some point in life, you’ll have to take a stand, your own stand devoid of anyone’s feelings, judgments and emotions.</p></div>
