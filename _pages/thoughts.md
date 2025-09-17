@@ -25,6 +25,22 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **September 2025**
 
+<div class="small-quote"><p>Is there any internal war within us that’s so maddening as it is for love?</p></div>
+
+<div class="small-quote"><p>Human emotions are unique. The peak of happiness is crying, the peak of sadness is laughter, and the peak of anger is silence. - Anonymous.</p></div>
+
+<div class="small-quote"><p>Sooner or later, we know that there’s no point in proving to anyone, and that’s the point you’re going to prove.</p></div>
+
+<div class="small-quote"><p>A person who judges will also feel that he’s being judged.</p></div>
+
+<div class="small-quote"><p>If every time you’re tensed with a problem, you’re suddenly taken to a place where you see yourself from above, zoomed out and also others who are dealing with their life, a whole lot different and drastic than you, and brought back to normal again. Will you still be tense?</p></div>
+
+<div class="small-quote"><p>Whenever you find yourself fooling someone else, you fool yourself in some other aspect. And in most cases, never realise until it’s too late.</p></div>
+
+<div class="small-quote"><p>It’s good to have some belief system in place when you need it in hard times. It doesn’t have to be belief in god, it can be in you, your loved ones, someone who believes in you or even anything, but something’s needed.</p></div>
+
+<div class="small-quote"><p><strong>You can’t find peace by looking for it; you find it by knowing that it already exists and making space for it to co-exist with everything else.</strong></p></div>
+
 <div class="small-quote"><p>You need to have something to stabilise you, from everything except you. It can be a person, a routine or anything, but something.</p></div>
 
 <div class="small-quote"><p>Extremities crumble us, but balancing some of those extremities crystallises us.</p></div>
