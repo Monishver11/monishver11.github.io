@@ -2,7 +2,7 @@
 layout: post
 title: Preface & Introduction
 date: 2024-12-18 13:43:00-0400
-featured: true
+featured: false
 description: First blog post—setting the stage for the journey ahead.
 tags: ML
 categories: ML-NYU
