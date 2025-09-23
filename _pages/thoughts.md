@@ -25,9 +25,33 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **September 2025**
 
+<div class="small-quote"><p>Those who find happiness within themselves can find peace, while those who also find happiness in seeing others happy find bliss.</p></div>
+
+<div class="small-quote"><p>We all hold multitudes of layers for the world and fortitudes of lives within ourselves.</p></div>
+
+<div class="small-quote"><p>Realising that we’re mortal and humane, yet delusional enough to achieve the impossible, paves the way to greatness.</p></div>
+
+<div class="small-quote"><p>People and cultures survive because of their persistent beliefs in something, which can and will always be questioned both by themselves and by outsiders with different notions for each. Without such a system, the substantial law and order that we have can’t exist.</p></div>
+
+<div class="small-quote"><p>The perception of reality matters much more than the reality itself. As gravity bends time near black holes, so does perception bend reality near conviction and perseverance.</p></div>
+
+<div class="small-quote">
+  <p>The pleasure lies not in discovering truth, but in searching for it.</p>
+  <span class="author">- Leo Tolstoy, Anna Karenina</span>
+</div>
+
+<div class="small-quote"><p>Any materialistic thing that glows will eventually fade out.</p></div>
+
+<div class="small-quote"><p>The ocean can’t touch the sky, but it always gives us the illusion that it can, at the very end of the horizon. So is what and what not.</p></div>
+
+<div class="small-quote"><p>To steer the way of life as you desire, you need to pressure the side you wish for and loosen the opposite.</p></div>
+
 <div class="small-quote"><p>Is there any internal war within us that’s so maddening as it is for love?</p></div>
 
-<div class="small-quote"><p>Human emotions are unique. The peak of happiness is crying, the peak of sadness is laughter, and the peak of anger is silence. - Anonymous.</p></div>
+<div class="small-quote">
+  <p>Human emotions are unique. The peak of happiness is crying, the peak of sadness is laughter, and the peak of anger is silence.</p>
+  <span class="author">- Anonymous</span>
+</div>
 
 <div class="small-quote"><p>Sooner or later, we know that there’s no point in proving to anyone, and that’s the point you’re going to prove.</p></div>
 
