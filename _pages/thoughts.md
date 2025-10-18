@@ -94,7 +94,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 <div class="small-quote"><p>Life is so simple that at times we can’t withstand this simplicity.</p></div>
 
-<div class="small-quote"><p><strong>I’m living and feeling the way of my life, and so are you.<strong></p></div>
+<div class="small-quote"><p><strong>I’m living and feeling the way of my life, and so are you.</strong></p></div>
 
 <div class="small-quote"><p>Those who find happiness within themselves can find peace, while those who also find happiness in seeing others happy find bliss.</p></div>
 
