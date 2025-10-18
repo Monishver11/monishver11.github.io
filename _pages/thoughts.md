@@ -23,7 +23,78 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **October 2025**
+
+<div class="small-quote"><p>Most of our decisions are contextual in nature.</p></div>
+
+<div class="small-quote"><p>Discipline isn’t being strict with yourself all the time. It just tells you to hold the promises you set and said for yourself, do the things that you said would do and need to do. Know the difference.</p></div>
+
+<div class="small-quote">
+  <p>Whatever happens tomorrow, we have today. Always remember that.</p>
+  <span class="author">- One Day</span>
+</div>
+
+<div class="small-quote"><p>Most of your time, like, operates in the grey</p>
+<span class="author"> - hamsyaps</span>
+</div>
+
+<div class="small-quote"><p>Time changes, and it changes us. There is something that we hold, something through which we hold the power to reinvent ourselves as time passes. </p></div>
+
+<div class="small-quote">
+  <p>Believe in yourself so much that you accept the days of doubt as a beautiful part of the journey.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>Whether one moves slowly or with speed, the one who is a seeker will be a finder.</p>
+  <span class="author">- Rumi</span>
+</div>
+
+<div class="small-quote">
+  <p>He who makes a beast of himself gets rid of the pain of being a man.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>Be so deep in alignment with your intention that your dream starts to chase you.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>Treat yourself well while not harming others. Treat others well, while not harming yourself.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote"><p>Can we find ease between the meaninglessness of life and the idea of finding meaning in every aspect of life?</p></div>
+
+<div class="small-quote"><p>One has to break his/her soul by self-introspection for his/her own good.</p></div>
+
+<div class="small-quote"><p>Nothing matters other than what we’ve done, what we can/need to do and what we’ll do.</p></div>
+
+<div class="small-quote"><p>Idleness causes imbalance, and action leads to balance.</p></div>
+
+<div class="small-quote">
+  <p>Happy-go-lucky</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote"><p>There is so much in the admiration of the richness in a person’s inner universe and allowing your space to the other person. But, it’s one of the biggest risks you’ve to take, so make it right.</p></div>
+
+<div class="small-quote"><p>Love doesn’t make you crazy; it just affirms our craziness with something worthwhile.</p></div>
+
+<div class="small-quote"><p>Strike a balance between order and chaos, as you would find balance for any other things.</p></div>
+
 ###### **September 2025**
+
+<div class="small-quote"><p><strong>The biggest gifts of life aren’t something that you’ll realise early or not even that you’re proud of. They’ll be with you and in your life, slowly making you position where you were supposed to be, equipping you with all the wisdom that the gift requires you to hold upon. And maybe that’s a gift in itself.<strong></p></div>
+
+<div class="small-quote"><p>The meaninglessness of life can’t be justified with just meaning alone; it needs something else and something more.</p></div>
+
+<div class="small-quote"><p>Tiredness is the root of many unwanted thoughts.</p></div>
+
+<div class="small-quote"><p>Life is so simple that at times we can’t withstand this simplicity.</p></div>
+
+<div class="small-quote"><p><strong>I’m living and feeling the way of my life, and so are you.<strong></p></div>
 
 <div class="small-quote"><p>Those who find happiness within themselves can find peace, while those who also find happiness in seeing others happy find bliss.</p></div>
 
