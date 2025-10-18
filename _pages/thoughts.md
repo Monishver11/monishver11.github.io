@@ -86,7 +86,7 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **September 2025**
 
-<div class="small-quote"><p><strong>The biggest gifts of life aren’t something that you’ll realise early or not even that you’re proud of. They’ll be with you and in your life, slowly making you position where you were supposed to be, equipping you with all the wisdom that the gift requires you to hold upon. And maybe that’s a gift in itself.<strong></p></div>
+<div class="small-quote"><p><strong>The biggest gifts of life aren’t something that you’ll realise early or not even that you’re proud of. They’ll be with you and in your life, slowly making you position where you were supposed to be, equipping you with all the wisdom that the gift requires you to hold upon. And maybe that’s a gift in itself.</strong></p></div>
 
 <div class="small-quote"><p>The meaninglessness of life can’t be justified with just meaning alone; it needs something else and something more.</p></div>
 
