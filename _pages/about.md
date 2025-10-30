@@ -37,7 +37,6 @@ If anything resonates with you, feel free to reach out. I'd love to hear your st
 **Best,**  
 **Monishver**
 
-<br>
 
 ---
 
