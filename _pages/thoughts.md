@@ -25,6 +25,53 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ###### **October 2025**
 
+<div class="small-quote"><p><strong>If no one has life figured out, then shouldn’t that make each of us more confident in our pursuit?</strong></p></div>
+
+<div class="small-quote"><p>People often say we build walls too high to be reached, trapping ourselves inside. But it’s not walls—it’s depth. Our hearts lie deep in unseen trenches, waiting not for those who leap high, but for those curious and trusting enough to descend. And when they reach us, they won’t have to go further; we’ll rise to meet them. Few will try, but that’s the risk and reward on both sides.</p></div>
+
+<div class="small-quote"><p>Everyone wants to be free so that no one gets to be free.</p></div>
+
+<div class="small-quote"><p><strong>Find peace within the work you’re doing, not outside of it.</strong></p></div>
+
+<div class="small-quote"><p>Trying/forcing yourself to be always happy imposes more unhappiness with your own efforts. So, don’t chase it, and it’s perfectly alright to not be happy at all times.</p></div>
+
+<div class="small-quote">
+  <p>Commit fully. Collect enough data points, then pivot if needed.</p>
+  <span class="author">- Ophelia S</span>
+</div>
+
+<div class="small-quote"><p><strong>I learn many new things, I find myself doing better than myself a year ago. So, that’s quite good for me now.</strong></p></div>
+
+<div class="small-quote">
+  <p>If you don’t know what to live for, live for the next cup of tea.</p>
+  <span class="author">- Janelle</span>
+</div>
+
+<div class="small-quote">
+  <p>“We do not see things as they are, we see them as we are.”</p>
+  <span class="author">- Anaïs Nin</span>
+</div>
+
+<div class="small-quote">
+  <p>How beautiful it is that questions are the windows to one’s mind, one’s heart? This will remain my favourite way to fall in love with the world again and again—with a question, and the heart that answers it :)</p>
+  <span class="author">- ELLA</span>
+</div>
+
+<div class="small-quote">
+  <p>So what appears to be happening is that we have developed culture and technology that together supercharge this primal drive of self-reflection—to such an unhealthy and unnatural extent that it has the paradoxical effect of ruining our lives.</p>
+  <span class="author">- Arthur C. Brooks</span>
+</div>
+
+<div class="small-quote">
+  <p>New York: Make more money. Be richer. Boston: Read more. Be smarter. Silicon Valley: Build more. Be powerful.</p>
+  <span class="author">- Cities and Ambition, May 2008</span>
+</div>
+
+<div class="small-quote">
+  <p>The unfed mind devours itself.</p>
+  <span class="author">- Gore Vidal</span>
+</div>
+
 <div class="small-quote"><p>Most of our decisions are contextual in nature.</p></div>
 
 <div class="small-quote"><p>Discipline isn’t being strict with yourself all the time. It just tells you to hold the promises you set and said for yourself, do the things that you said would do and need to do. Know the difference.</p></div>
