@@ -28,13 +28,14 @@ Right now, I'm taking courses in GPU programming, realtime and distributed syste
 
 ##### **Beyond the technical stuff**
 
-Outside of work and school, I'm an avid tennis player, and I spend time thinking about philosophy and life. I also explore my creative side through art—you can check out some of my work on Instagram at [@knotted.arts](https://instagram.com/knotted.arts).
+Outside of work and school, I'm an avid tennis player, and I spend time thinking about different aspects of life. I also explore my creative side through art, you can check out some of my work on Instagram at [@knotted.arts](https://instagram.com/knotted.arts).
 
-I value curiosity, meaningful work, and genuine connections. This site reflects that—it's not just about the technical journey, but also about growth, reflection, and the process of figuring things out. Whether you're here for the technical content, personal musings, or just passing through, I hope you find something worthwhile.
+I value curiosity, meaningful work, and genuine connections. This site reflects that; it's not just about the technical journey, but also about growth, reflection, and the process of figuring things out. Whether you're here for the technical content, personal musings, or just passing through, I hope you find something worthwhile.
 
 If anything resonates with you, feel free to reach out. I'd love to hear your story. Here's to building things that matter and learning along the way 🥂.
 
 **Best,**  
 **Monishver**
 
+<br><br><br>
 
