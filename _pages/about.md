@@ -22,7 +22,7 @@ social: true # includes social icons at the bottom of the page
 
 I'm a graduate student at NYU's Courant Institute of Mathematical Sciences, wrapping up my Master's in Computer Science in May 2026. Presently, I care a lot about building systems that work well—data pipelines, ML infrastructure, things that run fast and don't break. Before grad school, I spent two years as a Data Engineer at IBM, where I got really into the intersection of data systems and engineering.
 
-This site is my space to share what I'm learning, thinking about, and building. You'll find technical deep dives and notes in the **Blog** section (ML theory, big data systems, ML performance engineering), and more personal reflections in **Thoughts**, where I write about life, philosophy, and document how my thoughts evolve. The **Projects** section has the stuff I've built, and **Resume** covers my work experience.
+This site is my space to share what I'm learning, thinking about, and building. You'll find technical deep dives and notes in the **"Blog"** section (ML theory, big data systems, ML performance engineering), and more personal reflections in **"Thoughts"**, where I write about life, philosophy, and document how my thoughts evolve. The **"Projects"** section has the stuff I've built, and **"Resume"** covers my work experience.
 
 Right now, I'm taking courses in GPU programming, realtime and distributed systems, and ML infrastructure at NYU. I've been writing CUDA kernels, learning about MapReduce and fault tolerance, and building a deep learning framework from scratch. It's all connecting back to what I built at IBM, but now I actually understand **why** things are designed the way they are.
 
