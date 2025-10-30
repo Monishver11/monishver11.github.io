@@ -18,6 +18,7 @@ news: true # includes a list of news items
 social: true # includes social icons at the bottom of the page
 ---
 
+##### **What I'm About**
 
 I'm a graduate student at NYU's Courant Institute of Mathematical Sciences, wrapping up my Master's in Computer Science in May 2026. Presently, I care a lot about building systems that work well—data pipelines, ML infrastructure, things that run fast and don't break. Before grad school, I spent two years as a Data Engineer at IBM, where I got really into the intersection of data systems and engineering.
 
@@ -25,7 +26,7 @@ This site is my space to share what I'm learning, thinking about, and building. 
 
 Right now, I'm taking courses in GPU programming, realtime and distributed systems, and ML infrastructure at NYU. I've been writing CUDA kernels, learning about MapReduce and fault tolerance, and building a deep learning framework from scratch. It's all connecting back to what I built at IBM, but now I actually understand **why** things are designed the way they are.
 
-## Beyond the technical stuff
+##### **Beyond the technical stuff**
 
 Outside of work and school, I'm an avid tennis player, and I spend time thinking about philosophy and life. I also explore my creative side through art—you can check out some of my work on Instagram at [@knotted.arts](https://instagram.com/knotted.arts).
 
