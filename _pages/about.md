@@ -19,45 +19,21 @@ social: true # includes social icons at the bottom of the page
 ---
 
 
-A quick intro: I’m a graduate student at NYU’s Courant Institute of Mathematical Sciences, pursuing Computer Science with a focus on machine learning. Before this, I spent two years as a Data Engineer at IBM, where I honed my skills in handling data and building pipelines. Now, I’m channeling my passion for problem-solving and curiosity about AI into becoming a Machine Learning Engineer/Researcher. This blog is my space to document that journey—sharing lessons, insights, and reflections along the way.
+I'm a graduate student at NYU's Courant Institute of Mathematical Sciences, wrapping up my Master's in Computer Science in May 2026. Presently, I care a lot about building systems that work well—data pipelines, ML infrastructure, things that run fast and don't break. Before grad school, I spent two years as a Data Engineer at IBM, where I got really into the intersection of data systems and engineering.
 
-**Why this blog?**
+This site is my space to share what I'm learning, thinking about, and building. You'll find technical deep dives and notes in the **Blog** section (ML theory, big data systems, ML performance engineering), and more personal reflections in **Thoughts**, where I write about life, philosophy, and document how my thoughts evolve. The **Projects** section has the stuff I've built, and **Resume** covers my work experience.
 
-- `Building Strong Foundations`: Machine learning is a vast field, and I believe in learning from first principles. This blog is a way to solidify my understanding while making these concepts accessible to others.
-- `Tracking Progress`: Writing helps me reflect on challenges and measure how far I’ve come, serving as a reminder that growth is incremental.
-- `Simplifying Complexity`: I enjoy breaking down intricate topics into clear and intuitive ideas. If something here makes ML a little easier for you, I’ve done my job!
-- `Fostering Connections`: The field of ML thrives on collaboration. Through this blog, I hope to connect with like-minded learners and professionals. 
+Right now, I'm taking courses in GPU programming, realtime and distributed systems, and ML infrastructure at NYU. I've been writing CUDA kernels, learning about MapReduce and fault tolerance, and building a deep learning framework from scratch. It's all connecting back to what I built at IBM, but now I actually understand **why** things are designed the way they are.
 
--
+## Beyond the technical stuff
 
-On a more personal note, I value curiosity, meaningful work, and connecting with others. Outside academia, you might find me thinking about philosophy and life, sometimes at sports—I’m an avid tennis player—and at times exploring my artistic side through digital and physical mediums. Feel free to check out my creations on Instagram: [@knotted.arts](https://www.instagram.com/knotted.arts?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==).
+Outside of work and school, I'm an avid tennis player, and I spend time thinking about philosophy and life. I also explore my creative side through art—you can check out some of my work on Instagram at [@knotted.arts](https://instagram.com/knotted.arts).
 
-I believe learning is a lifelong journey, and this blog reflects that view. While I’m still early in my path, I hope my experiences, struggles, and successes can inspire others navigating similar challenges. Whether you’re a fellow student, a professional transitioning into machine learning, or simply curious about the field, I hope you find something valuable here.
+I value curiosity, meaningful work, and genuine connections. This site reflects that—it's not just about the technical journey, but also about growth, reflection, and the process of figuring things out. Whether you're here for the technical content, personal musings, or just passing through, I hope you find something worthwhile.
 
-This journey isn’t just about reaching a destination; it’s about embracing the process of growth and discovery. If any of this resonates with you, feel free to connect—I’d love to hear your story and learn together.
+If anything resonates with you, feel free to reach out. I'd love to hear your story. Here's to building things that matter and learning along the way 🥂.
 
-Here’s to tackling challenges, building meaningful relationships, and making small but steady progress toward big goals.
-
-Best wishes and see you around!
+**Best,**  
+**Monishver**
 
 
-<!-- A quick intro: I’m a graduate student in Computer Science at the Courant Institute of Mathematical Sciences, New York University. Before this, I worked as a Data Engineer at IBM in India for two years. My aspiration is to become a `Machine Learning Engineer/Researcher`, and this blog is my digital garden—a space to reflect, document my journey, and share insights. It’s meant not just for me but also for anyone navigating a similar path or aspiring to achieve the same goal. For more context, check out the next section (_Motivation_).
-
-On a personal note, I’m still discovering who I am. As an `INFJ`, I value introspection, meaningful connections, and a sense of purpose. While most of my posts will delve into technical topics, I promise to keep things focused—no unnecessary drama here! :)
-
-I find satisfaction in making/seeing others happy and accomplishing goals after long, challenging journeys, even though those moments of triumph can be fleeting at times. Nevertheless, it is essential for continued growth in life. Beyond this, I cherish deep conversations and spending time with loved ones. My interests are broad, and I approach life with an open and curious mind. Off the academic path, I’m an avid lawn tennis player with a deep passion for art. You can check out my creations on IG: @knotted.arts.
-
-This blog is also my way of reaching out, adding value to others lives, and fostering meaningful connections. If any of this resonates with you, don’t hesitate to reach out—I’d love to chat! At the end of the day, we only have one life. Let’s focus on the journey ahead, let go of regrets and worries, and invest in building meaningful relationships and memories.
-
-**Motivation**
-
-- **Building Foundations**: To develop a strong understanding of machine learning through `first principles`.
-- **Tracking Progress**: To document my journey as a way to reflect, revise, and measure growth.
-- **Simplifying Complexity**: To make intricate concepts in machine learning more approachable, enabling others to form intuition and engage deeply with the field.
-- **Problem-Solving**: To focus on understanding and tackling challenges, as `problem-solving` in ML requires clarity of thought and creativity.
-- **Collaboration**: To connect and work with brilliant minds while embracing the fulfilling challenge of mastering machine learning.
-- **Self-Expression**: To articulate my thoughts and ideas through writing, which helps me think clearly, align my perspectives, and grow while helping others along the way.
-
-I’m committed to making this blog a valuable resource for myself and anyone pursuing a career in machine learning. Thank you for stopping by—feel free to connect, and let’s make this journey together an enriching one.
-
-Best wishes and see you around! -->
