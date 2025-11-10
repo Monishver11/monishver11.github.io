@@ -23,7 +23,38 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **November 2025**
+
+<div class="small-quote">
+  <p>“Many people say I’m the best women’s soccer player in the world. I don’t think so. And because of that, someday I just might be.”</p>
+  <span class="author">- Mia Hamm</span>
+</div>
+
+<div class="small-quote"><p>Strive for high agency and velocity, along with learning.</p></div>
+
 ###### **October 2025**
+
+<div class="small-quote">
+  <p>Loving someone is an honour.</p>
+  <span class="author">- quinlanwalther</span>
+</div>
+
+<div class="small-quote">
+  <p>Uncertainty is an uncomfortable position. But certainly is an absurd one.</p>
+  <span class="author">- Voltaire</span>
+</div>
+
+<div class="small-quote"><p>The internal war never ceases to exist, even if given all the thought and energy to resolve it, and sometimes especially when given all of it.</p></div>
+
+<div class="small-quote">
+  <p>Fill up your own cup, let them fall in love with the overflow.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+<div class="small-quote">
+  <p>Do it from love, not for love.</p>
+  <span class="author">- Anonymous</span>
+</div>
 
 <div class="small-quote"><p><strong>If no one has life figured out, then shouldn’t that make each of us more confident in our pursuit?</strong></p></div>
 
