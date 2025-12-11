@@ -3,13 +3,12 @@ layout: post
 title: Introduction to Realtime and Big Data Analytics
 date: 2025-10-22 11:23:00-0400
 featured: false
-description: Notes on Big Data (the 5 V's & data types) and the Four Categories of Data Analytics (Descriptive, Diagnostic, Predictive, and Prescriptive).
+description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 1
 tags: RBDA
 categories: RBDA-NYU
 giscus_comments: true
 related_posts: false
-toc:
-  sidebar: left
+
 ---
 
 - Big Data is a field dedicated to the analysis, processing, and storage of large collections of data that frequently originate from disparate sources.

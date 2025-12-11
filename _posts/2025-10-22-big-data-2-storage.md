@@ -3,13 +3,12 @@ layout: post
 title: Big Data Storage
 date: 2025-10-22 11:25:00-0400
 featured: false
-description: Notes on Big Data Storage - Concepts and Architecture
+description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 2
 tags: RBDA
 categories: RBDA-NYU
 giscus_comments: true
 related_posts: false
-toc:
-  sidebar: left
+
 ---
 
 - “Big Data” is not new. Oil companies, telecommunications companies, and other data-centric industries have had huge datasets for a long time. 
@@ -37,6 +36,7 @@ toc:
 - Each node in the cluster has its own dedicated resources, such as memory, a processor, and a hard drive.
 - A cluster can execute a job by splitting it into small pieces (“tasks”) and distributing their execution onto diﬀerent computers that belong to the cluster.
 - Clusters -> Racks -> Nodes(servers)
+
 - Next is Distributed file systems (DFS).
 - A file is the most basic unit of storage to store data.
 - A file system (FS) is the method of organizing files on a storage device.
@@ -48,6 +48,7 @@ toc:
 - Next is NoSQL.
 - A Not-only SQL (NoSQL) database is a non-relational database that is highly scalable, fault-tolerant and specifically designed to house semi-structured and unstructured data. 
 - E.g., Key-value store: Redis, Dynamo. Document store: MongoDB, CouchDB. Wide column store: Bigtable, HBase, Cassandra. Graph store: Pregel, Giraph.
+
 - Next is Sharding.
 - Sharding is the process of horizontally partitioning a large dataset into a collection of smaller, more manageable datasets (“shards”).
 - Each shard is stored on a separate node, and is responsible for only the data stored on it.
@@ -63,7 +64,8 @@ toc:
     - To mitigate such performance issues, data locality keeps commonly accessed data co-located on a single shard. This idea leads to the concept of replication.
 - Replication stores multiple copies of a dataset (“replicas”) on multiple nodes.
 - There are two methods of replication: Master-slave replication and Peer-to-peer replication.
-- Master-slave replication
+  
+- **Master-slave replication**
     - All data is written to a master node.
     - Once saved, the data is replicated over to multiple slave nodes.
     - Write requests, including insert, update and delete, occur on the master node.
@@ -75,7 +77,9 @@ toc:
     - There is a concern of read inconsistency. 
     - Ex: User A updates data. The data is copied over to Slave A by the Master. Before the data is copied over to Slave B, User B tries to read the data from Slave B, which results in an inconsistent read. The data will eventually become consistent when Slave B is updated by the Master.
     - There are other solutions as well, but we’ll see those as we go and later.
-- Peer-to-peer replication
+  
+
+- **Peer-to-peer replication**
     - All nodes (“peers”) operate at the same level.
     - Each peer is equally capable of handling reads and writes. 
     - Each write is copied to all peers.
@@ -89,7 +93,9 @@ toc:
 - Sharding vs replication
     - Actually, both sharding and replication can be used together. 
     - We can combine, sharding and master-slave replication, sharding and peer-to-peer replication or any other commendations.
-    - Sharding and master-slave replication
+  
+
+- **Sharding and master-slave replication**
   
 <div class="row justify-content-center">
     <div class="col-sm-9 mt-3 mt-md-0">
@@ -97,7 +103,7 @@ toc:
     </div>
 </div>
 
-    - Sharding and peer-to-peer replication
+ - **Sharding and peer-to-peer replication**
 
 <div class="row justify-content-center">
     <div class="col-sm-9 mt-3 mt-md-0">
@@ -105,7 +111,8 @@ toc:
     </div>
 </div>
 
-- CAP theorem
+
+- **CAP theorem**
     - A distributed database system may wish to provide three guarantees.
     - Consistency: a read request from any node results in the same, most recently written data across multiple nodes.
     - Availability: a read/write request will always be acknowledged in the form of a success or a failure.
@@ -118,7 +125,9 @@ toc:
     - C + P (no Availability): During a partition, nodes stop serving requests until they can synchronize again to maintain consistency. This causes temporary unavailability, as the system pauses updates to avoid conflicts.
     - A + P (no Consistency): When a partition occurs, all nodes continue serving requests independently. Because they can’t coordinate, updates may diverge, producing inconsistent or stale data until the partition heals and replicas reconcile.
     - In summary: Choosing C + A means all nodes must stay in sync, but the system fails if a partition occurs. Choosing C + P ensures data consistency across partitions, but some nodes may become unavailable. Choosing A + P keeps the system running despite partitions, but nodes may serve inconsistent data until synchronization occurs.
-- ACID
+
+
+- **ACID**
     - ACID is a traditional database design principle on transaction management.
     - It stands for Atomicity, Consistency, Isolation and Durability.
     - Traditional databases leverages pessimistic concurrency controls (i.e., locking) to provide ACID guarantees.
@@ -133,7 +142,9 @@ toc:
     - Ex: A user updates a record as part of a transaction. The database successfully updates the record. Right after this update, a power failure occurs. The database maintains its state while there is no power. The power is resumed. The database serves the record as per last update when requested by the user.
     - This ACID property relates to the CAP theorem in a way that the database systems providing traditional ACID guarantees choose consistency over availability. So it ensures C+P.
     - Ex: User A attempts to update a record as part of a transaction. The database validates the value and the update is successfully applied. After the successful completion of the transaction, when Users B and C request the same record, the database provides the updated value to both the users.
-- BASE
+  
+
+- **BASE**
     - BASE (pun intended) is a database design principle leveraged by many distributed database systems.
     - It stands for Basically Available, Soft state and Eventual consistency.
     - When a database supports BASE, it favors availability over consistency. So, it ensures A+P.
@@ -145,7 +156,9 @@ toc:
     - Ex: User A updates a record on Peer A. Before the other peers are updated, User B requests the same record from Peer C. The database is now in a soft state, and stale data is returned to User B.
     - Eventual consistency means that the database only attains consistency once the changes have been propagated to all nodes.
     - Ex: User A updates a record. The record only gets updated at Peer A, but before the other peers can be updated, User B requests the same record. The database is now in a soft state. Stale data is returned to User B from Peer C. However, the consistency is eventually attained, and User C gets the correct value.
-- ACID vs BASE
+
+
+- **ACID vs BASE**
     - ACID ensures immediate consistency at the expense of availability due to the record locking.
     - BASE emphasizes availability over immediate consistency.
     - This soft approach toward consistency allows BASE-compliant databases to serve multiple clients without any latency though serving inconsistent results.
