@@ -1,3 +1,13 @@
+<!-- ---
+layout: page
+permalink: /lifelog/
+title: Lifelog
+description: 
+nav: False
+nav_order: 7
+--- -->
+
+
 T - X Days
 
 Coffee + Article Read + Standing
@@ -66,3 +76,61 @@ What you create is a honest relection of who you are - Naval
 Such a true statement. Sohan posted this in whatsapp.
 
 [https://www.forbes.com/sites/margiewarrell/2025/12/05/the-2026-leadership-playbook-building-credibility-through-uncertainty/](The 2026 Leadership Playbook: Building Credibility Through Uncertainty)
+
+12/11/2025 (T - 152)
+
+Good morning!
+
+Thoughts about over-sharing and not sharing wth family and friends, expand;
+
+Learning it in-depth, going back to first priciples, must do.
+
+Sohan accepted for me to share my updates(bi-weekly) and milestones with him, will send an email by EOD and will create a reminder for this in my calender.
+
+[https://notes.eatonphil.com/2024-08-24-obsession.html](Obsession)
+- In your professional and personal life, I don't believe there is a stronger motivation than having something in mind and the desire to do it. Yet the natural way to deal with a desire to do something is to justify why it's not possible.
+- In the best cases, my listener had the self-confidence to ignore me. They did what they wanted to do anyway. In the worst case, again to my deep regret, I've been a well-intentioned part of derailing someone's career for years.
+- Nobody wants to be convinced. But intelligent people will change their mind when exposed to new facts or different ideas. Being convinced is a battle of will. Changing one's mind is a purely personal decision.
+- There are certainly people with discipline who can grind on things they hate doing and eventually become experts at it. But more often I see people grind on things they hate only to become depressed and give up.
+- For most of us, our best hope is (healthy) obsession. And obsession, in the sense I'm talking about, does not come from something you are ambivalent about or hate. Obsession can only come when you're doing something you actually want to do.
+- For big goals or big changes, you need regular commitment weekly, monthly, yearly. Over the course of years. And only obsession makes that work not actually feel like work. Obsession is the only thing that makes discipline not feel like discipline.
+- That big goals take years to accomplish need not be scary. Obsession doesn't mean you can't pivot. There is quite a lot to gain by committing to something regularly over the course of years even if you decide to stop and commit from then on to something else. You will learn a good deal.
+- And healthy obsession to me is more specifically measurable on the order of weeks, not hours or days. Healthy obsession means you're still building healthy personal and professional relationships. You're still taking care of yourself, emotionally and physically.
+- I think you can do almost anything you want to do. If you commit to do doing it.
+
+[https://feeder.co/reader?addParentFolderId=folder%2F2017914](feeder.co) - added people's pages of the blogs that i enjoyed and wanted to follow their work.
+
+I've this RBDA presentation. I've other things to do, but since this appears to a big think, i'm not able to shift my focus and at the same time can't keep doing RBDA for long. Let's try to see some youtube video to shift focus, learn something, and then come back to RBDA again.
+
+Did the presentation, and was looking for validation from others even though i know that i did good. Not sure, why yet, but no need to worry. Other things came up and i completely forgot about that. 
+
+Two things to do by EOD, send Sohan the updates email, set reminder to maintain that thread, post in brightspace for tmr's office hrs in zoom. - Done
+
+Subject: Updates on my progress with Sohan
+
+Hello Sohan,
+
+I hope you’re doing well! Thank you for accepting this invitation for me to share my progress and help hold me accountable. I’ll keep this brief, and please let me know if you have any structure in mind to keep things streamlined. I want to make this process as smooth as possible for both of us.
+
+Current Progress and Milestones:
+
+As we wrap up the semester, I am currently working on my final projects and presentations, and I have an exam scheduled for next week, for which I am preparing. Earlier, I talked with you about what to focus on and select for my course project. I’m happy to say that I’ve made significant progress and am quite satisfied with my work. 
+
+There are two main highlights: First, I have discovered my interest in ML systems and GPU programming. Second, we completed a project that is very specific and addresses an industry problem, which we believe adds significant value. I’ve attached a report of the final project for your reference.
+
+Additionally, I was a bit reserved when it came to talking to people and presenting, but this semester, I made a conscious effort to break out of that. I served as a Teaching Assistant for Calculus 1, prepared thoroughly, presented well, and took notes after each session to identify areas for improvement. I plan to revisit these notes and write a blog about this unique experience (I enjoy blogging: [monishver11.github.io.io]). I also voluntarily took on presenter roles in my course projects and made notes for further improvements after each opportunity. Overall, this semester has felt positive. I've begun to adjust to life in New York, and I want to work with the amazing people around.
+
+Next Milestones:
+
+My primary goal is to work and gain experience in the domains of ML systems, ML infrastructure, or GPU kernel optimisation. I am determined to secure a co-op position for the next semester, so I will start making focused efforts to reach out to professionals in these fields through cold emails and build solid work around it. 
+
+Secondly, during the winter break, I plan to begin code problem-solving not just to prepare for interviews, but to hone my skills genuinely. I have not made specific plans yet, but I will do so soon. Concurrently, I will focus on interview preparation and building my experience in the domains I mentioned.
+
+I believe I’ve covered everything here. I apologise for any lack of structure in my thoughts, and I’ll aim to be more concise in the future. I'll send my next update on 12/26/2025. Thank you for your time, and I would love to hear your thoughts and any feedback you might have. 
+
+Best,  
+Monishver  
+
+
+Ask in Calculus 1 group chat for HW grading split;
+Make a reminder(both in system and visual) for next update with Sohan.
