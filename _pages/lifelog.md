@@ -24,7 +24,7 @@ I'll write everything that happens here and everything that i do to track
 
 There will always be uncertainty and chaos lurking around the corner of your every waking hour, and that's the case for everyone. But, one can't give in and be complacent with it, to give that as an excuse, as that never leads to greatness or mastery over anything. You need to be stubborn and focussed enough to get what you said you would get done and make bold actions towards the goal you set upon. 
 
-[https://www.youtube.com/watch?v=pYN7ZULM84U](Being a founding engineer at an AI startup)
+[Being a founding engineer at an AI startup](https://www.youtube.com/watch?v=pYN7ZULM84U)
 
 
 Always First Principles thinking and approach;
@@ -60,7 +60,7 @@ There were two presentations, both by phd students, they'we really good, in a se
 
 Specialising is important, job search must follow it, rather than being independent. - This is again, i was having in mind, with all the AI automation, all they can do is the general, surface level tasks, and we need experts even to guide them the right way, and we obviously need experts to build systems, and that level of competency gives you moat. Don't apply randomly, apply for big-tech and apply for startups(that you want to work for genuinely), do cold-mail and share your interest in working with them, and be as specific as possible. Learn more about their work and how you can contribute. Yesterday, i watched podcast of founders, similarly, watch podcasts of founders and startups, i'm interested in and gather data points, by which you could align your cold-email, and that will be noticeable. 
 
-[https://www.fastcompany.com/91454854/entrepreneurs-deep-domain-expertise-secret-success](Why deep expertise is the secret to success for today’s entrepreneurs)
+[Why deep expertise is the secret to success for today’s entrepreneurs](https://www.fastcompany.com/91454854/entrepreneurs-deep-domain-expertise-secret-success)
 
 Key idea of the above article: The new entrepreneurial opportunity lies not in disrupting entire industries, but in becoming the undisputed authority in a problem space in which your specialized knowledge defines your competitive advantage. This isn’t about slipping under the radar or being too small to notice. It’s about being so specialized—so clearly the expert—that you effectively build a moat around your niche.
 
@@ -75,7 +75,7 @@ This again, is something i see to be true. If you experiment and find what is so
 What you create is a honest relection of who you are - Naval
 Such a true statement. Sohan posted this in whatsapp.
 
-[https://www.forbes.com/sites/margiewarrell/2025/12/05/the-2026-leadership-playbook-building-credibility-through-uncertainty/](The 2026 Leadership Playbook: Building Credibility Through Uncertainty)
+[The 2026 Leadership Playbook: Building Credibility Through Uncertainty](https://www.forbes.com/sites/margiewarrell/2025/12/05/the-2026-leadership-playbook-building-credibility-through-uncertainty/)
 
 12/11/2025 (T - 152)
 
@@ -87,7 +87,7 @@ Learning it in-depth, going back to first priciples, must do.
 
 Sohan accepted for me to share my updates(bi-weekly) and milestones with him, will send an email by EOD and will create a reminder for this in my calender.
 
-[https://notes.eatonphil.com/2024-08-24-obsession.html](Obsession)
+[Obsession](https://notes.eatonphil.com/2024-08-24-obsession.html)
 - In your professional and personal life, I don't believe there is a stronger motivation than having something in mind and the desire to do it. Yet the natural way to deal with a desire to do something is to justify why it's not possible.
 - In the best cases, my listener had the self-confidence to ignore me. They did what they wanted to do anyway. In the worst case, again to my deep regret, I've been a well-intentioned part of derailing someone's career for years.
 - Nobody wants to be convinced. But intelligent people will change their mind when exposed to new facts or different ideas. Being convinced is a battle of will. Changing one's mind is a purely personal decision.
@@ -98,7 +98,7 @@ Sohan accepted for me to share my updates(bi-weekly) and milestones with him, wi
 - And healthy obsession to me is more specifically measurable on the order of weeks, not hours or days. Healthy obsession means you're still building healthy personal and professional relationships. You're still taking care of yourself, emotionally and physically.
 - I think you can do almost anything you want to do. If you commit to do doing it.
 
-[https://feeder.co/reader?addParentFolderId=folder%2F2017914](feeder.co) - added people's pages of the blogs that i enjoyed and wanted to follow their work.
+[feeder.co](https://feeder.co/reader?addParentFolderId=folder%2F2017914) - added people's pages of the blogs that i enjoyed and wanted to follow their work.
 
 I've this RBDA presentation. I've other things to do, but since this appears to a big think, i'm not able to shift my focus and at the same time can't keep doing RBDA for long. Let's try to see some youtube video to shift focus, learn something, and then come back to RBDA again.
 
@@ -118,7 +118,7 @@ As we wrap up the semester, I am currently working on my final projects and pres
 
 There are two main highlights: First, I have discovered my interest in ML systems and GPU programming. Second, we completed a project that is very specific and addresses an industry problem, which we believe adds significant value. I’ve attached a report of the final project for your reference.
 
-Additionally, I was a bit reserved when it came to talking to people and presenting, but this semester, I made a conscious effort to break out of that. I served as a Teaching Assistant for Calculus 1, prepared thoroughly, presented well, and took notes after each session to identify areas for improvement. I plan to revisit these notes and write a blog about this unique experience (I enjoy blogging: [monishver11.github.io.io]). I also voluntarily took on presenter roles in my course projects and made notes for further improvements after each opportunity. Overall, this semester has felt positive. I've begun to adjust to life in New York, and I want to work with the amazing people around.
+Additionally, I was a bit reserved when it came to talking to people and presenting, but this semester, I made a conscious effort to break out of that. I served as a Teaching Assistant for Calculus 1, prepared thoroughly, presented well, and took notes after each session to identify areas for improvement. I plan to revisit these notes and write a blog about this unique experience (I enjoy blogging: (monishver11.github.io.io)). I also voluntarily took on presenter roles in my course projects and made notes for further improvements after each opportunity. Overall, this semester has felt positive. I've begun to adjust to life in New York, and I want to work with the amazing people around.
 
 Next Milestones:
 
@@ -132,5 +132,35 @@ Best,
 Monishver  
 
 
-Ask in Calculus 1 group chat for HW grading split;
-Make a reminder(both in system and visual) for next update with Sohan.
+Ask in Calculus 1 group chat for HW grading split; - Done
+Make a reminder(both in system and visual) for next update with Sohan. Also add a reminder to add a section for things i enjoyed and you might like too, to the same email thread. - Made a sticky note and pasted in the feild of vision and that's enough and works well. 
+
+Add everything you learn here.
+
+12/12/2025 (T - 151)
+
+Good morning Monish! 
+New alarm worked perfectly. 
+
+My friend booked tickets to India, so now both of my flatmates are going to India. Its fine for me, but there is this feeling of missing out, atleast that's the very vague i can put of this feeling, i still can't comprehend why or what is my thinking in these lines, but i'm spilling it out here.
+
+[The Next Phase of Critical AI Infrastructure](https://www.threadai.com/blog/introducing-lemma)
+[From Palantir to Thread AI: Angela McNeal’s AI Blueprint | Data Driven NYC](https://www.youtube.com/watch?v=22r81aacvNw)
+[Inside Google Cloud’s Future of AI Report with Mayada Gonimah, CTO & Co-Founder at Thread AI](https://www.youtube.com/watch?v=TunFWmmqsg4)
+
+You need to experiment in the real world(and not in your head) constantly to reinvent yourself with what works for you and what works for the outer space. So, act and make an action.
+
+What I’m learning is this:
+- You can love your work and love your child both deeply, fiercely, fully.
+- You can feel grateful for opportunities and still grieve the moments you miss.
+- You can be ambitious and still have big emotions.
+By Amy Yan, Co-Founder @ Nowadays
+
+[Eternity: this clever film proves romance isn’t about choosing ‘the one’ – a philosopher of love explains](https://theconversation.com/eternity-this-clever-film-proves-romance-isnt-about-choosing-the-one-a-philosopher-of-love-explains-271647)
+
+Conducted the last office hours(12/12/25) in zoom. I student who I was expecting joined and asked questions, and I clarified. I wasn’t sure of two question, but tried to tell with what I know is right and for one question asked to check with the professor. Verified those questions online(chatgpt) and clarified for myself. 
+
+[Mastering Simplicity: Elon Musk’s Strategy of First Principles](https://www.youtube.com/watch?v=LDHVq9xfgt4)
+
+[The Future of Infrastructure is Invisible - Antimetal](https://blog.antimetal.com/p/the-future-of-infrastructure-is-invisible?utm_source=microsite&utm_medium=nav&utm_campaign=Series%2BA%2B)
+

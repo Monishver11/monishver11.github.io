@@ -34,21 +34,21 @@ GPU kernels for MOE, refined idea using first principles, and then proceeded to 
 
 Slides for BDML presentation - Done, will prepare for the presentation tmr morning and will do 2 dry run of the content i want to present.
 
-[https://www.youtube.com/watch?v=s1ILGG0TyYM](Intro to Triton: A Parallel Programming Compiler and Language, esp for AI acceleration (updated))
+[Intro to Triton: A Parallel Programming Compiler and Language, esp for AI acceleration (updated)](https://www.youtube.com/watch?v=s1ILGG0TyYM)
 
 12/10/2025 (T - 153)
 
-[https://christianjmills.com/posts/cuda-mode-notes/lecture-014/](GPU MODE Lecture 14: Practitioners Guide to Triton)
+[GPU MODE Lecture 14: Practitioners Guide to Triton](https://christianjmills.com/posts/cuda-mode-notes/lecture-014/)
 
 Have some doubts in the above blog's Triton coding parts, will check them using LLM and understand after BDML presentation.
 
-[https://www.youtube.com/watch?v=JndztlScZLA](MegaBlocks: Eﬃcient SparseTraining with Mixture-of-Experts)
+[MegaBlocks: Eﬃcient SparseTraining with Mixture-of-Experts](https://www.youtube.com/watch?v=JndztlScZLA)
 
 Solve Interesting Technical Work, again and always from first principles;
 
 I need to code here, from scratch and on my own. I feel this to a be big lacking and decrease in confidence level. Need to start doing even small things, but do it myself. 
 
-[https://www.thonking.ai/p/why-pytorch-is-an-amazing-place-to](Why PyTorch is an amazing place to work... and Why I'm Joining Thinking Machines)
+[Why PyTorch is an amazing place to work... and Why I'm Joining Thinking Machines](https://www.thonking.ai/p/why-pytorch-is-an-amazing-place-to)
 
 Done two dry runs, got a descent flow of what and how i want to present. All the best Monish!
 
@@ -56,7 +56,7 @@ Presentation done and did well, kudos. Next focus on the custom kernel for MOE(w
 
 Ping Sohan to ask, If he can be my mentor and accountability partner, with whom i can share my bi-weekly progress update, short and long term goals and discuss, someone with whom i can connect and talk and ask for advice - Done
 
-[https://christianjmills.com/posts/cuda-mode-notes/lecture-014/](GPU MODE Lecture 14: Practitioners Guide to Triton) + Gemini
+[GPU MODE Lecture 14: Practitioners Guide to Triton](https://christianjmills.com/posts/cuda-mode-notes/lecture-014/) + Gemini
 
 so, as per my understanding of how triton is similar and different from CUDA is:
 - in triton the basic unit is blocks, which consists of processing a vector of 128, rather than as in cuda, where the basic unit is threads, which processes one scalar value.
@@ -86,7 +86,7 @@ Discussed on RBDA, was little hesitant to present as i don't have all the facts.
 
 12/11/2025 (T - 152)
 
-[https://timdettmers.com/2014/09/21/how-to-build-and-use-a-multi-gpu-system-for-deep-learning/](How To Build and Use a Multi GPU System for Deep Learning)
+[How To Build and Use a Multi GPU System for Deep Learning](https://timdettmers.com/2014/09/21/how-to-build-and-use-a-multi-gpu-system-for-deep-learning/)
 
 - The main bottleneck is network bandwidth, i.e, how much data is transferred from computer to computer per second.
 - The network bandwidth of network cards (affordable cards are at about 4GB/s) does not come even close to the speed of PCIe 3.0 bandwidth (15.75 GB/s). So GPU-to-GPU communication within a computer will be fast, but it will be slow between computers.
@@ -107,3 +107,144 @@ Added GPU Lecture notes to my personal webpage, and tweaked and refined the RBDA
 Practiced 3 more times and got the flow. The 5 minutes constraint is slightly hard, and i feel like rushing, but that's fine, give your best. All the best Monish.
 
 Completed the presentation, had a bit of slack at the start, but eventually picked up the pace, and did well overall expect for the first bit. Good command over voice. Definitely can improve, and need to take up more presentation opportunity to master this skill, as this communication matters a lot than it appears to be. 
+
+Put everything you learn here in your own words.
+
+12/12/2025 (T - 151)
+
+Good morning Monish!
+
+[Einsum is All you Need - Einstein Summation in Deep Learning](https://rockt.ai/2018/04/30/einsum)
+
+einsum notes from above;
+- einstein summation, its a notation implemented in numpy, and also now in pytorch and TF. 
+- It is an elegant way to present and express dot products, outer products, transposes and matrix-vector or matrix-matrix multiplications. 
+- It is a DSL, that is domain specific language, but why?
+- DSL like einsum can be sometimes be compiled to high-performing code.
+
+
+unsqueeze operation;
+- It's an pytorch operation.
+- It adds a new dimension of size 1 at a specified axis.
+- If x.shape == (3, 4), and you unsqueeze at axis = 1, given by x = x.unsqueeze(1), results in shape: (3, 1, 4).
+- Numpy equivalent is np.expand_dims(x, axis)
+- Used for: adding a batch dimension, preparing for broadcasting or matching the dimensions of a model.
+- The opposite of this is squeeze, which exists as both numpy and pytorch operation, it removes dimension of size 1 across all dimensions by default, but optinally takes axis too.
+
+
+A more detailed and clear view of einsum with numpy;
+[Einstein Summation in Numpy](https://obilaniu6266h16.wordpress.com/2016/02/04/einstein-summation-in-numpy/)
+
+Need clarity in derivatives with respect to certain forms in backprop calculations, noted down a example og MLP with einsum;
+
+**Softmax Definition**
+
+$$
+y_i = \mathrm{softmax}(a)_i = \frac{e^{a_i}}{\sum_k e^{a_k}}
+\qquad\text{let } S = \sum_k e^{a_k}.
+$$
+
+---
+
+**Softmax Jacobian:** \( \frac{\partial y_i}{\partial a_j} \)
+
+Start from:
+
+$$
+y_i = \frac{e^{a_i}}{S}.
+$$
+
+Differentiate w.r.t. \(a_j\) using the quotient rule:
+
+$$
+\frac{\partial y_i}{\partial a_j}
+= \frac{S\cdot\frac{\partial}{\partial a_j}e^{a_i}
+      \;-\;
+      e^{a_i}\cdot\frac{\partial S}{\partial a_j}}{S^2}.
+$$
+
+Compute derivatives:
+
+- \( \frac{\partial}{\partial a_j} e^{a_i} = e^{a_i}\delta_{ij} \)
+- \( \frac{\partial S}{\partial a_j} = e^{a_j} \)
+
+Substitute:
+
+$$
+\frac{\partial y_i}{\partial a_j}
+= \frac{S(e^{a_i}\delta_{ij}) - e^{a_i}e^{a_j}}{S^2}
+= \frac{e^{a_i}}{S^2}(S\delta_{ij} - e^{a_j}).
+$$
+
+Use softmax definitions:
+
+$$
+y_i = \frac{e^{a_i}}{S}, \qquad
+y_j = \frac{e^{a_j}}{S}.
+$$
+
+Final form:
+
+$$
+\frac{\partial y_i}{\partial a_j}
+= y_i\delta_{ij} - y_i y_j
+= y_i (\delta_{ij} - y_j).
+$$
+
+
+**Cross-Entropy Loss**
+
+For one-hot target \(t\):
+
+$$
+L = -\sum_i t_i \log y_i.
+$$
+
+Differentiate w.r.t. \(a_j\):
+
+$$
+\frac{\partial L}{\partial a_j}
+= \sum_i \frac{\partial L}{\partial y_i}
+       \frac{\partial y_i}{\partial a_j}
+= \sum_i \left( -\frac{t_i}{y_i} \right)
+           y_i(\delta_{ij} - y_j).
+$$
+
+Simplify:
+
+$$
+= \sum_i -t_i(\delta_{ij} - y_j)
+= -\sum_i t_i\delta_{ij}
+  + \sum_i t_i y_j.
+$$
+
+Use:
+
+- \( \sum_i t_i\delta_{ij} = t_j \)
+- \( \sum_i t_i = 1 \) for one-hot \(t\)
+
+Thus:
+
+$$
+\frac{\partial L}{\partial a_j}
+= -t_j + y_j
+= y_j - t_j.
+$$
+
+
+
+$$
+\boxed{
+\frac{\partial L}{\partial a_j} = y_j - t_j
+}
+$$
+
+
+[A basic introduction to NumPy's einsum](https://ajcr.net/Basic-guide-to-einsum/)
+- einsum does not promote data types when summing, what it means is that if you're using a more limited datatype, you might get unexpected results.
+- einsum is not always the fastest option in NumPy. Functions such as dot and inner often link to lightening-quick BLAS routines which can outperform einsum and certainly shoudln't be forgotten about. 
+
+
+
+
+
