@@ -1,3 +1,13 @@
+<!-- ---
+layout: page
+permalink: /worklog/
+title: Worklog
+description: 
+nav: False
+nav_order: 6
+--- -->
+
+
 T - X Days
 
 Coffee + Article Read + Standing
@@ -73,3 +83,27 @@ Coding the Deepseek-MOE custom kernel with claude, trying to make it as a packag
 If it works, and i'll make it work. Then, i'll understand this very clearly, to a precision, where i can say at this line this happens and we do this for this very specific reason, and only then i'll share it someone. I don't care about anything, but to understand what i'm telling i did, must be of know doubt and ifs. 
 
 Discussed on RBDA, was little hesitant to present as i don't have all the facts. But, i read an article that leaders lead in the realm of uncertainty. So, i'll gather as much information i need by tmr afternoon, prep myself well enough to have a clear narrative and practice and present it well. 
+
+12/11/2025 (T - 152)
+
+[https://timdettmers.com/2014/09/21/how-to-build-and-use-a-multi-gpu-system-for-deep-learning/](How To Build and Use a Multi GPU System for Deep Learning)
+
+- The main bottleneck is network bandwidth, i.e, how much data is transferred from computer to computer per second.
+- The network bandwidth of network cards (affordable cards are at about 4GB/s) does not come even close to the speed of PCIe 3.0 bandwidth (15.75 GB/s). So GPU-to-GPU communication within a computer will be fast, but it will be slow between computers.
+- On top of that most network card only work with memory that is registered with the CPU and so the GPU to GPU transfer between two nodes would be like this: GPU 1 to CPU 1 to Network Card 1 to Network Card 2 to CPU 2 to GPU 2. What this means is, if one chooses a slow network card then there might be no speedups over a single computer. 
+- PCIe: Inside one machine, connects - CPU ↔ GPU, GPU ↔ GPU (via PCIe switches), CPU ↔ SSD, etc.
+- Network cards(Ethernet / InfiniBand NICs): Between different machines (nodes), connects - Server 1 ↔ Server 2 ↔ Server 3 ...
+- GPUDrirect RDMA, a network card driver that can make sense of GPU memory addresses and thus can transfer data directly from GPU to GPU between computers.
+- As deep learning programs use a single thread(from CPU) for a GPU most of the time, a CPU with as many cores as GPUs you have is often sufficient. 
+- There are basically two options how to do multi-gpu programming. You do it in CUDA and have a single thread and manage the GPUs directly by setting the current device and by declaring and assigning a dedicated memory-stream to each GPU, or the other options is to use CUDA-aware MPI where a single thread is spawned for each GPU and all communication and synchronization is handled by the MPI. The second option is much more efficient and clean. Also, MPI is the standard in HPC and its standardized library means that you can be sure that a MPI method really does what it is supposed to do.
+- MPI(Message passing interface): A standard API for communication between multiple processes running on multiple machines.
+
+Made the RBDA slides to cook a story, next is to serve to the audience, and i'll practice that next, after a short break, feeling bit tired and head weighted.
+
+Practiced a few times, feels ok. Will do a few more time to feel confident. 
+
+Added GPU Lecture notes to my personal webpage, and tweaked and refined the RBDA 1 & 2 Lecture notes.
+
+Practiced 3 more times and got the flow. The 5 minutes constraint is slightly hard, and i feel like rushing, but that's fine, give your best. All the best Monish.
+
+Completed the presentation, had a bit of slack at the start, but eventually picked up the pace, and did well overall expect for the first bit. Good command over voice. Definitely can improve, and need to take up more presentation opportunity to master this skill, as this communication matters a lot than it appears to be. 
