@@ -164,3 +164,17 @@ Conducted the last office hours(12/12/25) in zoom. I student who I was expecting
 
 [The Future of Infrastructure is Invisible - Antimetal](https://blog.antimetal.com/p/the-future-of-infrastructure-is-invisible?utm_source=microsite&utm_medium=nav&utm_campaign=Series%2BA%2B)
 
+Learn -> Understand -> Teach -> Build -> Ship -> Scale -> Lead
+
+Was having some bad dreams, with much similarity.
+
+[Even the Smartest Minds Struggle to Get Noticed — That’s Why Personal Branding Matters For Every Profession](https://www.entrepreneur.com/starting-a-business/nobodys-listening-unless-you-brand-yourself-heres-how/499943)
+- But knowledge only influences the world when it is visible, understandable and trusted.
+- Claim a specific niche — breadth is forgettable, precision is memorable
+- Translate expertise into language people can act on
+- Share insights consistently, not only when you publish
+- Personal branding isn’t a distraction from scientific work — it’s a force multiplier for it.
+
+[The Return of Padayappa – Official Trailer | Rajinikanth 75th Birthday Special | K. S. Ravikumar](https://www.youtube.com/watch?v=8U9t5xMElN0)
+
+
