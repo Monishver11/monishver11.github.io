@@ -242,7 +242,16 @@ $$
 
 [A basic introduction to NumPy's einsum](https://ajcr.net/Basic-guide-to-einsum/)
 - einsum does not promote data types when summing, what it means is that if you're using a more limited datatype, you might get unexpected results.
-- einsum is not always the fastest option in NumPy. Functions such as dot and inner often link to lightening-quick BLAS routines which can outperform einsum and certainly shoudln't be forgotten about. 
+- einsum is not always the fastest option in NumPy. Functions such as dot and inner often link to lightening-quick BLAS routines which can outperform einsum and certainly shouldn't be forgotten about. 
+
+
+Finish Einsum today; - Done
+
+Draft a mail for Prof Zaharan for GPU project, by EOD, scheduled mail for 12/15/25, 8AM - Done
+
+Need to finish the backprop of MLP with einsum after dinner;
+Check on the page's content for MLP derivation, or write a new one for this compact MLP forward and backward pass; - First learn, and then finish this. - Next;
+Along with this, start transformer;
 
 
 
