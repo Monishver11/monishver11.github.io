@@ -3,7 +3,7 @@ layout: page
 permalink: /lifelog/
 title: Lifelog
 description: 
-nav: False
+nav: True
 nav_order: 7
 --- -->
 
@@ -175,6 +175,35 @@ Was having some bad dreams, with much similarity.
 - Share insights consistently, not only when you publish
 - Personal branding isn’t a distraction from scientific work — it’s a force multiplier for it.
 
-[The Return of Padayappa – Official Trailer | Rajinikanth 75th Birthday Special | K. S. Ravikumar](https://www.youtube.com/watch?v=8U9t5xMElN0)
+[The Return of Padayappa – Official Trailer - Rajinikanth 75th Birthday Special - K. S. Ravikumar](https://www.youtube.com/watch?v=8U9t5xMElN0)
 
 
+12/13/2025 (T - 150)
+
+Good Morning Monish!
+
+Read one chapter of Crime and Punishment from Speechify.
+
+I've thoughts to purchase speechify premium(with 67% discount) for 5.87/year, but hestitating and not making a decision. Need to make one. Feels a good investment, but when i checked in reddit, i didn't find many positive comments. So, thinking. 
+Will try Mac TTS for sometime, seems ok for pdfs of my books to read.
+
+[Our Most Worn Watches Of The Year for 2025 (35 Creators Featured)](https://www.youtube.com/watch?v=kRJWASDPBls)
+
+[10 tech books I'm reading in 2026 - Life Meets Code](https://www.youtube.com/watch?v=fjVUOR9fY24)
+- Understanding Distributed Systems: What every developer should know about large distributed applications
+- A Philosophy of Software Design; Check Youtube first;
+- The Software Engineer's Guidebook; Check newsletter first;
+- Algorithms to Live By: The Computer Science of Human Decisions
+- The Art of Explanation
+
+[10 Books That Perfectly Dissect the Human Soul](https://www.timesnownews.com/lifestyle/books/10-books-that-perfectly-dissect-the-human-soul-photo-gallery-153263387)
+- A Tale for the Time Being by Ruth Ozeki
+- Dept. of Speculation by Jenny Offill
+- The Book of Disquiet by Fernando Pessoa
+- The Door by Magda Szabó
+  
+Can reduce the nap to 30 mins, then take bath and have coffee. Try to have coffee around 4, bath at 3:30 and nap at 3.
+
+Have to think about when to start problem solve coding, mostly cp-31 list; with 30 mins for thinking through for a solution and coding.
+
+[Quick Black-Eyed Peas Recipe](https://www.youtube.com/watch?v=Jt0Yw-9mWQk)
