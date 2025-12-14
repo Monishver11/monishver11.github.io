@@ -3,7 +3,7 @@ layout: page
 permalink: /worklog/
 title: Worklog
 description: 
-nav: False
+nav: True
 nav_order: 6
 --- -->
 
@@ -26,7 +26,7 @@ Ruthless work-ethic
 
 12/09/25 (T - 154)
 
-https://horace.io/brrr_intro.html
+[Making Deep Learning Go Brrrr From First Principles](https://horace.io/brrr_intro.html)
 
 Always First Principles thinking and approach;
 
@@ -135,109 +135,13 @@ unsqueeze operation;
 A more detailed and clear view of einsum with numpy;
 [Einstein Summation in Numpy](https://obilaniu6266h16.wordpress.com/2016/02/04/einstein-summation-in-numpy/)
 
-Need clarity in derivatives with respect to certain forms in backprop calculations, noted down a example og MLP with einsum;
+Need clarity in derivatives with respect to certain forms in backprop calculations, noted down a example of MLP with einsum;
 
-**Softmax Definition**
+[MLP Standard Derivatives Derivation](/blog/2025/mlp-derivatives/)
 
-$$
-y_i = \mathrm{softmax}(a)_i = \frac{e^{a_i}}{\sum_k e^{a_k}}
-\qquad\text{let } S = \sum_k e^{a_k}.
-$$
+[Simple MLP – Forward and Backward Pass (with Einsum)](/blog/2025/mlp-fw-bwd/)
 
----
-
-**Softmax Jacobian:** \( \frac{\partial y_i}{\partial a_j} \)
-
-Start from:
-
-$$
-y_i = \frac{e^{a_i}}{S}.
-$$
-
-Differentiate w.r.t. \(a_j\) using the quotient rule:
-
-$$
-\frac{\partial y_i}{\partial a_j}
-= \frac{S\cdot\frac{\partial}{\partial a_j}e^{a_i}
-      \;-\;
-      e^{a_i}\cdot\frac{\partial S}{\partial a_j}}{S^2}.
-$$
-
-Compute derivatives:
-
-- \( \frac{\partial}{\partial a_j} e^{a_i} = e^{a_i}\delta_{ij} \)
-- \( \frac{\partial S}{\partial a_j} = e^{a_j} \)
-
-Substitute:
-
-$$
-\frac{\partial y_i}{\partial a_j}
-= \frac{S(e^{a_i}\delta_{ij}) - e^{a_i}e^{a_j}}{S^2}
-= \frac{e^{a_i}}{S^2}(S\delta_{ij} - e^{a_j}).
-$$
-
-Use softmax definitions:
-
-$$
-y_i = \frac{e^{a_i}}{S}, \qquad
-y_j = \frac{e^{a_j}}{S}.
-$$
-
-Final form:
-
-$$
-\frac{\partial y_i}{\partial a_j}
-= y_i\delta_{ij} - y_i y_j
-= y_i (\delta_{ij} - y_j).
-$$
-
-
-**Cross-Entropy Loss**
-
-For one-hot target \(t\):
-
-$$
-L = -\sum_i t_i \log y_i.
-$$
-
-Differentiate w.r.t. \(a_j\):
-
-$$
-\frac{\partial L}{\partial a_j}
-= \sum_i \frac{\partial L}{\partial y_i}
-       \frac{\partial y_i}{\partial a_j}
-= \sum_i \left( -\frac{t_i}{y_i} \right)
-           y_i(\delta_{ij} - y_j).
-$$
-
-Simplify:
-
-$$
-= \sum_i -t_i(\delta_{ij} - y_j)
-= -\sum_i t_i\delta_{ij}
-  + \sum_i t_i y_j.
-$$
-
-Use:
-
-- \( \sum_i t_i\delta_{ij} = t_j \)
-- \( \sum_i t_i = 1 \) for one-hot \(t\)
-
-Thus:
-
-$$
-\frac{\partial L}{\partial a_j}
-= -t_j + y_j
-= y_j - t_j.
-$$
-
-
-
-$$
-\boxed{
-\frac{\partial L}{\partial a_j} = y_j - t_j
-}
-$$
+Above are drafts, may refine it further, but not now;
 
 
 [A basic introduction to NumPy's einsum](https://ajcr.net/Basic-guide-to-einsum/)
@@ -249,11 +153,58 @@ Finish Einsum today; - Done
 
 Draft a mail for Prof Zaharan for GPU project, by EOD, scheduled mail for 12/15/25, 8AM - Done
 
-Need to finish the backprop of MLP with einsum after dinner;
-Check on the page's content for MLP derivation, or write a new one for this compact MLP forward and backward pass; - First learn, and then finish this. - Next;
+Need to finish the backprop of MLP with einsum after dinner; 
+Check on the page's content for MLP derivation, or write a new one for this compact MLP forward and backward pass; - First learn, and then finish this. - Next; - Done;
 Along with this, start transformer;
 
+12/13/2025 (T - 150)
 
+[NanoGPT-inference LLM inference from scratch, by Pieter Delobelle](https://pieter.ai/blog/2025/nanogpt-inference/)
 
+[NanoGPT-inference - Baseline, by Pieter Delobelle](https://pieter.ai/blog/2025/nanogpt-inference---baseline/)
+- Time to first token(ms): the time it takes for the model to start responding. This is usually the first forward pass, once we get to KV caching we also call this first pass the 'prefill'. Lower is better.
+- Inter-token latency(ms): the time it takes for the model to respond to the next token. Lower is better again.
+- Throughput per request(tokens/s): The inverse of the inter-token latency. Higher is better.
+- Total throughput(tokens/s): The total number of tokens we can process per second. This is the product of the throughput per request and the batch size.
+- Memory usage(GB): The GPU memory usage of our inference engine. A model needs to fit into the GPU memory, as well as activations, some intermediate tensors, and later on some cached values. The higher the memory usage, the bigger our VRAM(/HBM) needs to be. 
 
+[What is the roofline model? - GPU Glossary](https://modal.com/gpu-glossary/perf/roofline-model)
+- The roofline model is a simplified, visual model of performance used to quickly determine whether a program is bound by memory bandwidth or arithmetic bandwidth.
+- In this, we have two hardware-derived "roofs" put a "ceiling" on the possible performance:
+  - the "compute roof" - the peak rate of the target hardware (CUDA cores or Tensor cores), aka the arithmetic bandwidth.
+  - the "memory roof" - the peak memory throughput of the target hardware, aka the memory bandwidth.
+- x-axis: arithmetic intensity (in operations per byte) and  y-axis: performance (in operations per second).
+- The compute roof is a horizontal line with the height equal to the arithmetic bandwidth. 
+- The memory roof is a slanted line with slope equal to the memory bandwidth. Slope is "rise over run", and so the line has units of bytes per second (operations per second divided by operations per byte).
+- A specific kernel's x-coordinate tells you instantly whether its is fundamentally compute-bound (points beneath the flat roof) or memory-bound (points beneath the slanted roof). 
+- Kernels are rarely up against either roof due to the effects of overhead.
+- The point on boundary, i.e. where the diagonal and horizontal roof meet, is called the "ridge point". 
+- Its x-coordinate is the minimum arithmetic intensity required to be able to escape the memory bottleneck. 
+- The compute and memory roofs need only be derived once per subsystems (though importantly they vary depending on the subsystem, not just the system; Tensor cores have more FLOPS than CUDA cores).
+
+Next:
+Annotated Transformer; - Glossed over, got very high-level gist. 
+Simple MLP with Einsum - Colab; - Done;
+
+Need to learn Transformers from first principles
+
+[Learning Triton One Kernel at a Time: Matrix Multiplication](https://medium.com/data-science-collective/learning-triton-one-kernel-at-a-time-matrix-multiplication-44851b4146dd)
+- The L2 cache is coherent across SMs, meaning that updates from one SM are visible to others, enabling synchronization between thread blocks. 
+- Parallel Tiled GEMM: Here we extend our tiled GEMM to parallelize the computation of each pairs of tiles over several thread blocks. (See the animation, it clearly shows the difference from Tiled GEMM)
+- Naive GEMM -> Tiled GEMM -> Parallel Tiled GEMM
+- Memory coalescing is achieved when subsequent threads in a warp access subsequent memory addresses. (Nice analogy: Imagine a librarian needing to fetch books for a client, if all books are side-by-side on a shelf, they can grab them all at once. In contrast, if all books are lying on different shelves, they’ll have to grab them one by one, which takes significantly longer.)
+- Frameworks like pytorch adapt a row-major layout, meaning that elements of a matrix are per-row contiguous in memory. For instance, elements of our (2,2) matrix would be stored as follows: [(0,0), (0,1), (1,0), (1,1)], notice that elements of the same row are contiguous (touching) while elements of the same column have a stride of 1(separated by one element).
+- This implies that we can load rows using coalesced loads, but columns do not satisfy this condition. However, we need to access columns of Y to compute dot products. In order to maximize performance, a good practice is to transpose Y so that we iterate on its rows rather than its columns.
+- However, transposing Y isn't enough to modify its layout in memory. As mentioned previously, PyTorch stores machine in a flat array. Each matrix dimension is associated with a stride attribute, denoting the jump necessary to go from one element to the next one along this dimension. for instance, a (10,10) matrix would have strides=(10, 1). Indeed, starting from element [0,0], element [1,0] is 10 memory slots(i.e. one row) away, whereas element [0,1] is adjacent.
+- When transposing a tensor, PyTorch doesn't modify the layout in memory, but simply recomputes the strides. In order to make the transpose effective from a memory standpoint we need to call Y.T.contiguous().
+- These are the required steps the load columns of Y efficiently, however we'll need to transpose the loaded blocks within the kernel to perform the dot product properly: `z_block = tl.dot(X_block, Y_block.T)`.
+- See the image for a more clear visual notion.
+- Naive GEMM -> Tiled GEMM -> Parallel Tiled GEMM -> Memory Coalescing.
+- Triton Implementation(with memory coalescing): The Nsight profile shows that the transpose inside the kernel causes shared-memory bank conflicts, which serialize accesses and stall warps. As a result, the warp scheduler has no eligible warp to run 87.6% of the time, meaning the SMs are mostly idle waiting for these conflicts to resolve. The low DRAM throughput (8.2%) indicates the kernel is not limited by global memory bandwidth, and the modest compute throughput (21.1%) shows the ALUs are also underutilized. Since neither memory nor compute resources are saturated and the dominant issue is waiting on stalls, the kernel is latency bound. In contrast, the earlier kernel is compute bound because its compute throughput is high relative to DRAM usage, so performance there is limited by computation rather than stalls.
+- **Q: If threads in a warp should access contiguous memory for performance, but shared memory accesses must avoid bank conflicts to be parallel, isn’t this contradictory?**
+- A: No, because these rules apply to two different memory systems. Contiguous access refers to global memory, where consecutive addresses allow requests from a warp to be coalesced into fewer DRAM transactions, maximizing bandwidth. Bank conflicts apply to shared memory, which is divided into banks; here, threads must access different banks to avoid serialization. In practice, an optimal kernel loads data from global memory using coalesced (contiguous) accesses, then rearranges it in shared memory into a layout that avoids bank conflicts for computation. Both conditions are required: coalescing ensures efficient data movement into the SM, while conflict-free shared memory ensures fast, parallel use of that data once it is on-chip. Reference(check image): [4/7: The GPU – a performance-centric overview](https://performanceguidelines.blogspot.com/2013/08/the-gpu-performance-centric-overview.html?utm_source=chatgpt.com)
+  
+
+Do, Triton implementation of this next. 
+Also, go through this for a Triton implementation revision - [Learning Triton One Kernel At a Time: Vector Addition](https://towardsdatascience.com/learning-triton-one-kernel-at-a-time-vector-addition/?source=post_page-----44851b4146dd---------------------------------------)
 
