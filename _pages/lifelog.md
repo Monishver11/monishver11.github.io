@@ -207,3 +207,6 @@ Can reduce the nap to 30 mins, then take bath and have coffee. Try to have coffe
 Have to think about when to start problem solve coding, mostly cp-31 list; with 30 mins for thinking through for a solution and coding.
 
 [Quick Black-Eyed Peas Recipe](https://www.youtube.com/watch?v=Jt0Yw-9mWQk)
+
+Hi Nanna 2023
+
