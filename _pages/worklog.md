@@ -215,3 +215,15 @@ Also, go through this for a Triton implementation revision - [Learning Triton On
 
 Will code the triton matmul tmr;
 
+12/15/2025 (T - 148)
+
+Coded Triton MatMul, both tiled GEMM and Memory Coalesced. Found a small bug in the author's code, and posted it as a comment in Medium's blogpost page. Didn't profile with NSight, but that's ok, i've seen the numbers of flops and throughput.
+
+[https://www.aleksagordic.com/blog/matmul](https://www.aleksagordic.com/blog/matmul)
+Reading this, even though i might not be able to finish in one sitting, But, i'll do in parts. 
+Also add to feeder.co - [Aleksa Gordić](https://www.aleksagordic.com/); - Having a limit on the feeds, so wasn't able to add. Need to look for another alternative.
+
+
+
+
+
