@@ -208,3 +208,10 @@ Need to learn Transformers from first principles
 Do, Triton implementation of this next. 
 Also, go through this for a Triton implementation revision - [Learning Triton One Kernel At a Time: Vector Addition](https://towardsdatascience.com/learning-triton-one-kernel-at-a-time-vector-addition/?source=post_page-----44851b4146dd---------------------------------------)
 
+12/14/2025 (T - 149)
+
+[GPU Compiler Architecture: CUDA, Triton & DeepSeek](https://qsysarch.com/posts/cuda-compiler-architecture/)
+- Got a brief mental idea of what's supposedly happening, but not having much clarity on each of the specific parts. But, this is exactly the kind of things you need to know for first principles, and to gain expertise. I'll revisit this blog, and read Aleksagordic's blog to understand this better.
+
+Will code the triton matmul tmr;
+
