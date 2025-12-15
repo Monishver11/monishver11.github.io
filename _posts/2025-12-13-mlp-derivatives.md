@@ -5,7 +5,7 @@ date: 2025-12-13 09:14:00-0400
 featured: False
 description: MLP Standard Derivatives Derivation
 tags: ML
-categories: ML-NYU
+categories: 
 giscus_comments: true
 related_posts: false
 
