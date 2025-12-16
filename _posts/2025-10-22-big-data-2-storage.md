@@ -4,7 +4,7 @@ title: Big Data Storage
 date: 2025-10-22 11:25:00-0400
 featured: false
 description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 2
-tags: RBDA
+tags: 
 categories: RBDA-NYU
 giscus_comments: true
 related_posts: false

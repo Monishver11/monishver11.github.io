@@ -35,7 +35,7 @@ related_posts: false
   
 <div class="row justify-content-center">
     <div class="col-sm-7 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/hdfs-1.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/hdfs-1.png" title="hdfs-1" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -70,7 +70,7 @@ related_posts: false
   
 <div class="row justify-content-center">
     <div class="col-sm-7 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/hdfs-2.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/hdfs-2.png" title="hdfs-2" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>
 
@@ -81,7 +81,7 @@ related_posts: false
 
 <div class="row justify-content-center">
   <div class="col-sm-7 mt-3 mt-md-0">
-      {% include figure.liquid path="assets/img/hdfs-3.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+      {% include figure.liquid path="assets/img/hdfs-3.png" title="hdfs-3" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 
@@ -94,7 +94,7 @@ related_posts: false
 
 <div class="row justify-content-center">
   <div class="col-sm-7 mt-3 mt-md-0">
-      {% include figure.liquid path="assets/img/hdfs-4.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+      {% include figure.liquid path="assets/img/hdfs-4.png" title="hdfs-4" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>￼
       
@@ -111,7 +111,7 @@ related_posts: false
 
 <div class="row justify-content-center">
   <div class="col-sm-7 mt-3 mt-md-0">
-      {% include figure.liquid path="assets/img/hdfs-5.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+      {% include figure.liquid path="assets/img/hdfs-5.png" title="hdfs-5" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
       
@@ -164,13 +164,13 @@ related_posts: false
 
  <div class="row justify-content-center">
     <div class="col-sm-7 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/hdfs-6.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/hdfs-6.png" title="hdfs-6" class="img-fluid rounded z-depth-1" %}
     </div>
 </div> 
 
 <div class="row justify-content-center">
     <div class="col-sm-7 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/hdfs-7.png" title="sharding_ms" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/hdfs-7.png" title="hdfs-7" class="img-fluid rounded z-depth-1" %}
     </div>
 </div>￼
 
