@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Big data processing concepts & MapReduce
+title: Big Data Processing Concepts & MapReduce
 date: 2025-12-15 18:39:00-0400
 featured: false
 description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 4
