@@ -256,3 +256,23 @@ Good morning Monish!
 Starting in the morning, gives me a good flow for my work towards the goal, and it gives me whole-hearted and unique satisfaction, which i love truly.
 
 Get ready for college and final exam invigilation.
+
+Talked to Mom, was restless a bit until i was having that call. Not much, but feels good once i talk.
+
+Finished proctoring, returned. Cooked Pasta for all(i decided it to).
+
+A few thoughts, while protoring, but wrote later while coming to home in train;
+
+Age like a fine wine, me and the person I’m wishing. I want someone who's mature, and has rekindled the inner child(if they had lost along the way), and someone intellectual with genuine depth. 
+
+Judging aggravates with exposure and reduce with experiences. I wrote it because, i did start to judge some people(based on intellectually), and i don't think i'll compromise on this. So, this pretty much aligns with the main goal i've, to work on ML Sys and focus on my career. As there, the people are exactly amazing and i don't need to compromise either. So, it's a win-win.
+
+Social skills, how to react to situations and people in general. There’s more to it, what and how we act naturally, and it has a lot of correlation as you go up the ladder, a must to know skill and compounding one, similar to the way communication matters. 
+
+Email BDML prof for MLSys work, prolly on fri. 
+
+[Holiday Tech Happy Hour by Startup Grind](https://luma.com/tech)
+Wanted to go for this and explore, and to meet new people for getting to know them genuinely and attract opportunities for GPU Performance Eng, ML Sys and ML Infra.
+
+[Inside Meta's 'year of intensity' as its AI overhaul, culture wars, and crackdowns collide](https://www.businessinsider.com/meta-ai-overhaul-mark-zuckerberg-year-intensity-2025-12)
+
