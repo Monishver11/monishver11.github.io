@@ -231,6 +231,15 @@ Make an entry for TA experience, after dinner; -> Tmr;
 
 Finished Hive slides and notes. 
 
+12/16/2025 (T - 147)
+
+"Explain from first principles so that I can do this without you next time" - Priyansh Agarwal 
+ 
+Reading RBDA - HBase(Done, added notes), Zookeeper(Done, added notes), starting with Kakfa;
+
+Came across this and want to later see it(saving for reference): [Timilearning - Tagged “learning-diary”](https://timilearning.com/tags/learning-diary/)
+
+
 
 
   
