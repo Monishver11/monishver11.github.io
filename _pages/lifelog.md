@@ -276,3 +276,16 @@ Wanted to go for this and explore, and to meet new people for getting to know th
 
 [Inside Meta's 'year of intensity' as its AI overhaul, culture wars, and crackdowns collide](https://www.businessinsider.com/meta-ai-overhaul-mark-zuckerberg-year-intensity-2025-12)
 
+12/16/2025 (T - 147)
+
+I didn't wake up in the morning, yesterday i gave in again, and did something that doesn't align with my goal. Need to stop it, create very large friction and punishment if cross over again.
+Deleting reddit account, the only social media, other than linkedin i use recently. Done;
+
+Missed to work for my ML Systems, will not make this mistake again.
+And its wrong to say, i missed, because i konw this will happen with some certainty. So, its fully my responsibility and if i want something, its upto me and only me to go get it. Don't waste this time and regret. 
+
+Happy to see Amma do her thing and succeed. Tell her in call;
+
+Need to order Bedsheets from amazon and pillows;
+
+Focused work stabilises my mind, and this works every single time. And don't thing about yourself much. This lifelog is for tracking the activities and life in general with details, and not for you to overthink and write it down that doesn't matter. 
