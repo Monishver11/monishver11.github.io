@@ -239,7 +239,15 @@ Reading RBDA - HBase(Done, added notes), Zookeeper(Done, added notes), starting 
 
 Came across this and want to later see it(saving for reference): [Timilearning - Tagged “learning-diary”](https://timilearning.com/tags/learning-diary/)
 
+12/17/2025 (T - 146)
 
+Read to need a 1 page from Aleska Gordic Blog;
+Review BDML Report;
 
+Starting with Kafka. (Done, edits pending for publishing)
+
+Starting with Flink. Read, added some notes, but only for places i had question. Need to input all the content with this and make notes, and that's after exam;
+
+Start 12-data format. Done;
 
   
