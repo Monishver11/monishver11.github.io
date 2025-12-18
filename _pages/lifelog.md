@@ -289,3 +289,12 @@ Happy to see Amma do her thing and succeed. Tell her in call;
 Need to order Bedsheets from amazon and pillows;
 
 Focused work stabilises my mind, and this works every single time. And don't thing about yourself much. This lifelog is for tracking the activities and life in general with details, and not for you to overthink and write it down that doesn't matter. 
+
+12/17/2025 (T - 146)
+
+Good morning Monish! Woke up around 9:45, didn't hear the alarm, maybe i body was overly tired and needed that rest to work efficiently. So, fine.
+
+Individually everyone is different, and universally everyone is all the same. This is such an understatement, and to grasp requires dissection of knowing the self and others distinctively.
+
+John came;
+
