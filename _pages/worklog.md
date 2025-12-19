@@ -250,4 +250,19 @@ Starting with Flink. Read, added some notes, but only for places i had question.
 
 Start 12-data format. Done;
 
-  
+12/18/2025 (T - 145) 
+
+[Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)
+- Read from CUDA programming model to L1 model. 
+- Have to make notes
+- Add nuanced questions(wrt specific details) as tags, to revisit and clarify after reading the whole blog
+
+Went through the pre-midterm cheat sheet and now going to take mock exam; Done.
+
+Finished pre-midterm 2 slides, took some rest, now starting again the rest of the pre-midterm slides;
+
+Done with pre-midterm, made notes till kafka, and now will be starting exam in 5 mins.
+
+Finished exam, was slightly harder than the mock, but overall fine. Properly understanding stuff, the precise first principles interals helped a lot. Overall, good, learnt well.
+
+Work on project report. Done.
