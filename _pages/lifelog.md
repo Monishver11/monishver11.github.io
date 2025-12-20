@@ -304,3 +304,11 @@ Good morning Monish! The digital clock alarm just rang a once, i mean a single b
 
 SEO optimizations for webpage and blogs;
 
+12/19/2025 (T - 144)
+
+Good morning Monish! Slept late yesterday(and after exam) and now woke up at 9AM for BDML project work.
+
+Book flight tickets to FL; - Done;
+Cancel amazon prime; - Done;
+
+Went to meet Jhon's friend at NYC, then met Kaousheik and came with them to my home.

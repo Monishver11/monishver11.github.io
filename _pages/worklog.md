@@ -265,4 +265,10 @@ Done with pre-midterm, made notes till kafka, and now will be starting exam in 5
 
 Finished exam, was slightly harder than the mock, but overall fine. Properly understanding stuff, the precise first principles interals helped a lot. Overall, good, learnt well.
 
-Work on project report. Done.
+Work on RBDA project report. Done.
+
+12/19/2025 (T - 144)
+
+Read BDML report and marked for changes needed yesterday itself. Will be connecting in zoom and finishing that up. Done, my part and my teammate will submit the doc. - Done;
+
+Email BDML prof for ML Systems work - Done;
