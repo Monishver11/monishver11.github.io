@@ -272,3 +272,7 @@ Work on RBDA project report. Done.
 Read BDML report and marked for changes needed yesterday itself. Will be connecting in zoom and finishing that up. Done, my part and my teammate will submit the doc. - Done;
 
 Email BDML prof for ML Systems work - Done;
+
+12/20/2025 (T - 143)
+
+[Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul); Read till PTX code;

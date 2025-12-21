@@ -312,3 +312,10 @@ Book flight tickets to FL; - Done;
 Cancel amazon prime; - Done;
 
 Went to meet Jhon's friend at NYC, then met Kaousheik and came with them to my home.
+
+12/20/2025 (T - 143)
+
+GM Monish!
+
+Check people in NYC, who are pros at ML Perf Eng; Connect with them, and ask for Coffee Chats;
+
