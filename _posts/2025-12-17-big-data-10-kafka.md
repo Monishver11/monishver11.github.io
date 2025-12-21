@@ -1,3 +1,16 @@
+---
+layout: post
+title: Kafka
+date: 2025-12-17 15:02:00-0400
+featured: false
+description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 9
+tags: 
+categories: RBDA-NYU
+giscus_comments: true
+related_posts: false
+
+---
+
 #### **Foreword**
 
 **Data at rest versus data in motion**
