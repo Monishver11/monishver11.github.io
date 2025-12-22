@@ -319,3 +319,24 @@ GM Monish!
 
 Check people in NYC, who are pros at ML Perf Eng; Connect with them, and ask for Coffee Chats;
 
+[WTF Is Wealth? Ray Dalio Breaks It Down w/ Nikhil Kamath | WTF is Finance Ep 2](https://www.youtube.com/watch?v=0YKTsHr5bDE)
+
+[Full Anduril R&D Tour: Matt Grimm, Co-Founder & COO](https://www.youtube.com/watch?v=7rvStMD9WFU)
+
+NYC ML performance Engineers
+
+Went out yesterday to Rockefeller Cneter, the Christmas Tree was Magical.
+
+12/21/2025 (T - 142)
+
+Good morning Monish!
+
+Going to a Hackathon event today at NYC;
+
+Story telling is an Art, and be an Artist;
+
+Participated in a NYC Hackathon(by Pulse); Below is what we built. Met a good number of people, talked with them, built a MVP with Arjun, and presented it well. I felt that i did good. Was such a good experience overall.
+[VisaPulse: Practice your visa interview before it decides your future.](https://devpost.com/software/visapulse)
+[VisaPulse - Github](https://github.com/prasadboi/VisaPulse)
+
+Tired, going to play Catan with friends now, and sleep; GN.
