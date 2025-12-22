@@ -276,3 +276,10 @@ Email BDML prof for ML Systems work - Done;
 12/20/2025 (T - 143)
 
 [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul); Read till PTX code;
+
+12/21/2025 (T - 142)
+
+[Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul); 
+
+Pulse NYC Hackathon Build;
+[VisaPulse: Practice your visa interview before it decides your future.](https://devpost.com/software/visapulse)
