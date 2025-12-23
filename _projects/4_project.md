@@ -3,7 +3,7 @@ layout: page
 title: SmallGraphGCN - Accelerating GNN Training on Batched Small Graphs
 description: Discover how fused-edge-centric CUDA kernels dramatically accelerate Graph Neural Network training on molecular datasets. By rethinking parallelism strategies for batched small graphs, our approach achieves up to 3.1× faster forward execution and 1.3× end-to-end training speedup over PyTorch Geometric.
 img: assets/img/project_4/gcn-1.png
-importance: 1
+importance: 2
 category: Work
 related_publications: false
 toc:
