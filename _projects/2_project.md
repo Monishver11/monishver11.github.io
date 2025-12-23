@@ -3,7 +3,7 @@ layout: page
 title: Gaze-Guided Reinforcement Learning for Visual Search
 description: Discover how gaze prediction from human eye-tracking enhances AI agents in object search tasks. By integrating visual attention into reinforcement learning through three novel methods, our approach enables faster, more effective navigation in simulated environments.
 img: assets/img/proj2-1.jpg
-importance: 1
+importance: 2
 category: Work
 related_publications: false
 toc:

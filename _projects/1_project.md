@@ -3,7 +3,7 @@ layout: page
 title: MTA Transit Time Prediction
 description: Leveraging real-time data and machine learning to predict bus arrival times in New York City with route-based and grid-based approaches.
 img: assets/img/project_1/MTA_1.jpeg
-importance: 3
+importance: 4
 giscus_comments: true
 category: Work
 related_publications: false

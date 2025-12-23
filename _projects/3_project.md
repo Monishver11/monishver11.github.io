@@ -3,7 +3,7 @@ layout: page
 title: Understanding Swap Regret 2.0
 description: This blog post unpacks the "Swap Regret 2.0" paper through slide-by-slide insights, showing how the TreeSwap algorithm closes the gap between external and swap regret, advancing equilibrium computation in game theory and reinforcement learning.
 img: assets/img/project_3/p3-1.jpeg
-importance: 2
+importance: 3
 category: Work
 giscus_comments: true
 toc:
