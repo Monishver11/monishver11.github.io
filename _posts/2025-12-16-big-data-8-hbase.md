@@ -1,6 +1,6 @@
 ---
 layout: post
-title: HBase
+title: Apache HBase
 date: 2025-12-16 16:36:00-0400
 featured: false
 description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 7

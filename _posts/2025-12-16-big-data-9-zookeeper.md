@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ZooKeeper
+title: Apache ZooKeeper
 date: 2025-12-16 22:58:00-0400
 featured: false
 description: Realtime and Big Data Analytics Course at NYU Courant - Conceptual Notes 8
