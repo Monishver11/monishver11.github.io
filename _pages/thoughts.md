@@ -23,7 +23,28 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **December 2025**
+
+<div class="small-quote"><p>Life isn’t supposed to be always picture perfect.</p></div>
+
+<div class="small-quote"><p>Individually, everyone is different, and universally, everyone is all the same. This is such an understatement, and to grasp it requires a dissection of knowing the self and others.</p></div>
+
+<div class="small-quote"><p>You think you know, but you don’t.</p></div>
+
+<div class="small-quote">
+  <p>“Man Is Nothing Else But What He Makes of Himself”</p>
+  <span class="author">- Jean-Paul Sartre</span>
+</div>
+
+<div class="small-quote"><p>Most abstractions take away more than they give in the realm of problem-solving. It takes away the rawness, the context, the control and the performance.</p></div>
+
 ###### **November 2025**
+
+<div class="small-quote"><p>Practice and execution are equally and necessarily important.</p></div>
+
+<div class="small-quote"><p>It’s said that everything is fair in love and war. But I feel that nothing is fair in love and war.</p></div>
+
+<div class="small-quote"><p>Some rush into love, some love in a rush. But some find peace with each other.</p></div>
 
 <div class="small-quote">
   <p>“Many people say I’m the best women’s soccer player in the world. I don’t think so. And because of that, someday I just might be.”</p>
