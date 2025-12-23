@@ -283,3 +283,14 @@ Email BDML prof for ML Systems work - Done;
 
 Pulse NYC Hackathon Build;
 [VisaPulse: Practice your visa interview before it decides your future.](https://devpost.com/software/visapulse)
+
+12/22/2025 (T - 141)
+
+[Shape Suffixes — Good Coding Style](https://medium.com/@NoamShazeer/shape-suffixes-good-coding-style-f836e72e24fd)
+
+[Interview Prep: Classic System Design](https://twopug.com/interview-prep-classic-system-design/)
+
+[Interview Prep: Keep At It](https://twopug.com/interview-prep-keep-at-it/#fnref-1)
+
+Working on adding the RBDA notes, GPU project and BDML project to webpage.
+

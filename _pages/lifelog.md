@@ -340,3 +340,20 @@ Participated in a NYC Hackathon(by Pulse); Below is what we built. Met a good nu
 [VisaPulse - Github](https://github.com/prasadboi/VisaPulse)
 
 Tired, going to play Catan with friends now, and sleep; GN.
+
+12/22/2025 (T - 141)
+
+Good afternoon Monish. Yes, I tunred the alram off yesterday night to get some good sleep; will revert the alarm back. - Done.
+
+[Introduction to Investment Philosophies, 3rd Edition](https://www.youtube.com/watch?v=jBl8FXPc9tY)
+
+[10 Books That Understood Us In 2025](https://www.timesnownews.com/lifestyle/books/10-books-that-understood-us-in-2025-photo-gallery-153309330/2)
+- Great Big Beautiful Life by Emily Henry
+- The Night Ends With Fire by K.X. Song
+- King of Ashes by S.A. Cosby
+- The Extinction of Irena Rey by Jennifer Croft
+- This Could Be Us by Kennedy Ryan
+- The Hunter’s Daughter by Nicola Solvinic
+- The Book of Lost Hours by Emily Lawson
+
+
