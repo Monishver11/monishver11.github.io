@@ -356,4 +356,12 @@ Good afternoon Monish. Yes, I tunred the alram off yesterday night to get some g
 - The Hunter’s Daughter by Nicola Solvinic
 - The Book of Lost Hours by Emily Lawson
 
+12/23/2025 (T - 140)
 
+Good afternoon Monish. Wake up at 12PM, slept late. 
+Jumbled with confusions.
+Going out to central park in sometime.
+
+Hydrate more;
+
+Went to central park and around; explored 5 eateries and it was good.

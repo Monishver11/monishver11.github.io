@@ -294,3 +294,6 @@ Pulse NYC Hackathon Build;
 
 Working on adding the RBDA notes, GPU project and BDML project to webpage.
 
+12/23/2025 (T - 140)
+
+[Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul); 
