@@ -365,3 +365,10 @@ Going out to central park in sometime.
 Hydrate more;
 
 Went to central park and around; explored 5 eateries and it was good.
+
+12/24/2025 (T - 139)
+
+Good afternoon Monish. 
+
+Read course feedback for the Calc-1 course. Got a mix of all reviews, that made me laugh at the end and felt good, thanks and grateful for the experience.
+

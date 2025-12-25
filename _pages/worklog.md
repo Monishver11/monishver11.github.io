@@ -297,3 +297,9 @@ Working on adding the RBDA notes, GPU project and BDML project to webpage.
 12/23/2025 (T - 140)
 
 [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul); 
+
+12/24/2025 (T - 139)
+
+[Performance Hints](https://abseil.io/fast/hints.html)
+
+[How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance: a Worklog](https://siboehm.com/articles/22/CUDA-MMM)
