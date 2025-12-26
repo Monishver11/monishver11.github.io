@@ -303,3 +303,7 @@ Working on adding the RBDA notes, GPU project and BDML project to webpage.
 [Performance Hints](https://abseil.io/fast/hints.html)
 
 [How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance: a Worklog](https://siboehm.com/articles/22/CUDA-MMM)
+
+12/25/2025 (T - 138)
+
+[How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance: a Worklog](https://siboehm.com/articles/22/CUDA-MMM)
