@@ -382,3 +382,8 @@ ML Perf Engineer and that job;
 
 Shared all my updates, work and plans to Sohan in the "Updates with Sohan" email thread. Recollected all important things, with clear specifics to him, and that made me realize of things i've done. Next update email is on 01/09/2026.
 
+12/27/2025 (T - 136)
+
+Good morning Monish.
+
+Went to central park, and eatery places. 

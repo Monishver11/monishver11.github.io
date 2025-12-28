@@ -311,3 +311,7 @@ Working on adding the RBDA notes, GPU project and BDML project to webpage.
 12/26/2025 (T - 137)
 
 Write updates mail to Sohan; Done.
+
+12/27/2025 (T - 136)
+
+Talked to get a GTC pass for work in ML systems, will get it anyhow;
