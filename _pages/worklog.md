@@ -315,3 +315,5 @@ Write updates mail to Sohan; Done.
 12/27/2025 (T - 136)
 
 Talked to get a GTC pass for work in ML systems, will get it anyhow;
+
+12/28/2025 (T - 135)
