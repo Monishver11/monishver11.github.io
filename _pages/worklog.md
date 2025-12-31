@@ -317,3 +317,9 @@ Write updates mail to Sohan; Done.
 Talked to get a GTC pass for work in ML systems, will get it anyhow;
 
 12/28/2025 (T - 135)
+
+12/29/2025 (T - 134)
+
+Leisure in holidays;
+
+12/30/2025 (T - 133)

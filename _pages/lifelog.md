@@ -392,3 +392,15 @@ Went to central park, and eatery places.
 
 Good afternoon Monish.
 
+12/29/2025 (T - 134)
+
+Good afternoon Monish;
+
+[Viraansh Bhanushali - Opposition - India Vs Pakistan](https://www.youtube.com/watch?v=ixA4ivYK-3I)
+
+12/30/2025 (T - 133)
+
+Good afternoon Monish;
+
+Heading to JPMC HQ;
+
