@@ -404,3 +404,10 @@ Good afternoon Monish;
 
 Heading to JPMC HQ;
 
+12/31/2025 (T - 132)
+
+Good afternoon Monish.
+
+Happy new year Monish. Wish you all the success ahead and you'll land your dream job as an ML Performance Engineer this year, may 2026.
+
+Tmr, check NVIDIA discount, and start job app with 10 app each day.
