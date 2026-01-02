@@ -326,3 +326,7 @@ Leisure in holidays;
 
 12/31/2025 (T - 132)
 
+01/01/2026 (T - 131)
+
+GPU Kernel Opt., ML Systems or ML Infra - Courant 4th sem, co-op with great learning in a great startup.
+
