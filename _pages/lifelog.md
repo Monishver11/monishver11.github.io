@@ -411,3 +411,11 @@ Good afternoon Monish.
 Happy new year Monish. Wish you all the success ahead and you'll land your dream job as an ML Performance Engineer this year, may 2026.
 
 Tmr, check NVIDIA discount, and start job app with 10 app each day.
+
+01/01/2026 (T - 131)
+
+Happy new year and Good evening Monish. Wish you all success and best wishes in everything you do.
+
+Ordered some books to read, first purchase of the new year.
+Mostly will be going to GTC conference, have 40% discount for now, will cold-mail some people shortly and confirm. Also, need to see what all it'll offer.
+
