@@ -419,3 +419,10 @@ Happy new year and Good evening Monish. Wish you all success and best wishes in 
 Ordered some books to read, first purchase of the new year.
 Mostly will be going to GTC conference, have 40% discount for now, will cold-mail some people shortly and confirm. Also, need to see what all it'll offer.
 
+01/02/2026 (T - 130)
+
+Very early good morning Monish;
+
+Your entire life can really change in a year... You just got to love yourself enough to know you deserve more, be brave enough to demand more, and be disciplined enough to actually work for more. - Gen She (mail)
+
+Going to Philli, maybe will do a 2-day travel, so committing now.

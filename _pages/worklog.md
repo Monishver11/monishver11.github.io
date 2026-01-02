@@ -330,3 +330,7 @@ Leisure in holidays;
 
 GPU Kernel Opt., ML Systems or ML Infra - Courant 4th sem, co-op with great learning in a great startup.
 
+01/02/2026 (T - 130)
+
+Building a ML Job tracker for strategic applying, preparing and breaking into my dream job;
+
