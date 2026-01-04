@@ -334,3 +334,6 @@ GPU Kernel Opt., ML Systems or ML Infra - Courant 4th sem, co-op with great lear
 
 Building a ML Job tracker for strategic applying, preparing and breaking into my dream job;
 
+01/03/2026 (T - 129)
+
+Was working a bit on ML-Job Aggregator, and have a base MVP working;
