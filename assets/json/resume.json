@@ -28,17 +28,6 @@
         "Documented 17 key business logic for bid pricing modules",
         "Automated Datamart schema generation with Python script"
       ]
-    },
-    {
-      "name": "Amrita School of Engineering - AMUDA Lab",
-      "position": "Research Assistant",
-      "url": "",
-      "startDate": "2020-06-01",
-      "endDate": "2021-01-01",
-      "summary": "Performed EDA on real-time indoor localization data using BLE beacons, applying ML techniques to derive actionable insights.",
-      "highlights": [
-        
-      ]
     }
   ],
   "education": [
@@ -50,7 +39,7 @@
       "studyType": "Master of Science",
       "startDate": "2024-09-01",
       "endDate": "2026-05-01",
-      "score": "3.72/4.0",
+      "score": "3.8/4.0",
       "courses": []
     },
     {
@@ -71,13 +60,38 @@
       "location": "New York City, NY",
       "position": "Recitation Leader",
       "url": "",
-      "startDate": "2025-09-01",
-      "endDate": "",
-      "summary": "Recitation leader for these courses at CIMS Math department",
+      "startDate": "2025-09-02",
+      "endDate": "2025-12-20",
+      "summary": "Recitation leader for Calculus-I course at CIMS Math department",
       "highlights": ["CALC I, MATH-UA.121.019 & MATH-UA.121.020"]
     }
   ],
   "projects": [
+    {
+      "name": "From Baseline to DeepSeek - Single-GPU MoE Training Efficiency",
+      "summary": "Conducted a systems-level study of MoE training efficiency on resource-constrained hardware using the FineWeb-10B dataset, comparing naive PyTorch, ScatterMoE, and MegaBlocks architectures.",
+      "highlights": [
+        "Reproduced a DeepSeek-inspired MoE architecture with shared experts and top-k routing, achieving a validation loss of 3.93 (1.5% improvement over dense models)",
+        "Optimized training throughput using ScatterMoE fused kernels, reducing memory footprint by 18% and decreasing latency by 16% against a Naive MoE implementation",
+        "Benchmarked implementation variants including MegaBlocks and ScatterMoE to identify VRAM bottlenecks in single-GPU scaling"
+      ],
+      "startDate": "2025-09-02",
+      "endDate": "2025-12-20",
+      "url": "https://monishver11.github.io/projects/5_project/",
+      "keywords": ["PyTorch", "CUDA", "Triton", "LLM", "Systems Optimization"]
+    },
+    {
+      "name": "SmallGraphGCN - Accelerating GNN Training on Batched Small Graphs",
+      "summary": "Engineered a specialized GCN framework optimized for training on large batches of small sized graphs by eliminating excessive kernel launches by kernel fusion and edge-centric parallelism.",
+      "highlights": [
+        "Wrote custom CUDA kernels for computation aggregation, resulting in a 68% reduction in kernel launches and 4.9x lower memory transfer overhead compared to PyG baselines",
+        "Maintained high model accuracy on molecular datasets while achieving substantial gains in training throughput"
+      ],
+      "startDate": "2025-09-02",
+      "endDate": "2025-12-20",
+      "url": "https://monishver11.github.io/projects/4_project/",
+      "keywords": ["PyTorch", "PyG", "CUDA", "Graph Neural Networks", "GPU Programming"]
+    },
     {
       "name": "Gaze-Guided Reinforcement Learning for Visual Search",
       "summary": "Implemented a novel RL framework integrating human gaze patterns with PPO algorithm in AI2-THOR using three integration methods and custom CNN architectures.",
@@ -117,12 +131,13 @@
     {
       "name": "Programming",
       "level": "Advanced",
-      "keywords": ["Python", "C++", "Scala", "SQL", "DB2"]
+      "keywords": ["Python", "C/C++", "Scala", "SQL", "DB2"]
     },
     {
       "name": "Frameworks",
       "level": "Advanced",
       "keywords": [
+        "CUDA",
         "Apache Spark",
         "Apache Airflow",
         "TensorFlow",
