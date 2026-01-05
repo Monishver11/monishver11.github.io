@@ -1,0 +1,1 @@
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QFailover\nFailover to another ZooKeeper server is handled automatically by the ZooKeeper client.\\E$"}

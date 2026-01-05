@@ -78,6 +78,24 @@ Doubts:
 - What is transistor switching power and how its related to clock freq and power throttling?
   
 
-
 Further reading: Horace He went into this phenomenon in more depth in [his blog post (3)](https://www.thonking.ai/p/strangely-matrix-multiplications).
   
+
+**CUDA programming model**
+
+- Thread has private registers synchronization: SMEM
+
+
+GPU assembly languages: PTX and SASS
+
+- (D) In fig 18, is the blockIdx.x and blockIdx.y mentioned pictorially right? In fig 19, its mentioned as "warp 1 from block (blockIdx.x, blockIdx.y) = (1,0)", with that as the case, then x goes from top to bottom right, but in the fig 18, x row of block dims span accross left to right.
+- PTX code is generated for a thread block right? and will the PTX code shown executed per thread in the thread block in parallel?
+- What is exposing ILP (in PTX code explanation)? - Instruction-Level Parallelism
+- How loop unrolling exposes Instruction-Level Parallelism? So, does these instructions, run in parallel, as the warp takes and executes them? 
+
+- SASS was a bit harder to understand, may be it could be due to the fact that its not explained in detail. For now, just got the gist and proceeding.
+
+Designing near-SOTA synchronous matmul kernel
+
+- (D) Loading A → As. This step is trickier because As is transposed. The reason for the transpose is that it enables vectorized loads (LDS.128) later during the compute phase.
+- (D) The trade-off is that the stores cannot be vectorized: the 4 floats fetched from a row of A must now be scattered into a column of As, which maps into the same memory bank. That's acceptable because we prioritize fast loads — each element of As will be accessed multiple times during computation, while the stores happen only once.
