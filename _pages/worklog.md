@@ -337,3 +337,11 @@ Building a ML Job tracker for strategic applying, preparing and breaking into my
 01/03/2026 (T - 129)
 
 Was working a bit on ML-Job Aggregator, and have a base MVP working;
+
+01/04/2026 (T - 128)
+
+Made notes and added changes to update resume, linkedin. Made ML Sys resume, looks good. Noted other changes to make as well.
+
+ML-Agg-Job is setup with Github Actions, and the jobs are added in G-Sheets. Will see whether its running for every 6 hrs, and make some small fixes(if i find any). 
+
+
