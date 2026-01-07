@@ -440,3 +440,9 @@ Was working all night, for job applications and personal updates(webpage).
 Good afternoon Monish. 
 
 Went to Jimmy Fallon show, the show was very good and exhilarating.
+
+01/06/2026 (T - 126)
+
+Good morning Monish. John just left now, i don't know what i felt while coming back. Talked to Amma, she is truly inspiring and doing and giving her best for her passion, i feel proud.
+
+Haven't commited yesterday, am doing now. 
