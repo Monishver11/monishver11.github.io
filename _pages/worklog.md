@@ -347,3 +347,8 @@ ML-Agg-Job is setup with Github Actions, and the jobs are added in G-Sheets. Wil
 01/05/2026 (T - 127)
 
 Was working a bit more on Job aggregator tool.
+
+01/06/2026 (T - 126)
+
+Want to finish the ML Job Agg App by today and start applying.
+Also want to see and experiment with CP-31 sheet.
