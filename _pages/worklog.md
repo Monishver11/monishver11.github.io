@@ -356,3 +356,5 @@ Also want to see and experiment with CP-31 sheet.
 01/07/2026 (T - 125)
 
 [DATA MOVEMENT IS ALL YOU NEED: A CASE STUDY ON OPTIMIZING TRANSFORMERS](https://arxiv.org/pdf/2007.00072)
+
+01/08/2026 (T - 124)
