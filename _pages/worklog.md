@@ -362,3 +362,15 @@ Also want to see and experiment with CP-31 sheet.
 01/09/2026 (T - 123)
 
 01/10/2026 (T - 122)
+
+01/11/2026 (T - 121)
+
+Trying to get an opensource issue on GPU kernel optmization/ML systems/ML infra. Was going through many issues, got some unassigned and unworked after good amount of time, commented for those and got one to work on. Will start after it's been assigned to me.
+
+[deduplicate is_attention_module between compressed-tensors and llm-compressor #2079](https://github.com/vllm-project/llm-compressor/issues/2079#issuecomment-3734272853) - waiting for assignment; starting the work anyway
+
+[[Performance] Remove instances of torch.nonzero() where appropriate #9889](https://github.com/sgl-project/sglang/issues/9889) - waiting for confirmation and then ask for assignment; Its already done it seems and PR is pending.
+
+**NVIDIA**
+
+Started with github setup for opensource project
