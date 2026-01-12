@@ -465,3 +465,18 @@ Good morning Monish.
 Sent the update email to Sohan on the Bi-weekly update thread.
 
 Came to sister's place in Florida for a week.
+
+01/11/2026 (T - 121)
+
+Very early morning Monish.
+
+Keep searching, working and acting on what you want. You're destined to get eventually.
+
+Apply to jobs; Done. Need to tweak/enhance the ats-optimizer. The free version model is breaking a lot, need to replace the model and make the local system tolerant.
+
+Once the PR is merged to NVIDIA Repo, email the GTC event sponsers with this too.
+
+For the 4-Semester Courant, Blog weekly on LLM Reasoners and Distributed Systems course. Not in Linkedin, but for in-depth personal learning and written notes for FF thinking.
+
+Had sleep for 4 hrs, been awake from 12:30AM and started working in PC from 1:30AM.
+
