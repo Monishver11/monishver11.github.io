@@ -480,3 +480,15 @@ For the 4-Semester Courant, Blog weekly on LLM Reasoners and Distributed Systems
 
 Had sleep for 4 hrs, been awake from 12:30AM and started working in PC from 1:30AM.
 
+01/12/2026 (T - 120)
+
+Very good morning Monish.
+
+My first PR raised for an opensource issue, in the field i want to work and has set the goal for, feels good. Hope it'll be merged soon, or i get some feedback comments to work on. Let's see. Cool; Got it merged with main repo, Great Monish!
+
+Also, let's check some other opensource issues to work; Found one and got one assigned to me, lets get to work.
+
+Apply to jobs;
+
+Make a post on webpage to add the contributions made to opensource(after its been merged, with links to PR). Once some enough contributions are made, i can post it on LinkedIn.
+

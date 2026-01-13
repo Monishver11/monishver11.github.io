@@ -373,4 +373,31 @@ Trying to get an opensource issue on GPU kernel optmization/ML systems/ML infra.
 
 **NVIDIA**
 
-Started with github setup for opensource project
+Started with github setup for opensource project.
+
+01/12/2026 (T - 120)
+
+Completed the change to the llm-compressor issue; Raised PR and waiting for feedback. Wasn't able to add the 'ready' label, so tagged the author of the issue to take a look. 
+
+[deduplicate is_attention_module between compressed-tensors and llm-compressor #2079](https://github.com/vllm-project/llm-compressor/issues/2079#issuecomment-3734272853)
+
+Got some feedback and made fixes accordingly, waiting for review and hope its merges.
+
+Got it merged, Great Monish.
+
+[[torch.compile][Performance]: Unwrap custom ops and improve fusion (Inductor and custom) #24629](https://github.com/vllm-project/vllm/issues/24629) - Asked to work on this issue next, will start once the moderator comments or assigns it to me;
+
+[[Performance]: Custom fused kernel tracking #25179](https://github.com/vllm-project/vllm/issues/25179) - Sub-issue of the above to work after what's mentioned in the comments i made on the above.
+
+[Model Performance Bash! #23963](https://github.com/vllm-project/vllm/issues/23963) - Main parent issue
+
+Other issues to work on:
+[[Feature]: Add SM120 (RTX 6000/5000 Blackwell) support for native NVFP4 MoE kernels #31085](https://github.com/vllm-project/vllm/issues/31085)
+[[cuBLAS] setting cublas/cublaslt backend seems to be a no-op for torch.matmul in eager. #172231](https://github.com/pytorch/pytorch/issues/172231) - Some asked to work on, will take up if they've abondoned.
+
+Got assigned and now working on this issue now(on main vLLM repo, and on kernels) - [[Feature]: Support norm+quant & silu+quant fusion for block (group) quantization #27847](https://github.com/vllm-project/vllm/issues/27847); Such a good work i got to work on. Must finish this and get this PR merged.
+
+(Ask HN: How to understand the large codebase of an open-source project?)[https://news.ycombinator.com/item?id=16299125]
+
+Understanding the codebase for this dev, the flow, structure and nuances. Also, taking reference of the rms_norm_block_quant PR that was merged last month.
+
