@@ -492,3 +492,17 @@ Apply to jobs;
 
 Make a post on webpage to add the contributions made to opensource(after its been merged, with links to PR). Once some enough contributions are made, i can post it on LinkedIn.
 
+01/13/2026 (T - 119)
+
+Got a LinkedIn Msg to apply again in Calyptus platform. Created profile, applied to the role and gave their 15 min short AI Interview. Got to know, that i've a good long way to go and work on my communication soft skills, i need to work on this, and keep perfecting it. Also, very much needed for GTC conference this march. Make a short answers for common questions and practice it well enough. I don't ask for memorization, but to know key points that shows the impact of your work is key.
+
+Saw a posting for Amex job, applied to 3 jobs in their career website.
+
+01/14/2026 (T - 118)
+
+Good morning Monish, happy pongal.
+
+Checked and notes more startups to coldmail for open roles in the related domain i wanted to work in. Got the list from a a16z employee's post on linkedin.
+
+Checked all the sessions, talks, and other things that will happen on NVIDIA GTC, and made a good list of things i want to attend, connect with experts and know about. Will make a detailed plan of this at a date closer to the conference. 
+
