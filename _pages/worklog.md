@@ -401,3 +401,31 @@ Got assigned and now working on this issue now(on main vLLM repo, and on kernels
 
 Understanding the codebase for this dev, the flow, structure and nuances. Also, taking reference of the rms_norm_block_quant PR that was merged last month.
 
+Made the initial changes, wasn't able to install, build and test due to unavailability of CUDA. Also, the mac is slow, will restart now. Will commit the changes tmr, and proceed with the setup and testing for these changes; Made the initial commit, with reference of this to the actual git issue to link.
+
+01/13/2026 (T - 119)
+
+Gave short AI interview in Calyptus platform.
+
+Learnt and understood what the silu+block_quant kernel works. The present kernel is the base version, and if it works and gives a performance boost, i can tune it more with other optimizations and thinking.
+
+Checked that i still have access to cuda5 cluster, so'll test the changes there by setting up; The first build is taking a very long time and still running;
+
+[gpu-perf-engineering-resources](https://github.com/wafer-ai/gpu-perf-engineering-resources)
+
+01/14/2026 (T - 118)
+
+Got this issue to work on from NVIDIA/cuda-python. Working on this along with the vllm's silu+block_quant feature.
+
+[[FEA]: Add public class methods for retrieving the legacy default stream as well as the per-thread default stream #1445](https://github.com/NVIDIA/cuda-python/issues/1445#issuecomment-3747428451) - Made the changes, tested it and raised the PR. Waiting for review and feedback. Merged this PR, but the author mentioned some missed idea, after its merged and told he'll raise a PR to fix it. Learn what's the mistake and raise a PR for that again(Do, own and finish something end to end).
+
+[[BUG]: Legacy/per-thread default streams should be singletons #1494](https://github.com/NVIDIA/cuda-python/issues/1494) - The maintainer raised this critical bug(on the changes i've made) and added as a bug, to fix it before the next core deployment. I've understood the bug and asked for fixing it myself, by mentioning that in the comment he had made. Will see; 
+
+Fixed the above bug with this [Fix/default stream singletons #1496](https://github.com/NVIDIA/cuda-python/pull/1496); Asked for review from the maintainer. I've tested it again, and the logic looks fine to me now. Let's see. 
+
+
+
+
+
+
+
