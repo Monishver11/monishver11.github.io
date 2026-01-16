@@ -506,3 +506,18 @@ Checked and notes more startups to coldmail for open roles in the related domain
 
 Checked all the sessions, talks, and other things that will happen on NVIDIA GTC, and made a good list of things i want to attend, connect with experts and know about. Will make a detailed plan of this at a date closer to the conference. 
 
+01/15/2026 (T - 117)
+
+Good morning Monish.
+
+Went for a walk with Harshi, and we dipped our toes in the swimming pool. For Harshi, its her first time being and dipping her toes in a swimming pool.
+
+Applied to jobs.
+
+Scheduled a mail to Nvidia GTC team to check for financial assistance, just shooting my shoot.
+
+Apply to jobs posted in whatsapp. Except for Apple, applied for all. I still feel, I can polish my resume and skills for Apple, and can move the app via reaching out to people in the company, once i'm more confident. This is something, i shouldn't do, but for Apple and Google, they're my best companies after NVIDIA, so i want to be my best. I'll get into them one day.
+
+Saw three recently posted(within a week) NVIDIA jobs(in the domain i want to work in). Asked Nithese for referral, will apply once i get(hoping to apply by tmr).
+
+
