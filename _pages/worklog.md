@@ -423,8 +423,15 @@ Got this issue to work on from NVIDIA/cuda-python. Working on this along with th
 
 Fixed the above bug with this [Fix/default stream singletons #1496](https://github.com/NVIDIA/cuda-python/pull/1496); Asked for review from the maintainer. I've tested it again, and the logic looks fine to me now. Let's see. 
 
+The silu_mul+block_quant kernel is working now. Making a small bug fix, and then will thoroughly understand this first. Once done, will check on the vectorized changes to make it more performant. And then start with the more standard unit test, performance and benchmarks. So, fix the bug, and learn it in and out tmr.
 
+01/15/2026 (T - 117)
 
+Fixed the kernel bug for transposed. Got a bit of reasoning for the bug. Made up the vectorized kernel, and build is happening. In the meantime, will see both the non-vectorized and vectorized kernel(the full line by line) code.
+
+[Deep Dive: Optimizing LLM inference](https://www.youtube.com/watch?v=hMs8VNRy5Ys)
+
+Got the scalar kernel working, understood the entire flow of what i've done till now. Benchmarking and testing now. Will do more tests, clean up and ask for feedback in the github issue. Let's see.
 
 
 
