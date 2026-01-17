@@ -433,6 +433,20 @@ Fixed the kernel bug for transposed. Got a bit of reasoning for the bug. Made up
 
 Got the scalar kernel working, understood the entire flow of what i've done till now. Benchmarking and testing now. Will do more tests, clean up and ask for feedback in the github issue. Let's see.
 
+Check more on the above here - [Contributing to vLLM](https://docs.vllm.ai/en/latest/contributing/)
+
+01/16/2026 (T - 116)
+
+Got feedback on the stream bug, made the changes, and posted the comment. Now, testing it in local, to be sure.
+
+Other opensource works to contribute for(noting it down here):
+- [NVIDIA/cutlass](https://github.com/NVIDIA/cutlass/issues)
+- [triton-inference-server](https://github.com/triton-inference-server/server/issues)
+- [jax-ml/jax](https://github.com/jax-ml/jax/issues)
+- [Liger-Kernel](https://github.com/linkedin/Liger-Kernel/issues)
+  
+One thing to do, while at airport tmr:
+- Work on the Silu_mul+Block_Quant kernel. See how vLLM works in the first place, read their webpage, and workflow.
 
 
 
