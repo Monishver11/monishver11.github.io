@@ -520,4 +520,15 @@ Apply to jobs posted in whatsapp. Except for Apple, applied for all. I still fee
 
 Saw three recently posted(within a week) NVIDIA jobs(in the domain i want to work in). Asked Nithese for referral, will apply once i get(hoping to apply by tmr).
 
+01/16/2026 (T - 116)
+
+Good morning Monish.
+
+[Microsoft 365](https://discover.microsoft365.com/?referrer=office-checkout&market=US&scenarios=M365Premium&user_hint=monishverchandrasekaran%40gmail.com#/)
+
+[Beej's Guide to Learning Computer Science](https://beej.us/guide/bglcs/html/#build-a-tapestry-of-knowledge) - very good read and a lot of practical takeaways.
+
+[7 Books For When You Are Rewriting Your Life](https://www.timesnownews.com/lifestyle/books/7-books-for-when-you-are-rewriting-your-life-photo-gallery-153385840)
+
+Got a response from GTC team, didn't get much info, and asked specifically if there's any free passes, or any work to take up to get free passes in turn. Mailed them on this.
 
