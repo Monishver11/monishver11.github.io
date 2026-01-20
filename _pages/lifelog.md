@@ -532,3 +532,31 @@ Good morning Monish.
 
 Got a response from GTC team, didn't get much info, and asked specifically if there's any free passes, or any work to take up to get free passes in turn. Mailed them on this.
 
+01/17/2026 (T - 115)
+
+Good afternoon Monish.
+
+Will be boarding flight to EWR in a few minutes. A week with the fmaily, felt like home and now feels very good. 
+
+Talked with Jim(lyft ride) while coming to the airport. A good conversation with a stranger.
+
+01/18/2026 (T - 114)
+
+Good evening Monish. Woke up very late, and wasn't intending to wake up early anyway. No one's at home and i'm taking a liesure day.
+
+01/19/2026 (T - 113)
+
+Good afternoon Monish. Gtting back to play.
+
+Modified resume to include the opensource work, and shared it with Nithese for NVIDIA referral.
+
+Completed the Ramp assessment, took help of LLM, didn't think through the problem much of myself. Need to stop this, and not do it again. You need to understand, think and solve.
+
+Completed the other pending code assessment. Got 86% with brute force solution.
+
+Start CP-31 from tmr.
+
+Apply to jobs; Scheduled email to Nithese's contact for NVIDIA.
+
+Cleaned kitchen and cooked food.
+
