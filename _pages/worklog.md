@@ -448,5 +448,13 @@ Other opensource works to contribute for(noting it down here):
 One thing to do, while at airport tmr:
 - Work on the Silu_mul+Block_Quant kernel. See how vLLM works in the first place, read their webpage, and workflow.
 
+01/17/2026 (T - 115)
 
+Checked vLLM, and understood the basics from their documentation page, next is to work on the code.
+
+01/18/2026 (T - 114)
+
+01/19/2026 (T - 113)
+
+Work on silu_mul_block_quant work;
 
