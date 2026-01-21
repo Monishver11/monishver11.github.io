@@ -560,3 +560,10 @@ Apply to jobs; Scheduled email to Nithese's contact for NVIDIA.
 
 Cleaned kitchen and cooked food.
 
+01/20/2026 (T - 112)
+
+Good morning Monish. All the best for your new semester. My best wishes for you to land your dream job in GPU kernel optimization, ML systems and ML Infra by the time you're graduating this year. 
+
+Started with CP-31 list; Spent good 30 mins thinking, and got a brute force solution. But, it didn't pass all the test cases. After 30 mins, saw the hints, and understood without seeing the code. Coded the solution and got it accepted. Feels good, to think through and get the spark of finding when the solution clicks.
+
+[What is the messy middle? ](https://vitoriaokuyama.beehiiv.com/p/what-is-the-messy-middle-6abe)

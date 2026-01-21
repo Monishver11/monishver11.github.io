@@ -458,3 +458,13 @@ Checked vLLM, and understood the basics from their documentation page, next is t
 
 Work on silu_mul_block_quant work;
 
+["I shipped code I don't understand and I bet you have too" – Jake Nations, Netflix](https://www.youtube.com/watch?v=eIoohUmYpGI)
+
+01/20/2026 (T - 112)
+
+All the best Monish.
+
+Done 1 problem in CP-31 sheet. Tmr check on basic C++ code setup in VS Code, and get the level-1 course.
+
+Work on the kerenl from basics, without claude tmr.
+
