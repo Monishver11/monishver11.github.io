@@ -464,7 +464,16 @@ Work on silu_mul_block_quant work;
 
 All the best Monish.
 
-Done 1 problem in CP-31 sheet. Tmr check on basic C++ code setup in VS Code, and get the level-1 course.
+Done 1 problem in CP-31 sheet. Tmr check on basic C++ code setup in VS Code, and get the level-1 course. - Done.
 
 Work on the kerenl from basics, without claude tmr.
 
+01/21/2026 (T - 111)
+
+Solved 1 in CP-31.
+
+[Cracking FAANG Interviews: Guide to Prepare for Tech Interviews](https://medium.com/@victor.arango93/cracking-faang-interviews-guide-to-prepare-for-tech-interviews-e113db07f8a1)
+
+VS Code, setup done.
+
+Worked on vllm kernel, made some fixes and changes, started the build now
