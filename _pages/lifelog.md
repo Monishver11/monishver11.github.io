@@ -567,3 +567,12 @@ Good morning Monish. All the best for your new semester. My best wishes for you 
 Started with CP-31 list; Spent good 30 mins thinking, and got a brute force solution. But, it didn't pass all the test cases. After 30 mins, saw the hints, and understood without seeing the code. Coded the solution and got it accepted. Feels good, to think through and get the spark of finding when the solution clicks.
 
 [What is the messy middle? ](https://vitoriaokuyama.beehiiv.com/p/what-is-the-messy-middle-6abe)
+
+Apply to jobs;
+
+01/21/2026 (T - 111)
+
+Good afternoon Monish, woke up at 3PM, and now getting ready to class directly. It's fine, i had in mind that the class is the most important thing today and nothing else, that why the sluggish. Reframe that, and you'll be fine to get what you want.
+
+Apply to jobs in whatsapp - specifically for snowflake with referral; Done, waiting for reply from Nithese. Also shared a msg in job links group about the ML jobs tracker, so it'll be helpful for everyone. 
+
