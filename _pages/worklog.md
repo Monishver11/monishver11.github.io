@@ -477,3 +477,14 @@ Solved 1 in CP-31.
 VS Code, setup done.
 
 Worked on vllm kernel, made some fixes and changes, started the build now
+
+01/22/2026 (T - 110)
+
+Working on vllm kernel, the kernel is working correctly and passes all the test cases. Now working on the pattern matching compilation phase, once this is working, raise a PR, explain your design choices, share results and ask for feedback. Do this by EOD;
+
+[The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+
+Tmr: 
+- raise PR for kernel, with how much is done for now, mention the approach, design and ask for feedback. That will give you more direction, than doing all by yourself.
+- GPU kernel optimization/ML Systems/ML Infra Partime cold-mailing on the selected startups.
+

@@ -576,3 +576,12 @@ Good afternoon Monish, woke up at 3PM, and now getting ready to class directly. 
 
 Apply to jobs in whatsapp - specifically for snowflake with referral; Done, waiting for reply from Nithese. Also shared a msg in job links group about the ML jobs tracker, so it'll be helpful for everyone. 
 
+01/22/2026 (T - 110)
+
+Good afternoon Monish.
+
+Apply to jobs; Done.
+
+Send cold-email for startup jobs;
+
+Do CP-31 1 problem; Done.
