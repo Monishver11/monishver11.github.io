@@ -585,3 +585,16 @@ Apply to jobs; Done.
 Send cold-email for startup jobs;
 
 Do CP-31 1 problem; Done.
+
+01/23/2026 (T - 109)
+
+Working on the vllm kernel, happy to work on it and feels like play to me, after a long time getting this feeling, so enjoying.
+
+In the morning, send answers to Nitheese and share the resume to his email; Done.
+
+Good morning Monish.
+
+Apply for linkedin roles; Done.
+
+Got referral from Nitheese's contact, applied. Shared and asked for a few other roles that are recently posted and match my skills and interest; Done
+

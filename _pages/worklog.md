@@ -488,3 +488,12 @@ Tmr:
 - raise PR for kernel, with how much is done for now, mention the approach, design and ask for feedback. That will give you more direction, than doing all by yourself.
 - GPU kernel optimization/ML Systems/ML Infra Partime cold-mailing on the selected startups.
 
+01/23/2026 (T - 109)
+
+Working on the vllm kernel, refactoring unwanted bits.
+
+Raise PR, comment, tag and ask for feedback on the work done;
+
+Do CP-31; Done. Made a small mistake in the workout and that made me stuck. After 30 mins, saw the hint, got my mistake, coded the solution and got it accepted. This is a learning, if you're not able to follow/find a pattern for these, then just recheck your workings once and you might find your answer.
+
+Working on the kernel; Will share the updates with Sohan tmr.
