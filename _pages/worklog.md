@@ -492,8 +492,29 @@ Tmr:
 
 Working on the vllm kernel, refactoring unwanted bits.
 
-Raise PR, comment, tag and ask for feedback on the work done;
+Raise PR, comment, tag and ask for feedback on the work done; Done.
 
 Do CP-31; Done. Made a small mistake in the workout and that made me stuck. After 30 mins, saw the hint, got my mistake, coded the solution and got it accepted. This is a learning, if you're not able to follow/find a pattern for these, then just recheck your workings once and you might find your answer.
 
 Working on the kernel; Will share the updates with Sohan tmr.
+
+Raised vllm kernel PR(made it to a draft) and asked for review. 
+
+01/24/2026 (T - 108)
+
+Read the slides, and made rough notes. Will format with claude and publish. Done.
+
+Applied to jobs, gave a short 25 mins interview as part of one of the application. Learnt that, i need to learn a lot and gain more knowledge of production ML, pipeline and inference.
+
+Next, cp-31; Done.
+
+vllm kernel; Checked what i wanted too. Waiting for the code review. And i missed to check and resolve the reviews mentioned by gemini and cursor bots, will do it tmr. - Tmr
+
+Also, commented to work on another performance kernel. The CR is still very early, but i just wanted to get my place to work on that, so commented right away.
+
+[Anthropic's Original Performance Take-Home](https://github.com/anthropics/original_performance_takehome) - X
+
+
+
+
+

@@ -598,3 +598,14 @@ Apply for linkedin roles; Done.
 
 Got referral from Nitheese's contact, applied. Shared and asked for a few other roles that are recently posted and match my skills and interest; Done
 
+01/24/2026 (T - 108)
+
+Good afternoon Monish.
+
+Apply to jobs; Done.
+Updates with Sohan, mail thread; Done.
+LLR Lec-1 notes; Done.
+cp-31; Done.
+
+Do what you fear of doing, exactly when you fear it. 
+
