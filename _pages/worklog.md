@@ -514,7 +514,15 @@ Also, commented to work on another performance kernel. The CR is still very earl
 
 [Anthropic's Original Performance Take-Home](https://github.com/anthropics/original_performance_takehome) - X
 
+01/25/2026 (T - 107)
 
+Working on vllm kernel fusion pattern matching. Got some new info, the silu_mul is always running as native inline ops, and its not able to match with matcher_silu_mul(existing one). Tried with nsys, and its calling this kernel: act_and_mul_kernel, which is the unfused silu_mul ops. Ok, now question, how its calling this kernel, it should be native pytorch ops right, how it able to match that with this? Got it, actually in my test, i'm trying to use the custom ops directly to see what is being called, and as result its calling this. So, for now, the conclusion is that silu_mul is executed as the native inline ops, and in the compilations, its not being detected to match my needed version of sil_mul. And, because of this, the whole silu_mul_block_pattern isn't working.
+
+Participated in my first CF contest. Spent 2hr 15 mins, solved 4 questions, with 3 accepted and 1 WA in 1 test case.
+
+cp-31, 1q done.
+
+Read Dist. Sys Lec 1, and published notes.
 
 
 
