@@ -609,3 +609,12 @@ cp-31; Done.
 
 Do what you fear of doing, exactly when you fear it. 
 
+01/25/2026 (T - 107)
+
+Good morning Monish.
+
+vllm kernel, bot's code review; Done.
+CF contest at afternoon; Done.
+This week's Dist Sys notes; Done.
+Apply to jobs; Done.
+CP-31; Done.
