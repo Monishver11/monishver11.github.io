@@ -618,3 +618,18 @@ CF contest at afternoon; Done.
 This week's Dist Sys notes; Done.
 Apply to jobs; Done.
 CP-31; Done.
+
+01/26/2026 (T - 106)
+
+Good afternoon Monish.
+
+Get tickets to NVIDIA GTC; Done.
+Ops; Done.
+- Check with vllm(or other related opensource projects) maintainer for other performance work; Done.
+- Follow up for NVIDIA referral; Done.
+- Tag other moderators for Silu_mul_block_quant kernel review; Done.
+Work on LLMR HW-1;
+CP-31; Done.
+Apply to jobs; Done.
+
+
