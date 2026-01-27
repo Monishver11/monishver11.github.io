@@ -628,7 +628,7 @@ Ops; Done.
 - Check with vllm(or other related opensource projects) maintainer for other performance work; Done.
 - Follow up for NVIDIA referral; Done.
 - Tag other moderators for Silu_mul_block_quant kernel review; Done.
-Work on LLMR HW-1;
+Work on LLMR HW-1; Done.
 CP-31; Done.
 Apply to jobs; Done.
 

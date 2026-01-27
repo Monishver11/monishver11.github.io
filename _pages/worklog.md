@@ -526,9 +526,13 @@ Read Dist. Sys Lec 1, and published notes.
 
 01/26/2026 (T - 106)
 
-Check and resolve vllm kernel bot's review changes and merge;
+Check and resolve vllm kernel bot's review changes and merge; Resolve two and others are related to the kernel logic, which i'll change after maintainer's review.
 
 cp-31 1q done.
+
+Started with LLMR-A1, and created a worklog to track the learnings.
+
+
 
 
 
