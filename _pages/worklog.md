@@ -524,5 +524,11 @@ cp-31, 1q done.
 
 Read Dist. Sys Lec 1, and published notes.
 
+01/26/2026 (T - 106)
+
+Check and resolve vllm kernel bot's review changes and merge;
+
+cp-31 1q done.
+
 
 
