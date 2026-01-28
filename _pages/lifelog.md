@@ -632,4 +632,20 @@ Work on LLMR HW-1; Done.
 CP-31; Done.
 Apply to jobs; Done.
 
+01/27/2026 (T - 105)
+
+Good morning Monish.
+
+LLMR1-A1;
+vllm kernel, reply for comments;
+cp-31 q; done.
+Cook;
+Apply to jobs; done.
+cp-31 q; done.
+
+Got NVIDIA Interview call, had it scheduled on 02/04. Have a solid time to prep well, focus on this than anything else and give your best Monish. Plan for it a bit, and lock-in. Be thorough with your resume, projects, GPU concepts, and leetcode questions in C++. Do this until the weekend, and next week, focus on behavioural questions and be ready to respond in STAR type answers.
+
+
+
+
 

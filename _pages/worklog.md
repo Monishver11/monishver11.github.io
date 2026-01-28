@@ -532,6 +532,14 @@ cp-31 1q done.
 
 Started with LLMR-A1, and created a worklog to track the learnings.
 
+01/27/2026 (T - 105)
+
+vllm kernel - remove the fixed block size and shared_mem and make the kernel work for large batch sizes; Done.
+
+LLMR part 1; Done. 
+
+
+
 
 
 
