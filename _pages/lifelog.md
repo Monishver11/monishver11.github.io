@@ -636,15 +636,27 @@ Apply to jobs; Done.
 
 Good morning Monish.
 
-LLMR1-A1;
-vllm kernel, reply for comments;
+LLMR1-A1; done.
+vllm kernel, reply for comments; done.
 cp-31 q; done.
-Cook;
+Cook; done.
 Apply to jobs; done.
 cp-31 q; done.
 
 Got NVIDIA Interview call, had it scheduled on 02/04. Have a solid time to prep well, focus on this than anything else and give your best Monish. Plan for it a bit, and lock-in. Be thorough with your resume, projects, GPU concepts, and leetcode questions in C++. Do this until the weekend, and next week, focus on behavioural questions and be ready to respond in STAR type answers.
 
+01/28/2026 (T - 104)
+
+Good morning Monish.
+
+cp-31 2q; done.
+NVIDIA LC questions - Try some(since you've already seen those questions and try in C++); done.
+Distributed Sys Paper; done.
+RL project read finish; done.
+Finish AI interviews; done.
+LLMR-AI BPE block;
+
+Gave two AI interviews, felt like i know nothing. But, there's one thing, these roles are not new grad, they we're senior roles. So, not going to think more on this, and just focus on NVIDIA one.
 
 
 
