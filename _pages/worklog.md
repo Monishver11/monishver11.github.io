@@ -538,6 +538,14 @@ vllm kernel - remove the fixed block size and shared_mem and make the kernel wor
 
 LLMR part 1; Done. 
 
+01/28/2026 (T - 104)
+
+vllm kernel improved. Updated the results with the PR and commented/mailed Weimin for a benchmark comparison with triton again.
+
+cp-31 2q done.
+
+Dist Sys paper 1 read, got an understanding.
+
 
 
 
