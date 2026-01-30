@@ -658,6 +658,22 @@ LLMR-AI BPE block;
 
 Gave two AI interviews, felt like i know nothing. But, there's one thing, these roles are not new grad, they we're senior roles. So, not going to think more on this, and just focus on NVIDIA one.
 
+01/29/2026 (T - 103)
+
+Good morning Monish.
+
+NVIDIA Prep for the day:
+- Review Resume: vllm project; worked on this, not much of a leap and didnt practice vocally. 
+- LC - done.
+
+LLMR-AI BPE block; done.
+
+Need to focus more on practicing whats mentioned in the resume. 
+
+Tmr: 
+- practice vllm kernel(make notes) and do three LC, code it up. Then revise CUDA notes in website(and prep notes)
+- Finish BPE part, training, encoding(2.6 section)
+- CP-31 2q
 
 
 

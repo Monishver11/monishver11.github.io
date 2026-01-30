@@ -546,8 +546,22 @@ cp-31 2q done.
 
 Dist Sys paper 1 read, got an understanding.
 
+01/29/2026 (T - 103)
 
+cp-31 1q done.
 
+working on the fusion pattern match on vllm kernel;
+
+TODO: (Open Source)
+- [Transformers v5 compatibility #978](https://github.com/linkedin/Liger-Kernel/issues/978#issuecomment-3805589403)
+- [rope parameters for transformers v5 #1013](https://github.com/linkedin/Liger-Kernel/issues/1013)
+- [Update rope related config and tokenizers for transformers v5 #1014](https://github.com/linkedin/Liger-Kernel/pull/1014)
+
+Working on LLMR hw1 - done with bpe basic implementation, need to work on the optmizations, parallel processing and training. Finish this today. Done.
+
+cp-31 next 1q done.
+
+LC 2q understood and seen.
 
 
 
