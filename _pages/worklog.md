@@ -563,6 +563,17 @@ cp-31 next 1q done.
 
 LC 2q understood and seen.
 
+01/30/2026 (T - 102)
+
+cp-31 2q done.
+
+vllm kernel - fusion pass; Tried and gained some more info on the flow. Trying to do a graph trace for transformers block to see the ops done under the hood, and how vllm is optimizing.
+
+LC 4q.
+
+[A Visual Guide to Quantization](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-quantization)
+
+Working on LLMR hw1 - BPE;
 
 
 
