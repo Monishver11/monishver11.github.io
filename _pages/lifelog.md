@@ -673,7 +673,22 @@ Need to focus more on practicing whats mentioned in the resume.
 Tmr: 
 - practice vllm kernel(make notes) and do three LC, code it up. Then revise CUDA notes in website(and prep notes)
 - Finish BPE part, training, encoding(2.6 section)
-- CP-31 2q
+- CP-31 2q; done.
 
+01/30/2026 (T - 102)
+
+Good morning Monish.
+
+Going to class in this winter is very time consuming and tiring.
+
+- practice vllm kernel(make notes) and do three LC, code it up(done). Then revise CUDA notes in website(and prep notes)(this revision, doing it tmr).
+- Finish BPE part, training, encoding(2.6 section)
+- CP-31 2q; done.
+
+Tmr:
+GPU notes and lecture doubts revision; Make short notes(of things i might forget)
+LC 5q;
+LLMR - start transformers;
+vllm kernel;
 
 
