@@ -682,13 +682,22 @@ Good morning Monish.
 Going to class in this winter is very time consuming and tiring.
 
 - practice vllm kernel(make notes) and do three LC, code it up(done). Then revise CUDA notes in website(and prep notes)(this revision, doing it tmr).
-- Finish BPE part, training, encoding(2.6 section)
+- Finish BPE part, training, encoding(2.6 section); almost done.
 - CP-31 2q; done.
 
 Tmr:
 GPU notes and lecture doubts revision; Make short notes(of things i might forget)
-LC 5q;
-LLMR - start transformers;
-vllm kernel;
+LC 5q; done.
+LLMR - finish tokenizer.py and get all test cases passed; done. Start reading transformers part.
+vllm kernel; done.
+cp-31 2q; done.
 
+01/31/2026 (T - 101)
 
+Good morning Monish.
+
+Tmr;
+- Alex's GPU basics, pen it down;
+- cp-2q;
+-SmallGraphGCN in and out;
+- LC-1 code;
