@@ -575,5 +575,17 @@ LC 4q.
 
 Working on LLMR hw1 - BPE;
 
+01/31/2026 (T - 101)
+
+cp-31 2q done. Got a issue with usage of floor that resulted in WA. Resolved and got to know the subtle difference that can happen in type conversions. Try to avoid floor or ceil. Second one also got stuck with WA for a long time, and solved with help only. But both got to work and accepted.
+
+Went through GPU notes from my site, got some connecting pieces. Need to run through in writing to fill all the gaps, will do in after next;
+
+went through vllm arch, got some more understanding of the issue. 
+
+LC 3q, 2q got the intuition.
+
+BPE part done.
+
 
 
