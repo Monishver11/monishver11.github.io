@@ -697,7 +697,20 @@ cp-31 2q; done.
 Good morning Monish.
 
 Tmr;
-- Alex's GPU basics, pen it down;
-- cp-2q;
--SmallGraphGCN in and out;
-- LC-1 code;
+- Alex's GPU basics, pen it down; done.
+- cp-2q; done.
+-SmallGraphGCN in and out; done.
+- LC-1 code; done.
+
+02/01/2026 (T - 100)
+
+Good afternoon Monish.
+
+Done with the scheduled work. Will talk to mom and going to sleep early.
+
+Tmr:
+- Start with LLMR1 transformers part;
+- Go through vllm kernel work, make notes;
+- cp-31;
+- Revisit and make notes of cuda-python opensource issue;
+- LC-3q code;
