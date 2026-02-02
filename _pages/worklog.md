@@ -587,5 +587,10 @@ LC 3q, 2q got the intuition.
 
 BPE part done.
 
+02/01/2026 (T - 100)
 
+cp-31 1q done, and another one getting WA, will check after some time. done. I missed an edge case, after adding correct if statement, it worked. Try to avoid using lesser if/else cases and make it a bit generalizable.
 
+Reading AleskaGordic's GPU internals; done.
+
+[Graph convolutional neural networks - Matthew N. Bernstein](https://mbernste.github.io/posts/gcn/)
