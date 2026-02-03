@@ -594,3 +594,12 @@ cp-31 1q done, and another one getting WA, will check after some time. done. I m
 Reading AleskaGordic's GPU internals; done.
 
 [Graph convolutional neural networks - Matthew N. Bernstein](https://mbernste.github.io/posts/gcn/)
+
+02/02/2026 (T - 99)
+
+- Start with LLMR1 transformers part; done.
+- Go through vllm kernel work, make notes; done.
+- cp-31; done.
+- Revisit and make notes of cuda-python opensource issue; done.
+- LC-3q code; done.
+- Spark paper reading; done.
