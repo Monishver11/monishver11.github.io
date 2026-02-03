@@ -709,8 +709,26 @@ Good afternoon Monish.
 Done with the scheduled work. Will talk to mom and going to sleep early.
 
 Tmr:
-- Start with LLMR1 transformers part;
-- Go through vllm kernel work, make notes;
-- cp-31;
-- Revisit and make notes of cuda-python opensource issue;
-- LC-3q code;
+- Start with LLMR1 transformers part; done.
+- Go through vllm kernel work, make notes; done.
+- cp-31; done.
+- Revisit and make notes of cuda-python opensource issue; done.
+- LC-3q code; done.
+- Spark paper reading; done.
+
+02/02/2026 (T - 99)
+
+Good morning Monish.
+
+Read LLMR transformers part, and thought of taking a short nap, but slept for 3hrs and woke up again at 12pm. Had lunch and starting now again.
+
+Interview has been rescheduled to 02/09 monday 10:30 am PT. Got more time, so prepare more and prepare well. 
+
+Scheduled Interview call with Sayari's Recruiter on Feb 6th, 4:15PM. After LLMR class, take this call.
+
+Tmr:
+- cp-31
+- LLMR Transformers part, make good progress
+- LC-4q
+- vllm kernel, post doubts on pattern match in slack
+  
