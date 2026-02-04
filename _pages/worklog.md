@@ -603,3 +603,10 @@ Reading AleskaGordic's GPU internals; done.
 - Revisit and make notes of cuda-python opensource issue; done.
 - LC-3q code; done.
 - Spark paper reading; done.
+
+02/03/2026 (T - 98)
+
+cp-31 2q. done.
+LLMR tranformers, working;
+LC-3q + 1(diff);
+

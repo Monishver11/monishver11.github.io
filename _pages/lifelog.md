@@ -727,8 +727,19 @@ Interview has been rescheduled to 02/09 monday 10:30 am PT. Got more time, so pr
 Scheduled Interview call with Sayari's Recruiter on Feb 6th, 4:15PM. After LLMR class, take this call.
 
 Tmr:
-- cp-31
-- LLMR Transformers part, make good progress
-- LC-4q
-- vllm kernel, post doubts on pattern match in slack
+- cp-31; done.
+- LLMR Transformers part, make good progress; done.
+- LC-4q; done.
+- vllm kernel, post doubts on pattern match in slack - saw some threads related to pattern match, will see and add more pieces to my knowledge base, and try it a bit first. 
   
+02/03/2026 (T - 98)
+
+Good morning Monish.
+
+Tmr:
+- vllm kenrel pattern match;
+- cp-31;
+- Dist systems paper;
+- LC-2q;
+- Book SFO/SJ tickets;
+- LLMR Finish Transformers;
