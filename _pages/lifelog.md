@@ -743,3 +743,13 @@ Tmr:
 - LC-2q;
 - Book SFO/SJ tickets;
 - LLMR Finish Transformers;
+
+02/04/2026 (T - 97)
+
+Good afternoon Monish.
+
+Liesure day, will do one cp-31 and move the rest to 02/05.
+
+Went to class and came back.
+
+Watching a movie, will be at play & hunt tmr. GN.
