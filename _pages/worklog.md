@@ -614,3 +614,17 @@ LC-3q + 1(diff);
 
 cp-31 1q done.
 
+02/05/2026 (T - 96)
+
+Transformer LM done. Do the resource accounting next.
+
+Few reads of the week;
+- [I've gotten one B in my entire life](https://baxate.substack.com/p/ive-gotten-one-b-in-my-entire-life?r=541zp9&utm_medium=ios&shareImageVariant=overlay&triedRedirect=true)
+- [Vibecoding #2](https://matklad.github.io/2026/01/20/vibecoding-2.html)
+- [What Actually Makes Embedding Model Inference Fast?](https://filipmakraduli.substack.com/p/what-actually-makes-embedding-model)
+
+cp-31 2q done. For the 26th one, took help and saw to video to understand the intuition more.
+
+Applied to linkedin jobs
+
+LC-2q, done.

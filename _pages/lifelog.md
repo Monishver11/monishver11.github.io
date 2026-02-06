@@ -753,3 +753,9 @@ Liesure day, will do one cp-31 and move the rest to 02/05.
 Went to class and came back.
 
 Watching a movie, will be at play & hunt tmr. GN.
+
+02/05/2026 (T - 96)
+
+Good morning Monish.
+
+Booked flight tickets to GTC.
