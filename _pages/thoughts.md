@@ -23,7 +23,70 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+###### **February 2026**
+
+<div class="small-quote">
+  <p>Storytelling builds interest; keywords help you get found.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
+###### **January 2026**
+
+<div class="small-quote"><p>I feel good about struggling lately. It also resonates with another wording that says, you find more peace in working and struggling to do something you like/want/wish.</p></div>
+
+<div class="small-quote"><p>I think one paradoxical nature of AI(ChatGPT/LLMs) is that you don’t have to feel dumb to ask a dumb question, but doing this often, relying on it without learning or thinking, will eventually make you dumb enough to replace you.</p></div>
+
+<div class="small-quote">
+  <p>We don’t get to decide the rules in a male-dominated world. And pretending they don’t exist doesn’t dismantle the unfair systems. You dismantle them by playing the game long enough to build leverage and then choosing when to disengage. Leverage comes first. Freedom comes later.</p>
+  <span class="author">- Avni Barman</span>
+</div>
+
+<div class="small-quote">
+  <p>When it feels scary to jump, that is exactly when you jump. Otherwise you end up staying in the same place your whole life, and that I can’t do.</p>
+  <span class="author">— J. C. Chandor, A Most Violent Year</span>
+</div>
+
+<div class="small-quote">
+  <p>Relentless tenacity is one of the prime qualities of the top coders of the world.</p>
+  <span class="author">- beej.us</span>
+</div>
+
+<div class="small-quote">
+  <p>"Make it work, make it right, make it fast"</p>
+  <span class="author">- Kent Beck</span>
+</div>
+
+<div class="small-quote">
+  <p>“With self-discipline, most anything is possible.”</p>
+  <span class="author">— Theodore Roosevelt</span>
+</div>
+
+<div class="small-quote">
+  <p>“Pay attention to your inner weather.”</p>
+  <span class="author">— Emotional Agility by Susan David</span>
+</div>
+
+<div class="small-quote">
+  <p>“Reflection turns experience into insight.”</p>
+  <span class="author">— Thinking, Fast and Slow by Daniel Kahneman</span>
+</div>
+
+<div class="small-quote">
+  <p>“What you tend, grows.”</p>
+  <span class="author">— The Gardener and the Carpenter by Alison Gopnik</span>
+</div>
+
+<div class="small-quote"><p>Play the game. Play it well enough to know how to break it, and only then break the rules of the game.</p></div>
+
+
 ###### **December 2025**
+
+<div class="small-quote">
+  <p>Consistently imperfect is more marketable than occasionally inspired.</p>
+  <span class="author">- Michelle Lim</span>
+</div>
+
+<div class="small-quote"><p>Life is relative to one’s perspective.</p></div>
 
 <div class="small-quote"><p>Life isn’t supposed to be always picture perfect.</p></div>
 
