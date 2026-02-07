@@ -628,3 +628,11 @@ cp-31 2q done. For the 26th one, took help and saw to video to understand the in
 Applied to linkedin jobs
 
 LC-2q, done.
+
+02/06/2026 (T - 95)
+
+LC-2q; done.
+cp-31; done.
+BDAD lab-1; done.
+
+[The three types of LLM workloads and how to serve them](https://modal.com/llm-almanac/workloads)

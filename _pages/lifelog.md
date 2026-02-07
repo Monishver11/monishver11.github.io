@@ -759,3 +759,18 @@ Watching a movie, will be at play & hunt tmr. GN.
 Good morning Monish.
 
 Booked flight tickets to GTC.
+
+02/06/2026 (T - 95)
+
+Good morning Monish.
+
+LC-2q; done.
+cp-31; done.
+BDAD lab-1; done.
+LLMR1 4-5 parts
+NVIDIA; 
+
+Recruiter call with Sayari. Went well and talked well. Will have some updates over mid of next week;
+
+Bi-weekly updates thread with Sohan; done.
+
