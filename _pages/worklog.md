@@ -636,3 +636,26 @@ cp-31; done.
 BDAD lab-1; done.
 
 [The three types of LLM workloads and how to serve them](https://modal.com/llm-almanac/workloads)
+
+02/07/2026 (T - 94)
+
+LC;
+
+[The MoE 101 Guide: From Theory to Production](https://www.cerebras.ai/moe-guide)
+
+Moe project revist done.
+
+LLMR-1, part 4 done.
+
+02/08/2026 (T - 93)
+
+cp-31, done. For WA, one possible reason could the range of n, if its 10^9, then ops on them could lead to overflow, so choose long long int.
+
+read, open source issues; done.
+
+LLMR1 - part 5 done. Next is the run the BPE first to get the merges and vocab, and use that to create a numpy array of tokenids, and store it as a npx file, using uint16 dtype.
+
+[KV Caching Explained: Optimizing Transformer Inference Efficiency](https://huggingface.co/blog/not-lain/kv-caching) - To understand why cache KV and only that is required.
+
+smallgraphgcn revist; done.
+
