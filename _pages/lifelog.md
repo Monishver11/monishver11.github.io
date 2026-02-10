@@ -784,3 +784,18 @@ Good morning Monish.
 
 LC; done.
 
+02/09/2026 (T - 92)
+
+Good morning Monish. All the best for today, do and give your best.
+
+Interview got rescheduled(got more time to prepare LC, do it monish, finish that list). 
+
+LLMR1; wip;
+cp-31 1q; done.
+LC-1q;
+vllm kernel rebuild; wip
+vllm base understanding; 
+
+Tmr:
+LC;
+

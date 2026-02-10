@@ -659,3 +659,8 @@ LLMR1 - part 5 done. Next is the run the BPE first to get the merges and vocab, 
 
 smallgraphgcn revist; done.
 
+02/09/2026 (T - 92)
+
+cp-31, done.
+
+Work kind of split across different tasks today; Tmr focus on LC for first half+cp-31 & second half is LLMR1 + Data Eng Revision;
