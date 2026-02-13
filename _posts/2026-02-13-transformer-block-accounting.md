@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Transformer Block FLOPs & Parameters 
+title: Transformer Block FLOPs & Parameters Calculations
 date: 2026-02-13 10:31:00-0400
 featured: false
 description: Resource accounting for Transformer block
@@ -9,8 +9,6 @@ categories: LLMR-NYU
 giscus_comments: true
 related_posts: false
 ---
-
-# Transformer Block: Matrix Dimensions and FLOP Calculations
 
 #### **Notation**
 
