@@ -16,9 +16,9 @@ related_posts: false
 - $$S$$: Sequence length  
 - $$D$$: Hidden dimension / Model dimension
 - $$N$$: Number of attention heads
-- $$H$$: Head dimension $(H = D/N)$
-- $$F$$: Feed-forward hidden dimension (typically $4D$)
-- $$S_1$$/$$S_2$$: Sequence length in attention context, $S_1$=of query & $S_2$=of key (often $S$)
+- $$H$$: Head dimension $$(H = D/N)$$
+- $$F$$: Feed-forward hidden dimension (typically $$4D$$)
+- $$S_1$$/$$S_2$$: Sequence length in attention context, $$S_1$$=of query & $$S_2$$=of key (often $$S$$)
 - $$\text{SiLU}$$: Sigmoid Linear Unit activation (also known as Swish)
 - $$\text{RoPE}$$: Rotary Position Embeddings
 - $$[X \times Y]$$: Matrix/tensor dimensions
@@ -40,16 +40,16 @@ $$\text{Rmsnorm}(x) = \text{normed\_x} * \text{gains}, \quad [B \times S \times 
 
 Attention applied on Rmsnorm output:
 
-- **(a)** $Q = W_q @ x$, $\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$
+- **(a)** $$Q = W_q @ x$$, $$\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$$
 
-- **(b)** $K = W_k @ x$, $\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$
+- **(b)** $$K = W_k @ x$$, $$\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$$
 
-- **(c)** $V = W_v @ x$, $\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$
+- **(c)** $$V = W_v @ x$$, $$\quad [D \times D] @ [B \times S \times D] \rightarrow [B \times S \times D]$$
 
-- **(d)** Rearrange for multi-head attention($Q, K, V$):
+- **(d)** Rearrange for multi-head attention($$Q, K, V$$):
   $$[B \times S \times D] \rightarrow [B \times S \times (N \cdot H)] \rightarrow [B \times N \times S \times H]$$
 
-- **(e)** Apply RoPE to $Q$ and $K$ (element-wise) $\rightarrow [B \times N \times S \times H]$
+- **(e)** Apply RoPE to $$Q$$ and $$K$$ (element-wise) $$\rightarrow [B \times N \times S \times H]$$
 
 - **(f)** Scaled Dot-Product Attention with Causal Mask:
   $$\begin{align}
