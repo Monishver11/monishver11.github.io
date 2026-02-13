@@ -10,6 +10,13 @@ giscus_comments: true
 related_posts: false
 ---
 
+
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/tf-block.png" title="tf-block" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
 #### **Notation**
 
 - $$B$$: Batch size
