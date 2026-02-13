@@ -664,3 +664,21 @@ smallgraphgcn revist; done.
 cp-31, done.
 
 Work kind of split across different tasks today; Tmr focus on LC for first half+cp-31 & second half is LLMR1 + Data Eng Revision;
+
+02/10/2026 (T - 91)
+
+02/11/2026 (T - 90)
+
+Gave NVIDIA interview, went well. The interviewer said that he's interviewing me for HPC DevTech role, but all my answers and projects are aligned with DL DevTech role it seems. Hopefully, he conveys this to HR and they put me in that pool. Other than that, got a good overview of the first round, and I had to make my fundamentals more firm and thourough. Also, my presentation and articulation needs to be improved. For projects and coursework, need to prepare some points that covers the key gist more effectively.
+
+02/12/2026 (T - 89)
+
+LoRA:
+- [LoRA Explained: Low-Rank Adaptation for Fine-Tuning LLMs](https://medium.com/@zilliz_learn/lora-explained-low-rank-adaptation-for-fine-tuning-llms-066c9bdd0b32)
+- [What is LoRA (low-rank adaption)?](https://www.ibm.com/think/topics/lora)
+
+Transformer FLOPs & parameters accounting:
+- [All the Transformer Math You Need to Know](https://jax-ml.github.io/scaling-book/transformers/)
+
+02/13/2026 (T - 88)
+
