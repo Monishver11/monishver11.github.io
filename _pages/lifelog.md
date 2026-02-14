@@ -815,3 +815,4 @@ Good morning Monish.
 
 Good morning Monish.
 
+Added blog on the TF flops and params accounting.
