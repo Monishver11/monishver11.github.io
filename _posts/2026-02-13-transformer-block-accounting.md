@@ -125,3 +125,156 @@ $$\begin{align}
 \text{FLOPs:} &\quad 2 \cdot D \cdot (B \cdot S \cdot V) = 2 \cdot B \cdot S \cdot D \cdot V \\
 \text{Parameters:} &\quad D \cdot V
 \end{align}$$
+
+
+#### **AdamW Memory Accounting**
+
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/adamw.png" title="adamw" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
+##### Problem Setup
+Calculate peak memory required for training a Transformer LM with AdamW optimizer.
+
+**Assumptions:**
+- All tensors in **float32** (4 bytes per element)
+- Batch size: `B`
+- Context length: `T`
+- Vocabulary size: `V`
+- Number of layers: `L`
+- Model dimension: `d`
+- Number of heads: `h`
+- Feed-forward dimension: `d_ff = 4d`
+
+
+##### **1. Parameters Memory**
+
+**Embedding Layers:**
+- Token embeddings: `V × d`
+
+**Per Transformer Block:**
+- RMSNorm (pre-attention): `d`
+- Attention QKV projection: `3d²`
+- Attention output projection: `d²`
+- RMSNorm (pre-FFN): `d`
+- FFN W1: `4d²`
+- FFN W2: `4d²`
+
+**Per block:** `2d + 12d²`
+
+**Final Layers:**
+- Final RMSNorm: `d`
+- Output embedding (unembedding): `d × V`
+
+**Total Parameters:**
+```
+P = Vd + L(2d + 12d²) + d + dV
+P = 2Vd + L(2d + 12d²) + d
+P = d(2V + 2L + 1) + 12Ld²
+```
+
+**Parameters Memory:** `4P` bytes
+
+##### **2. Activations Memory**
+
+Tracking intermediate activations needed for backward pass.
+
+**Per Transformer Block:**
+
+| Component | Shape | Elements |
+|-----------|-------|----------|
+| Input to block | `(B, T, d)` | `BTd` |
+| RMSNorm output (pre-attn) | `(B, T, d)` | `BTd` |
+| RMSNorm statistics | `(B, T)` | `BT` |
+| Q, K, V projections | `3 × (B, T, d)` | `3BTd` |
+| Attention scores (Q^T K) | `(B, h, T, T)` | `BhT²` |
+| Softmax statistics | `(B, h, T)` | `BhT` |
+| Attention weights (post-softmax) | `(B, h, T, T)` | `BhT²` |
+| Weighted sum output | `(B, T, d)` | `BTd` |
+| Attention output projection | `(B, T, d)` | `BTd` |
+| RMSNorm output (pre-FFN) | `(B, T, d)` | `BTd` |
+| RMSNorm statistics | `(B, T)` | `BT` |
+| FFN W1 output | `(B, T, 4d)` | `4BTd` |
+| SiLU output | `(B, T, 4d)` | `4BTd` |
+| FFN W2 output | `(B, T, d)` | `BTd` |
+
+**Per block total:**
+```
+15BTd + 2BhT² + BhT + 2BT
+```
+
+**All L blocks:**
+```
+L(15BTd + 2BhT² + BhT + 2BT)
+```
+
+**Final Layers:**
+
+| Component | Shape | Elements |
+|-----------|-------|----------|
+| Final RMSNorm output | `(B, T, d)` | `BTd` |
+| Final RMSNorm statistics | `(B, T)` | `BT` |
+| Logits (output embedding) | `(B, T, V)` | `BTV` |
+| Softmax probabilities | `(B, T, V)` | `BTV` |
+
+**Total Activations:**
+```
+A = L(15BTd + 2BhT² + BhT + 2BT) + BTd + BT + 2BTV
+A = BTd(15L + 1) + 2BhT²L + BhTL + 2BTL + BT + 2BTV
+```
+
+**Activations Memory:** `4A` bytes
+
+##### **3. Gradients Memory**
+
+Gradients have the same shape as parameters.
+
+**Gradients Memory:** `4P` bytes
+
+##### **4. Optimizer State (AdamW)**
+
+AdamW maintains two states per parameter:
+- **First moment (momentum):** `m_t` (same shape as params)
+- **Second moment (variance):** `v_t` (same shape as params)
+
+**Optimizer State Memory:** `2 × 4P = 8P` bytes
+
+##### **5. Total Peak Memory**
+
+```
+Total = Parameters + Activations + Gradients + Optimizer State
+Total = 4P + 4A + 4P + 8P
+Total = 16P + 4A
+```
+
+**Substituting P and A:**
+
+```
+Total = 16[d(2V + 2L + 1) + 12Ld²] + 4[BTd(15L + 1) + 2BhT²L + BhTL + 2BTL + BT + 2BTV]
+```
+
+**Expanded:**
+
+```
+Total = 32Vd + 32Ld + 16d + 192Ld² + 60BTdL + 4BTd + 8BhT²L + 4BhTL + 8BTL + 4BT + 8BTV
+```
+
+| Component | Memory (bytes) | Multiplier of P |
+|-----------|----------------|-----------------|
+| **Parameters** | `4P` | `1×` |
+| **Gradients** | `4P` | `1×` |
+| **Optimizer State** | `8P` | `2×` |
+| **Activations** | `4A` | - |
+| **Total** | `16P + 4A` | - |
+
+**Key Observations:**
+- Optimizer state dominates static memory: `8P` (2× params)
+- Total static memory (params + grads + optimizer): `16P`
+- Activations scale with batch size and sequence length: `O(BT)`
+- Static memory scales with model size: `O(Ld²)`
+
+**Where:**
+- `P = d(2V + 2L + 1) + 12Ld²`
+- `A = BTd(15L + 1) + 2BhT²L + BhTL + 2BTL + BT + 2BTV`
