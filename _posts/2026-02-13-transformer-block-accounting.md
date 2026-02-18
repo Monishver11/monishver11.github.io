@@ -126,6 +126,7 @@ $$\begin{align}
 \text{Parameters:} &\quad D \cdot V
 \end{align}$$
 
+---
 
 #### **AdamW Memory Accounting**
 
@@ -135,7 +136,7 @@ $$\begin{align}
     </div>
 </div>
 
-##### Problem Setup
+##### **Problem Setup**
 Calculate peak memory required for training a Transformer LM with AdamW optimizer.
 
 **Assumptions:**

@@ -682,3 +682,12 @@ Transformer FLOPs & parameters accounting:
 
 02/13/2026 (T - 88)
 
+02/14/2026 (T - 87)
+
+[GPU (In)efficiency in AI Workloads](https://www.anyscale.com/blog/gpu-in-efficiency-in-ai-workloads)
+
+02/15/2026 (T - 86)
+
+02/16/2026 (T - 85)
+
+02/17/2026 (T - 84)
