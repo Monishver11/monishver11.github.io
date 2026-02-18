@@ -816,3 +816,25 @@ Good morning Monish.
 Good morning Monish.
 
 Added blog on the TF flops and params accounting.
+
+02/14/2026 (T - 87)
+
+Good morning Monish.
+
+02/15/2026 (T - 86)
+
+Good morning Monish;
+
+02/16/2026 (T - 85)
+
+Good morning Monish;
+
+02/17/2026 (T - 84)
+
+Good morning Monish.
+
+Habits to form from tmr:
+- Wake up before sunrise.
+
+Keep working and being active in the GPU kernel optimization, MLSys and ML Infra domains, you're opportunity will come to you soon. Best wishes Monish.
+
