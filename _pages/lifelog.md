@@ -838,3 +838,17 @@ Habits to form from tmr:
 
 Keep working and being active in the GPU kernel optimization, MLSys and ML Infra domains, you're opportunity will come to you soon. Best wishes Monish.
 
+02/18/2026 (T - 83)
+
+Good morning Monish.
+
+02/19/2026 (T - 82)
+
+Early good morning Monish. Starting Ramadan fasting from today, so wake up at 5:15 AM.
+
+02/20/2026 (T - 81)
+
+Good evening monish. 
+
+Tired, mostly mentally. Not able to recall things that i learned/worked out. A bit clouded with so many things i've got to do and work on. But, trying to taking it slowly, and doing things one by one. I'll get it and its better i face this phase and cross it now, rather than later. All is well monish.
+

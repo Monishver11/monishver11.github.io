@@ -691,3 +691,24 @@ Transformer FLOPs & parameters accounting:
 02/16/2026 (T - 85)
 
 02/17/2026 (T - 84)
+
+NVIDIA/cuda-python's LD/PTD stream issue has been merged, and the release notes are published in their official websites. Great work monish. Finish the vllm silu_block_quant work soon and merge that PR;
+
+02/18/2026 (T - 83)
+
+02/19/2026 (T - 82)
+
+[Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
+
+[Introduction to torch.compile and How It Works with vLLM](https://blog.vllm.ai/2025/08/20/torch-compile.html)
+
+[Functionalization in PyTorch: Everything You Wanted To Know](https://dev-discuss.pytorch.org/t/functionalization-in-pytorch-everything-you-wanted-to-know/965)
+
+what is automatic re-inplacing of view tensors in auto_funcionalized_v2 from pytorch?
+- Automatic re-inplacing of view tensors in PyTorch's auto_functionalized_v2 is a performance optimization that enables in-place mutation operations on view tensors—a previously challenging scenario due to memory sharing constraints. 
+- -When a tensor is created as a view of another tensor (e.g., via view, transpose, or slicing), both share the same underlying data. Traditionally, mutating a view would require copying the data to avoid corrupting the original tensor. However, auto_functionalized_v2 introduces a new strategy to re-inplace (re-use) the original base tensor when safe, allowing in-place operations on views without unnecessary memory copies. 
+- This is achieved through automatic functionalization and re-inplacement analysis in the PyTorch compiler (Inductor), which detects whether a view can be safely mutated in-place by tracking data dependencies and ensuring no side effects on the original tensor.  If re-inplacement is not possible, the system falls back to copying the base tensor—though the framework aims to minimize such overhead.
+
+02/20/2026 (T - 81)
+
+[Towards Adaptive AI Agents: Our Research Roadmap](https://abideai.com/blog/whitepaper-aug25)
