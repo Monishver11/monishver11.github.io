@@ -712,3 +712,9 @@ what is automatic re-inplacing of view tensors in auto_funcionalized_v2 from pyt
 02/20/2026 (T - 81)
 
 [Towards Adaptive AI Agents: Our Research Roadmap](https://abideai.com/blog/whitepaper-aug25)
+
+02/21/2026 (T - 80)
+
+[vLLM: Easy, Fast, and Cheap LLM Serving with PagedAttention](https://blog.vllm.ai/2023/06/20/vllm.html)
+
+In cp-31, arriving at the right logic, but missing some edge cases of the question and getting stuck with WA. From next one, need to focus on the edge cases more, identify and incorporate logic for it.

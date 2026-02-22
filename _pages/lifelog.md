@@ -852,3 +852,26 @@ Good evening monish.
 
 Tired, mostly mentally. Not able to recall things that i learned/worked out. A bit clouded with so many things i've got to do and work on. But, trying to taking it slowly, and doing things one by one. I'll get it and its better i face this phase and cross it now, rather than later. All is well monish.
 
+02/21/2026 (T - 80)
+
+Good morning Monish.
+
+Today:
+- Dist Sys, finish doc reading(done) and see the assignment; done.
+- cp-31; done.
+- SDI-1; done.
+- LLMR2 - start reading the assignment and code setup; done.
+- LC - Largest rectangle; closed, will fix it with a workable plan tmr;
+- vllm kernel fusion pass testing and kernel improvements; moved to tmr;
+- apply to jobs; moved to tmr, made a workable plan.
+
+Tmr(must finish all):
+- setup vllm kernel in vast.ai, and start the build
+- cp-31
+- llmr2, start exps scripts, use cuda5 and move data from a1
+- lc graph:1q
+- dist-sys part2
+- cp-31
+- SDI
+- schedule 1 coldmail to startup
+
