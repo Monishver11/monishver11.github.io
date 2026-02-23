@@ -866,12 +866,26 @@ Today:
 - apply to jobs; moved to tmr, made a workable plan.
 
 Tmr(must finish all):
-- setup vllm kernel in vast.ai, and start the build
-- cp-31
+- setup vllm kernel in vast.ai, and start the build; done.
+- cp-31; done.
 - llmr2, start exps scripts, use cuda5 and move data from a1
-- lc graph:1q
+- lc graph:1q; done.
 - dist-sys part2
-- cp-31
-- SDI
+- cp-31; done.
+- SDI; done.
 - schedule 1 coldmail to startup
 
+02/22/2026 (T - 79)
+
+Good afternoon monish.
+
+Pending/TODO tmr(priority):
+- 1 coldmail to startup
+- vllm kernel testing
+- lmr2, start exps scripts, use cuda5 and move data from a1
+- opt training module and app
+  
+- cp-31
+- SDI
+- lc 1q
+  
