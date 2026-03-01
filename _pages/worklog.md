@@ -720,3 +720,26 @@ what is automatic re-inplacing of view tensors in auto_funcionalized_v2 from pyt
 In cp-31, arriving at the right logic, but missing some edge cases of the question and getting stuck with WA. From next one, need to focus on the edge cases more, identify and incorporate logic for it.
 
 02/22/2026 (T - 79)
+
+02/23/2026 (T - 78)
+
+In cp, use map to get worst case TC of O(logn), as it stores the data in balanced trees(Red-black/AVL). If you use unordered_map, its backend storing format is hashtable, and its worst case TC for accessing is O(N) due to collisions and one bucket having a huge list of elements. 
+
+02/24/2026 (T - 77)
+
+02/25/2026 (T - 76)
+
+Merge the new changes to v1 branch; done.
+Understand the pytest for the fusion part; done.
+Comment and tag prologexpert(reviewer); done.
+
+02/26/2026 (T - 75)
+
+02/27/2026 (T - 74)
+
+Think about logic -> Cover all edge cases -> Refine it -> Implement the logic -> Make it clean code;
+
+02/28/2026 (T - 73)
+
+Worked on the pattern match for is_scale_transposed = True case, which i missed. Made changes, and pushed the changes. Now, building the kernel again(from the PR branch) to test all the changes.
+
