@@ -889,3 +889,25 @@ Pending/TODO tmr(priority):
 - SDI
 - lc 1q
   
+02/23/2026 (T - 78)
+
+Good evening monish.
+
+Tmr:
+- llmr2
+- cp-31
+- opt module
+- cp-31
+- SDI
+- lc 1q
+- Dist sys hw
+
+02/24/2026 (T - 77)
+
+02/25/2026 (T - 76)
+
+02/26/2026 (T - 75)
+
+02/27/2026 (T - 74)
+
+02/28/2026 (T - 73)
