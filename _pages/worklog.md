@@ -743,3 +743,10 @@ Think about logic -> Cover all edge cases -> Refine it -> Implement the logic ->
 
 Worked on the pattern match for is_scale_transposed = True case, which i missed. Made changes, and pushed the changes. Now, building the kernel again(from the PR branch) to test all the changes.
 
+03/01/2026 (T - 72)
+
+vLLM kernel work mostly done, will await for the reviewers word.
+
+03/02/2026 (T - 71)
+
+03/02/2026 (T - 70)
