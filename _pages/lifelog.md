@@ -929,3 +929,42 @@ Tmr:
 03/08/2026 (T - 65)
 
 03/09/2026 (T - 64)
+
+03/10/2026 (T - 63)
+
+03/11/2026 (T - 62)
+
+03/12/2026 (T - 61)
+
+Good morning Monish.
+
+03/13/2026 (T - 60)
+
+Good morning Monish
+
+03/14/2026 (T - 59)
+
+Good morning Monish. All the best. Your priority for GTC is acquiring job opps and make genuine connections with ML perf eng. Be present and give your best.
+
+03/15/2026 (T - 58)
+
+03/16/2026 (T - 57)
+
+03/17/2026 (T - 56)
+
+03/18/2026 (T - 55)
+
+03/19/2026 (T - 54)
+
+03/20/2026 (T - 53)
+
+03/21/2026 (T - 52)
+
+03/22/2026 (T - 51)
+
+03/23/2026 (T - 50)
+
+Good afternoon Monish. GTC done well, next is to follow-up with people, share resume and ask for opps. 
+Things to do(focus on this, and only this):
+- Keep working on GPU kernels and do CP-31. 
+- Reachout to people/apply to jobs in GPU kernels/ML systems/ML Infra.
