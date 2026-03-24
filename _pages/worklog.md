@@ -764,3 +764,46 @@ Working on the LLMR assignment over the night.
 03/08/2026 (T - 65)
 
 03/09/2026 (T - 64)
+
+Open-source contributions opportunities(best learning if you can contribute a good work to each one):
+- vLLM (Inference engine with largest market share)
+- TensorRT-LLM (Best Perf of all the inference engines)
+- NVIDIA Dynamo (Recent, large scale deployments usecase, active repo and looking for contributions)
+
+03/10/2026 (T - 63)
+
+03/11/2026 (T - 62)
+
+03/12/2026 (T - 61)
+
+LLM Post-Training:
+- [The State of Reinforcement Learning for LLM Reasoning](https://magazine.sebastianraschka.com/p/the-state-of-llm-reasoning-model-training)
+- [A Primer on LLM Post-Training](https://pytorch.org/blog/a-primer-on-llm-post-training/)
+- [What is test-time compute and how to scale it?](https://huggingface.co/blog/Kseniase/testtimecompute)
+
+03/13/2026 (T - 60)
+
+Added requested number for vLLM kernel work.
+
+03/14/2026 (T - 59)
+
+Going to attend NVIDIA GTC. Best wishes.
+
+03/15/2026 (T - 58)
+
+03/16/2026 (T - 57)
+
+03/17/2026 (T - 56)
+
+03/18/2026 (T - 55)
+
+03/19/2026 (T - 54)
+
+03/20/2026 (T - 53)
+
+03/21/2026 (T - 52)
+
+03/22/2026 (T - 51)
+
+03/23/2026 (T - 50)
+
