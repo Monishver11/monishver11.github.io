@@ -807,3 +807,10 @@ Going to attend NVIDIA GTC. Best wishes.
 
 03/23/2026 (T - 50)
 
+03/24/2026 (T - 49)
+
+- vLLM kernel work
+- cp-31
+- Inf eng, a few pages
+
+

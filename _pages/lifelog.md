@@ -968,3 +968,8 @@ Good afternoon Monish. GTC done well, next is to follow-up with people, share re
 Things to do(focus on this, and only this):
 - Keep working on GPU kernels and do CP-31. 
 - Reachout to people/apply to jobs in GPU kernels/ML systems/ML Infra.
+
+03/24/2026 (T - 49)
+
+Good evening Monish. Got home, had good rest. Now, prep on vLLM work for tmr's Intro call. 
+
