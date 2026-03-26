@@ -21,7 +21,9 @@ These are my personal notes on the fused SiLU+Mul+FP8 block quantization CUDA ke
 - **A thought on kernel work:** In production inference, the kernel itself is about 50% of the effort. The other 50% is making the kernel actually work with the existing system — pattern matching it into the compilation pipeline, handling all the dispatch variants, and making it performant end-to-end. That second half is covered in a separate post.
 - This is a **WIP** — I'll add small notes where I feel more context is needed. These will be marked as **NOTES;**
 
-#### Block 1: Kernel Template Declaration & Function Signature
+---
+
+#### **Block 1: Kernel Template Declaration & Function Signature**
 ```cpp
 template <typename scalar_t, typename scalar_out_t, bool is_scale_transposed,
           int32_t group_size>
@@ -35,26 +37,28 @@ __global__ void silu_and_mul_per_block_quant_kernel(
 ) {
 ```
 
-##### What & Why
+
 
 This kernel fuses three operations that would otherwise be separate passes over global memory: SiLU activation, element-wise multiply, and per-block FP8/INT8 quantization. The "why fuse" is straightforward — each separate kernel would read/write the full tensor from/to HBM. Fusing means you read the input once, do all three ops in registers/shared memory, and write the quantized output once. For a memory-bound workload like activation + quantization on large hidden dimensions, this is a significant bandwidth saving.
 
-##### Template Parameters
+##### **Template Parameters**
 
 - **`scalar_t`** — input dtype (BF16 or FP16). Compile-time so the compiler generates specialized load instructions for each type.
 - **`scalar_out_t`** — output dtype (FP8 e4m3 or INT8). Also compile-time because the quantization math (clamping range, rounding) differs per type.
 - **`is_scale_transposed`** — controls scale tensor layout. DeepSeek-V3/R1 expects scales as `[hidden_size/group_size, num_tokens]` (transposed), while the default is `[num_tokens, hidden_size/group_size]`. Making this a template bool means the compiler eliminates the branch entirely — zero runtime cost for the layout decision.
 - **`group_size`** — 64 or 128. Compile-time because it determines the block dimension, shared memory size, and the number of reduction steps. The compiler can fully unroll the reduction loop when this is known at compile time.
 
-##### `__restrict__` Qualifier
+##### **`__restrict__` Qualifier**
 
 Applied to `out`, `scales`, `input` — tells the compiler these pointers don't alias, enabling more aggressive load/store reordering and register optimization.
 
-##### Memory Layout of `input`
+##### **Memory Layout of `input`**
 
 The input is `[num_tokens, hidden_size * 2]` because the gate and up projections are concatenated along the last dimension as `[gate | up]`. This is the standard layout coming out of the fused gate-up projection in MoE/non-MoE models.
 
-#### Block 2: Static Assert & Grid/Thread Index Setup
+---
+
+#### **Block 2: Static Assert & Grid/Thread Index Setup**
 ```cpp
   static_assert((group_size & (group_size - 1)) == 0,
                 "group_size must be a power of 2 for correct reduction");
@@ -66,11 +70,11 @@ The input is `[num_tokens, hidden_size * 2]` because the gate and up projections
   int const num_tokens = gridDim.x;
 ```
 
-##### What & Why
+
 
 `static_assert` — This is a compile-time guard ensuring `group_size` is a power of 2. The reduction loop later uses `stride >>= 1` halving, which only produces a correct result when the array length is a power of 2. If someone tried to instantiate with e.g. `group_size=96`, this would fail at compile time rather than silently producing wrong results at runtime. The check `(n & (n-1)) == 0` is the standard bit-trick for power-of-2 detection.
 
-##### Grid Mapping — The Core Design Decision
+##### **Grid Mapping — The Core Design Decision**
 
 The kernel maps the 2D problem — `(num_tokens, num_groups)` — directly onto the 2D grid. Each thread block is responsible for exactly one quantization group within one token. This means:
 
@@ -82,11 +86,13 @@ So the block dimension equals `group_size` (64 or 128 threads), and every thread
 
 `num_tokens = gridDim.x` — extracted from the grid dimension rather than passed as a parameter. This is used later for the transposed scale indexing. It's a minor optimization avoiding an extra kernel argument, but more importantly it keeps the parameter list clean since the grid already encodes this information.
 
-##### Memory Access Implication
+##### **Memory Access Implication**
 
 Since each block processes one group of one token, and groups are contiguous in memory (elements `[group_idx * group_size ... (group_idx+1) * group_size - 1]`), threads within a block access consecutive memory addresses. Thread 0 reads element 0 of the group, thread 1 reads element 1, etc. This gives you perfectly coalesced global memory reads — a single 128B or 256B transaction serves the whole warp.
 
-#### Block 3: Pointer Arithmetic & Memory Layout
+---
+
+#### **Block 3: Pointer Arithmetic & Memory Layout**
 ```cpp
   // Input layout: [gate || up] concatenated along last dimension
   int const input_stride = hidden_size * 2;
@@ -105,11 +111,11 @@ Since each block processes one group of one token, and groups are contiguous in 
                                : scales + token_idx * num_groups + group_idx;
 ```
 
-##### What & Why
+
 
 This block computes all the pointers each thread block needs. Let's trace the memory layout carefully.
 
-##### Input Pointer Arithmetic
+##### **Input Pointer Arithmetic**
 
 The input tensor is `[num_tokens, hidden_size * 2]`, laid out row-major. For a given token, the row looks like:
 ```
@@ -122,11 +128,11 @@ The input tensor is `[num_tokens, hidden_size * 2]`, laid out row-major. For a g
 - `token_input_gate` points to `gate[group_start]` for this token — the start of this group in the gate half.
 - `token_input_up = token_input_gate + hidden_size` — since up is concatenated right after gate, adding `hidden_size` jumps from the same position in the gate half to the corresponding position in the up half. This means `gate[i]` and `up[i]` are `hidden_size` elements apart in memory, not adjacent. Each thread reads two non-adjacent locations, but within each half, the group's reads are contiguous and coalesced.
 
-##### Output Pointer
+##### **Output Pointer**
 
 The output tensor is `[num_tokens, hidden_size]` (half the input width, since SiLU(gate)*up collapses the two halves into one). `token_output` points to the start of this group in the output row.
 
-##### Scale Pointer — The Transposed Layout
+##### **Scale Pointer — The Transposed Layout**
 
 Each thread block produces one scale value for its group. The scale tensor has shape either:
 
@@ -135,14 +141,16 @@ Each thread block produces one scale value for its group. The scale tensor has s
 
 The transposed layout exists because downstream GEMM kernels (particularly for DeepSeek-V3/R1) expect scales in `[num_groups, num_tokens]` order. Rather than doing a separate transpose kernel afterward, the kernel writes scales directly in the layout the consumer needs. Since `is_scale_transposed` is a template bool, the compiler eliminates the dead branch entirely.
 
-##### Memory Access Pattern Summary
+##### **Memory Access Pattern Summary**
 
 - `token_input_gate[tid]` — threads 0..group_size-1 read contiguous BF16/FP16 elements → coalesced.
 - `token_input_up[tid]` — same pattern, different base address (offset by `hidden_size`) → also coalesced.
 - `token_output[tid]` — contiguous FP8/INT8 writes → coalesced.
 - `*group_scale_ptr` — single float write by thread 0 only (later). No coalescing concern since it's one element per block.
 
-#### Block 4: Shared Memory Declaration, Loads & SiLU Computation
+---
+
+#### **Block 4: Shared Memory Declaration, Loads & SiLU Computation**
 ```cpp
   // Shared memory for reduction (compile-time sized)
   __shared__ float shared_max[group_size];
@@ -157,20 +165,20 @@ The transposed layout exists because downstream GEMM kernels (particularly for D
   float result = silu_gate * up;  // Keep in register
 ```
 
-##### What & Why
 
-##### Shared Memory Declaration
+
+##### **Shared Memory Declaration**
 
 `__shared__ float shared_max[group_size]` — allocates a block-local array sized exactly to the group. Since `group_size` is a template parameter (compile-time constant), this is statically sized — the compiler knows the exact shared memory footprint at compile time. This is preferable to dynamic shared memory (`extern __shared__`) because the compiler can reason about bank conflicts and optimize access patterns better. For `group_size=128`, this is `128 * 4 bytes = 512 bytes` — trivially small relative to the 48KB+ shared memory available per SM. This array will be used in the reduction step (block 5) to find the group max.
 
-##### Loads and Type Promotion
+##### **Loads and Type Promotion**
 
 Each thread loads exactly one gate element and one up element, then immediately casts to `float`. The cast serves two purposes:
 
 1. **Precision** — SiLU involves `exp`, division, and multiple multiplies. Doing this in FP16/BF16 would accumulate significant rounding error, especially in the sigmoid where values near 0 or 1 lose precision. FP32 is the standard compute type for activation functions.
 2. **Instruction efficiency** — CUDA math intrinsics like `expf` operate on `float`. Without the cast, the compiler would insert implicit conversions anyway, and potentially in a less optimal place.
 
-##### SiLU Computation — The Math
+##### **SiLU Computation — The Math**
 
 SiLU (Sigmoid Linear Unit) is defined as `SiLU(x) = x * σ(x)` where `σ(x) = 1 / (1 + e^(-x))`.
 
@@ -180,17 +188,19 @@ The kernel computes this in two steps:
 
 Then `result = silu_gate * up` — the gated activation pattern used in SwiGLU/SiLU-gated FFNs. In the transformer FFN, the gate and up projections are computed as `gate = xW_gate` and `up = xW_up`, and the activation output is `SiLU(gate) * up`. This is what gives models like LLaMA, Qwen, DeepSeek their FFN expressiveness over plain ReLU.
 
-##### Register Residency
+##### **Register Residency**
 
 `result` stays in a register — it's not written to shared or global memory yet. This is deliberate. The kernel still needs to find the group-wide max of `|result|` (for quantization scale computation) before it can quantize. Keeping `result` in a register means zero extra memory traffic — the value is computed once, used for the reduction, and then used again for the final quantized write. One load from global memory, all intermediate work in registers + shared memory.
 
-##### Memory Access Pattern
+##### **Memory Access Pattern**
 
 - `token_input_gate[tid]` — one 2-byte load (BF16/FP16) per thread, contiguous across threads → one coalesced 64B or 128B transaction per warp depending on group_size.
 - `token_input_up[tid]` — same, but base address is `hidden_size` elements away from gate. Still coalesced within this access, but this is a second global memory transaction to a different cache line region.
 - No writes to global or shared memory in this step (shared_max is written in the next block).
 
-#### Block 5: Parallel Tree Reduction for Group Max
+---
+
+#### **Block 5: Parallel Tree Reduction for Group Max**
 ```cpp
   // Step 2: Reduce to find group max
   shared_max[tid] = fabsf(result);
@@ -206,20 +216,20 @@ Then `result = silu_gate * up` — the gated activation pattern used in SwiGLU/S
   }
 ```
 
-##### What & Why
+
 
 The goal here is to find the maximum absolute value across all `group_size` elements in this group. This max is needed to compute the quantization scale — it determines how to map the FP32 range into the FP8/INT8 representable range.
 
-##### CUDA Math Intrinsics
+##### **CUDA Math Intrinsics**
 
 - **`fabsf(x)`** — single-precision floating-point absolute value. Returns `|x|` as a `float`. This compiles down to a single GPU instruction (`FABS`), no branching. We need absolute values because quantization cares about magnitude — negative and positive extremes both determine the scale.
 - **`fmaxf(a, b)`** — single-precision floating-point maximum. Returns the larger of `a` and `b` as a `float`. Also compiles to a single instruction (`FMNMX`). Using this instead of a ternary `(a > b) ? a : b` avoids branch divergence and handles NaN consistently (NaN-propagation semantics per IEEE 754).
 
-##### Step 1 — Populate Shared Memory
+##### **Step 1 — Populate Shared Memory**
 
 Each thread writes `fabsf(result)` into `shared_max[tid]`. This is a coalesced write to shared memory — consecutive threads write to consecutive 4-byte floats. Since shared memory is banked (32 banks, 4 bytes each), and threads in a warp access consecutive indices, there are zero bank conflicts. The `__syncthreads()` ensures all threads have written before any thread starts reading in the reduction.
 
-##### Step 2 — Parallel Tree Reduction
+##### **Step 2 — Parallel Tree Reduction**
 
 This is the classic power-of-2 shared memory reduction pattern. For `group_size=128`, it works like this:
 ```
@@ -238,11 +248,11 @@ After `log2(group_size)` iterations (7 for 128, 6 for 64), the maximum is in `sh
 
 **`__syncthreads()` inside the loop** — required at every iteration because thread `tid` might read `shared_max[tid + stride]` which was written by a different thread in the same iteration. Without the barrier, you'd get a read-before-write race. Note that this is a block-wide barrier, so even threads that don't participate in the `if (tid < stride)` branch still hit the barrier — this is correct and required. Having threads diverge on the barrier (some calling it, some not) would be undefined behavior.
 
-##### Why Not Warp-Level Primitives (`__shfl_down_sync`)?
+##### **Why Not Warp-Level Primitives (`__shfl_down_sync`)?**
 
 For the last 5 iterations (stride ≤ 16, i.e. within a single warp), you could replace shared memory ops with warp shuffles, avoiding the `__syncthreads()` overhead. This is a common optimization but adds complexity. The current approach is simpler and still fast — shared memory access is ~5ns, and for a memory-bound kernel like this, the reduction is not the bottleneck. The bottleneck is the global memory loads/stores.
 
-##### Memory Access Pattern & Bank Conflict Analysis
+##### **Memory Access Pattern & Bank Conflict Analysis**
 
 All accesses in this block are to `__shared__` memory — no global memory traffic.
 
@@ -256,7 +266,9 @@ In this reduction, at each iteration, active thread `tid` reads `shared_max[tid]
 
 So across all iterations: **zero bank conflicts**.
 
-#### Block 5: Parallel Tree Reduction for Group Max
+---
+
+#### **Block 5: Parallel Tree Reduction for Group Max**
 ```cpp
   // Step 2: Reduce to find group max
   shared_max[tid] = fabsf(result);
@@ -272,20 +284,20 @@ So across all iterations: **zero bank conflicts**.
   }
 ```
 
-##### What & Why
+
 
 The goal here is to find the maximum absolute value across all `group_size` elements in this group. This max is needed to compute the quantization scale — it determines how to map the FP32 range into the FP8/INT8 representable range.
 
-##### CUDA Math Intrinsics
+##### **CUDA Math Intrinsics**
 
 - **`fabsf(x)`** — single-precision floating-point absolute value. Returns `|x|` as a `float`. This compiles down to a single GPU instruction (`FABS`), no branching. We need absolute values because quantization cares about magnitude — negative and positive extremes both determine the scale.
 - **`fmaxf(a, b)`** — single-precision floating-point maximum. Returns the larger of `a` and `b` as a `float`. Also compiles to a single instruction (`FMNMX`). Using this instead of a ternary `(a > b) ? a : b` avoids branch divergence and handles NaN consistently (NaN-propagation semantics per IEEE 754).
 
-##### Step 1 — Populate Shared Memory
+##### **Step 1 — Populate Shared Memory**
 
 Each thread writes `fabsf(result)` into `shared_max[tid]`. This is a coalesced write to shared memory — consecutive threads write to consecutive 4-byte floats. Since shared memory is banked (32 banks, 4 bytes each), and threads in a warp access consecutive indices, there are zero bank conflicts. The `__syncthreads()` ensures all threads have written before any thread starts reading in the reduction.
 
-##### Step 2 — Parallel Tree Reduction
+##### **Step 2 — Parallel Tree Reduction**
 
 This is the classic power-of-2 shared memory reduction pattern. For `group_size=128`, it works like this:
 ```
@@ -304,11 +316,11 @@ After `log2(group_size)` iterations (7 for 128, 6 for 64), the maximum is in `sh
 
 **`__syncthreads()` inside the loop** — required at every iteration because thread `tid` might read `shared_max[tid + stride]` which was written by a different thread in the same iteration. Without the barrier, you'd get a read-before-write race. Note that this is a block-wide barrier, so even threads that don't participate in the `if (tid < stride)` branch still hit the barrier — this is correct and required. Having threads diverge on the barrier (some calling it, some not) would be undefined behavior.
 
-##### Why Not Warp-Level Primitives (`__shfl_down_sync`)?
+##### **Why Not Warp-Level Primitives (`__shfl_down_sync`)?**
 
 For the last 5 iterations (stride ≤ 16, i.e. within a single warp), you could replace shared memory ops with warp shuffles, avoiding the `__syncthreads()` overhead. This is a common optimization but adds complexity. The current approach is simpler and still fast — shared memory access is ~5ns, and for a memory-bound kernel like this, the reduction is not the bottleneck. The bottleneck is the global memory loads/stores.
 
-##### Memory Access Pattern & Bank Conflict Analysis
+##### **Memory Access Pattern & Bank Conflict Analysis**
 
 All accesses in this block are to `__shared__` memory — no global memory traffic.
 
@@ -322,7 +334,9 @@ In this reduction, at each iteration, active thread `tid` reads `shared_max[tid]
 
 So across all iterations: **zero bank conflicts**.
 
-#### Block 6: Scale Computation & Broadcast
+---
+
+#### **Block 6: Scale Computation & Broadcast**
 ```cpp
   // Step 3: Compute scale (thread 0), broadcast via shared memory
   if (tid == 0) {
@@ -350,24 +364,24 @@ So across all iterations: **zero bank conflicts**.
   float group_scale = shared_max[0];
 ```
 
-##### What & Why
+
 
 After the reduction, `shared_max[0]` holds the maximum absolute value across the group. Only thread 0 executes this block — it computes the quantization scale and then broadcasts it to all other threads.
 
-##### Scale Computation — The Quantization Math
+##### **Scale Computation — The Quantization Math**
 
 The fundamental equation for symmetric quantization is: `quantized = value / scale`, where `scale = max_abs / quant_range`. This maps the largest magnitude value to the edge of the quantized type's representable range.
 
 - `quant_type_max_v<scalar_out_t>` — a compile-time constant giving the max representable value of the output type. For FP8 e4m3fn this is `448.0f`, for INT8 this is `127.0f`. The template specialization ensures the right constant is used without runtime branching.
 - `group_scale = group_max / quant_range` — if the largest absolute value in the group is, say, `3.5` and quant_range is `448.0`, then `scale = 3.5 / 448.0 ≈ 0.0078`. Later, each value gets divided by this scale, so `3.5 / 0.0078 ≈ 448.0` — fitting exactly at the edge of FP8 range. Smaller values map proportionally within the range.
 
-##### Scale Clamping — Two Guards
+##### **Scale Clamping — Two Guards**
 
 1. **Upper bound (`scale_ub`):** Optional. When provided, the scale is clamped to not exceed this value. This is used in static quantization scenarios or when a calibration pass has determined a maximum expected scale. `fminf` — single-precision float minimum, same family as `fmaxf`, compiles to one instruction.
 
 2. **Minimum safe scale (`min_scaling_factor`):** Prevents division by zero or near-zero. If all values in a group are zero (or very close), `group_max` would be 0 or tiny, making `group_scale` ≈ 0. Dividing by near-zero in the quantization step would produce `inf` or overflow the FP8 range. The minimum scaling factor is a small positive value that ensures numerical safety. This is the more critical guard of the two.
 
-##### Broadcast Pattern
+##### **Broadcast Pattern**
 
 Thread 0 writes the final `group_scale` to both:
 
@@ -376,17 +390,19 @@ Thread 0 writes the final `group_scale` to both:
 
 The `__syncthreads()` after the `if (tid == 0)` block ensures all threads see the updated `shared_max[0]` before reading it into their local `group_scale` variable. After this barrier, every thread has the same `group_scale` in a register, ready for the quantization step.
 
-##### Why Only Thread 0?
+##### **Why Only Thread 0?**
 
 Scale computation is a serial operation — it depends on the single reduced max value. Having multiple threads compute the same thing would be wasted work. The slight thread divergence (thread 0 does extra work, others idle at the barrier) is negligible because the work is just a few arithmetic ops and one global store.
 
-##### Memory Access Pattern
+##### **Memory Access Pattern**
 
 - `shared_max[0]` — read by thread 0 (from reduction), written back by thread 0 (broadcast). Then read by all threads after barrier. Single shared memory location, no bank conflicts.
 - `*group_scale_ptr` — one 4-byte float write to global memory by thread 0 only. This is a single non-coalesced write, but it's one per block, so the cost is trivial.
 - `*scale_ub` — conditional 4-byte global read by thread 0 only. This pointer is the same across all blocks, so after the first block reads it, it'll be in L2/L1 cache for subsequent blocks. Effectively free.
 
-#### Block 7: Quantize & Write Output
+---
+
+#### **Block 7: Quantize & Write Output**
 ```cpp
   // Step 4: Quantize and write output
   token_output[tid] =
@@ -394,11 +410,11 @@ Scale computation is a serial operation — it depends on the single reduced max
 }
 ```
 
-##### What & Why
+
 
 This is the final step — every thread quantizes its `result` value (still sitting in a register from block 4) using the group scale (broadcast from block 6), and writes the quantized output to global memory.
 
-##### The Quantization Operation
+##### **The Quantization Operation**
 
 `ScaledQuant<scalar_out_t, false>::quant_fn(result, group_scale)` is a vLLM utility that performs: `output = clamp(round(result / group_scale), -quant_max, +quant_max)`, then casts to `scalar_out_t` (FP8 or INT8).
 
@@ -409,23 +425,25 @@ Breaking down what happens inside:
 3. **`clamp(..., -quant_max, +quant_max)`** — safety clamp to ensure the value fits in the output type's range. In theory, the scale was computed to make the max value land exactly at `quant_max`, so clamping shouldn't alter anything. But floating-point rounding edge cases could push a value slightly beyond, so the clamp is a correctness guard.
 4. **Cast to `scalar_out_t`** — the final type conversion from FP32 to FP8/INT8.
 
-##### Template Parameter `false`
+##### **Template Parameter `false`**
 
 The second template parameter to `ScaledQuant` controls whether the quantization uses an element-wise scale (per-tensor or per-channel) or a pre-divided scale. `false` here means we pass the scale directly and the function does the division internally. This matches our use case — one scale per group, applied uniformly to all elements in that group.
 
-##### Register → Global Memory
+##### **Register → Global Memory**
 
 `result` has been in a register since block 4. `group_scale` has been in a register since the shared memory broadcast at the end of block 6. The quantization is pure arithmetic on registers — no shared or global memory reads. The only memory operation is the final store to `token_output[tid]`.
 
-##### Memory Access Pattern
+##### **Memory Access Pattern**
 
 - `token_output[tid]` — each thread writes one FP8 (1 byte) or INT8 (1 byte) value to consecutive addresses. Threads 0..31 in a warp write to bytes 0..31 — this is a coalesced write of 32 bytes per warp. For `group_size=128` (4 warps), that's 4 × 32B = 128 bytes written in 4 coalesced transactions. Compare to the input which was 2 × 128 × 2 bytes (BF16) = 512 bytes read. The output is 4x smaller than the input — this is the compression effect of quantization plus the 2→1 collapse from gate+up fusion.
 
-##### Closing the Kernel
+##### **Closing the Kernel**
 
 After this line, the kernel is done. Every thread block has independently processed one quantization group of one token: loaded gate+up from global memory, computed SiLU*up in registers, reduced to find group max in shared memory, computed and stored the scale, and written the quantized output. No inter-block communication whatsoever — the kernel is embarrassingly parallel across the `(num_tokens × num_groups)` grid.
 
-#### Block 8: Templated Dispatch Function
+---
+
+#### **Block 8: Templated Dispatch Function**
 ```cpp
 template <typename scalar_in_t>
 void silu_and_mul_per_block_quant_dispatch(
@@ -468,11 +486,11 @@ void silu_and_mul_per_block_quant_dispatch(
 }
 ```
 
-##### What & Why
+
 
 This function bridges the PyTorch C++ world and the CUDA kernel. It's templated on `scalar_in_t` (input dtype, already resolved by the caller), and its job is to extract tensor metadata, validate shapes, set up the launch config, and resolve the remaining compile-time template parameters via dispatch macros.
 
-##### Shape Extraction & Validation
+##### **Shape Extraction & Validation**
 
 - `hidden_size = out.size(-1)` — output's last dimension is the true hidden size.
 - `num_tokens = input.size(0)` — batch/token dimension.
@@ -482,18 +500,18 @@ The two `TORCH_CHECK`s are runtime safety guards:
 1. Input's last dim must be `2 * hidden_size` — because the input is `[gate | up]` concatenated. If someone passes a tensor with wrong shape, this catches it immediately with a clear message rather than silently producing garbage.
 2. `hidden_size` must be divisible by `group_size` — otherwise the last group would be partial, and the kernel assumes every group is exactly `group_size` elements. No partial group handling exists.
 
-##### CUDA Device & Stream Setup
+##### **CUDA Device & Stream Setup**
 
 - `OptionalCUDAGuard device_guard(device_of(input))` — sets the active CUDA device to match the input tensor's device. This is critical in multi-GPU setups. Without this, the kernel might launch on the wrong GPU. The guard uses **RAII (Resource Acquisition Is Initialization)** — a C++ pattern where a resource (here, the active CUDA device setting) is acquired in the constructor and automatically released in the destructor. When `device_guard` goes out of scope (function exits, normally or via exception), its destructor restores the previously active device. This is safer than manual set/restore pairs because you can't forget to restore, and it's exception-safe — even if a `TORCH_CHECK` throws, the device gets restored.
 - `cudaStream_t stream = at::cuda::getCurrentCUDAStream()` — gets PyTorch's current CUDA stream. The kernel launches on this stream to maintain proper ordering with other PyTorch ops. If PyTorch is using stream A for this computation graph, the kernel goes on stream A too.
 
-##### Launch Configuration
+##### **Launch Configuration**
 
 - `dim3 grid(num_tokens, num_groups)` — 2D grid, exactly matching the kernel's `blockIdx.x = token, blockIdx.y = group` mapping we saw in **Block 2 (Static Assert & Grid/Thread Index Setup)**. Total blocks = `num_tokens × num_groups`.
 - `dim3 block(group_size)` — 1D block with `group_size` threads (64 or 128). One thread per element in the group.
 - `<<<grid, block, 0, stream>>>` — the `0` is dynamic shared memory size. We don't need any because `shared_max` is statically sized (from the template parameter).
 
-##### The Dispatch Macro Nesting
+##### **The Dispatch Macro Nesting**
 
 This is where the remaining template parameters get resolved from runtime values to compile-time constants. The nesting works inside-out:
 
@@ -503,7 +521,7 @@ This is where the remaining template parameters get resolved from runtime values
 
 3. **`VLLM_DISPATCH_BOOL(is_scale_transposed, transpose_scale, ...)`** — maps the runtime `bool` to a compile-time `bool` constant. This resolves the `is_scale_transposed` template parameter.
 
-##### Compilation Flow & Binary Generation
+##### **Compilation Flow & Binary Generation**
 
 The dispatch macros are essentially glorified `if/else` or `switch` blocks that instantiate the kernel template with every valid combination of compile-time parameters. At **compile time**, `nvcc` sees all the nested dispatch expansions and generates a separate, fully-specialized PTX/SASS kernel for each combination:
 ```
@@ -523,11 +541,13 @@ The **trade-off** is:
 - **Binary size** — each instantiation adds a few KB of GPU machine code. 16 variants might add ~50-100KB total — negligible for a modern `.so`.
 - **Runtime** — at kernel launch, the dispatch macros execute a few `if/else` branches (nanoseconds on CPU) to select the right pre-compiled variant. The GPU then runs fully specialized code with zero runtime branching on dtype, group size, or scale layout. This is the payoff: CPU-side nanoseconds of dispatch cost buys you a kernel that runs at maximum theoretical efficiency on the GPU.
 
-##### `scale_ub` Handling
+##### **`scale_ub` Handling**
 
 `scale_ub.has_value() ? scale_ub->data_ptr<float>() : nullptr` — converts the `std::optional<at::Tensor>` to a raw pointer. If no upper bound was provided, the kernel gets `nullptr` and the `if (scale_ub != nullptr)` check in **Block 6 (Scale Computation & Broadcast)** skips that branch.
 
-#### Block 9: Top-Level Entry Point
+---
+
+#### **Block 9: Top-Level Entry Point**
 ```cpp
 void silu_and_mul_per_block_quant(torch::Tensor& out,
                                   torch::Tensor const& input,
@@ -559,11 +579,11 @@ void silu_and_mul_per_block_quant(torch::Tensor& out,
 }
 ```
 
-##### What & Why
+
 
 This is the top-level entry point — the function that Python/PyTorch calls via pybind11. It's the outermost layer of the dispatch chain. Its job is to validate all preconditions, determine the FP8 variant for the platform, and dispatch on input dtype before handing off to the templated function in **Block 8 (Templated Dispatch Function)**.
 
-##### FP8 Type Selection
+##### **FP8 Type Selection**
 ```cpp
 static c10::ScalarType kFp8Type = is_fp8_ocp()
                                       ? c10::ScalarType::Float8_e4m3fn
@@ -577,7 +597,7 @@ There are two FP8 e4m3 variants in the wild:
 
 `is_fp8_ocp()` is a vLLM utility that queries the hardware at runtime. The result is cached in a `static` variable — computed once on the first call, reused for all subsequent calls. This ensures the kernel uses the correct FP8 encoding for the hardware it's running on.
 
-##### Precondition Checks
+##### **Precondition Checks**
 
 Five `TORCH_CHECK`s form the validation gate. Every invalid input gets caught here with a clear error message before anything touches the GPU:
 
@@ -587,7 +607,7 @@ Five `TORCH_CHECK`s form the validation gate. Every invalid input gets caught he
 4. **Scales dtype** — must be FP32. The quantization scale needs full precision to avoid compounding quantization error during dequantization in downstream GEMMs.
 5. **Group size** — must be exactly 64 or 128. These are the two block quantization group sizes used in practice (128 for `kFp8Dynamic128Sym`, 64 for `kFp8Dynamic64Sym`). The dispatch macros in **Block 8** only have specializations for these two values.
 
-##### What `kFp8Dynamic128Sym` / `kFp8Dynamic64Sym` Means
+##### **What `kFp8Dynamic128Sym` / `kFp8Dynamic64Sym` Means**
 
 These are vLLM's quantization scheme identifiers. The name encodes three properties:
 
@@ -598,11 +618,11 @@ These are vLLM's quantization scheme identifiers. The name encodes three propert
 
 So `kFp8Dynamic128Sym` means: "FP8 quantization with dynamically computed scales, 128-element groups, symmetric range." This is the scheme DeepSeek-R1 and Qwen models use for their activation quantization.
 
-##### `scale_ub` Guard
+##### **`scale_ub` Guard**
 
 If a scale upper bound is provided, the output must be FP8 (not INT8). This is because the upper bound feature is specifically designed for FP8 dynamic quantization workflows — it doesn't make sense for INT8 quantization which uses a different calibration approach.
 
-##### Input Dtype Dispatch
+##### **Input Dtype Dispatch**
 ```cpp
 VLLM_DISPATCH_FLOATING_TYPES(
     input.scalar_type(), "silu_and_mul_per_block_quant_dispatch", [&] {
@@ -613,7 +633,7 @@ VLLM_DISPATCH_FLOATING_TYPES(
 
 This is the first level of the dispatch chain. `VLLM_DISPATCH_FLOATING_TYPES` checks `input.scalar_type()` at runtime and resolves `scalar_t` to either `c10::BFloat16` or `c10::Half` (FP16). It then calls `silu_and_mul_per_block_quant_dispatch<scalar_t>(...)` which is **Block 8**, where the remaining three template parameters get dispatched.
 
-##### The Full Dispatch Chain
+##### **The Full Dispatch Chain**
 
 Putting it all together, the call flow from Python to GPU is:
 ```
@@ -635,11 +655,13 @@ silu_and_mul_per_block_quant_kernel()   ← Blocks 1-7 (the CUDA kernel)
 
 Each level strips away one layer of runtime ambiguity and converts it to a compile-time constant, until the kernel that actually runs on the GPU has zero runtime type checks or branches on configuration parameters.
 
-#### Summary / Conclusion
+---
+
+#### **Summary / Conclusion**
 
 This kernel solves a specific problem in the transformer FFN inference pipeline: after the fused gate-up projection produces a `[num_tokens, hidden_size * 2]` tensor, you need to apply `SiLU(gate) * up` and then quantize the result to FP8/INT8 with per-block scales — all before feeding into the next GEMM. Doing these as three separate kernels would mean three round-trips to HBM. This fused kernel does it in one.
 
-##### The Logical Pipeline Within Each Thread Block
+##### **The Logical Pipeline Within Each Thread Block**
 ```
 Global Memory (HBM)
     │
@@ -677,13 +699,13 @@ All Threads
 Global Memory (HBM)
 ```
 
-##### Memory Traffic Per Group (group_size=128, BF16 input, FP8 output)
+##### **Memory Traffic Per Group (group_size=128, BF16 input, FP8 output)**
 
 - **Read:** 128 gate elements × 2 bytes + 128 up elements × 2 bytes = **512 bytes**
 - **Write:** 128 quantized elements × 1 byte + 1 scale × 4 bytes = **132 bytes**
 - **Total:** 644 bytes per group, compared to ~1.5KB+ if you had three separate kernels (each reading and writing the full intermediate tensor)
 
-##### The Key Design Decisions and Why They Work
+##### **The Key Design Decisions and Why They Work**
 
 1. **One thread = one element.** No loops, no vectorization. Keeps the kernel simple and the occupancy straightforward. For group_size 64 or 128, every thread in the block is doing useful work. The simplicity also means the compiler has an easy time optimizing register allocation.
 
@@ -697,7 +719,7 @@ Global Memory (HBM)
 
 6. **Scale layout flexibility.** The transposed scale write (controlled by `is_scale_transposed`) means downstream GEMMs don't need a separate transpose kernel. The layout the consumer needs is written directly, for free, since it's just a pointer arithmetic change.
 
-##### Where This Kernel Sits in the Model Forward Pass
+##### **Where This Kernel Sits in the Model Forward Pass**
 ```
 Input x: [num_tokens, hidden_size]
     │
@@ -722,3 +744,7 @@ Down Projection (FP8 GEMM, uses scales for dequant)
     ▼
 Output: [num_tokens, hidden_size]
 ```
+
+---
+
+As mentioned at the start, the kernel is just 50% of the work. The other 50% is making it actually work within vLLM's `torch.compile` pipeline — pattern matching the unfused ops in the FX graph, handling all the dispatch variants, and wiring everything up so the fused kernel fires at the right place during inference. That second half is covered in the next post: [SiLU+Mul+FP8 Block Quant Pattern Matching Pipeline - vLLM Notes]({{ site.baseurl }}{% post_url 2026-03-25-silu-mul-fp8-block-quant-compile-vLLM %}).

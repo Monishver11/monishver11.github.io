@@ -22,7 +22,9 @@ These are my personal notes on the pattern matching pipeline that integrates the
 - **A thought on kernel work:** In production inference, the kernel itself is about 50% of the effort. The other 50% is making the kernel actually work with the existing system — pattern matching it into the compilation pipeline, handling all the dispatch variants, and making it performant end-to-end. This post covers that second half.
 - This is a **WIP** — I'll add small notes where I feel more context is needed. These will be marked as **NOTES;**
 
-#### Block 1: `ActivationQuantPattern` Base Class
+---
+
+#### **Block 1: `ActivationQuantPattern` Base Class**
 ```python
 class ActivationQuantPattern(ABC):
     """
@@ -50,19 +52,17 @@ class ActivationQuantPattern(ABC):
         self.silu_and_mul_matcher = MatcherSiluAndMul()
 ```
 
-##### What & Why
-
 This is the abstract base class that all activation+quantization fusion patterns inherit from. Its job is to store the configuration that every fusion pattern needs: which quantization scheme we're targeting, what the unfused and fused ops are, and a matcher for the SiLU+mul part.
 
-##### `ABC` (Abstract Base Class)
+##### **`ABC` (Abstract Base Class)**
 
 Python's `ABC` from the `abc` module. It means you can't instantiate `ActivationQuantPattern` directly — you must subclass it and implement the abstract methods (in this case, `register`). This enforces a contract: every fusion pattern must define how to register itself with the pattern matcher.
 
-##### `QuantKey`
+##### **`QuantKey`**
 
 This is vLLM's identifier for a quantization scheme — it encodes the dtype, scale type (static vs dynamic), and group shape (per-tensor, per-token, per-group with a specific size). For our kernel, `kFp8Dynamic128Sym` is a `QuantKey` that says: FP8 dtype, dynamic scales, group shape `(1, 128)`, symmetric. The base class stores this and extracts `quant_dtype` from it.
 
-##### The Two Lookups — `QUANT_OPS` and `FUSED_OPS`
+##### **The Two Lookups — `QUANT_OPS` and `FUSED_OPS`**
 
 These are dictionaries mapping `QuantKey` → `OpOverload` (a torch custom op reference). They serve different purposes:
 
@@ -72,11 +72,11 @@ These are dictionaries mapping `QuantKey` → `OpOverload` (a torch custom op re
 
 The two `assert` checks ensure that both the unfused and fused ops exist for this quant scheme before we try to register anything. If someone adds a new quantization scheme but forgets to implement the fused kernel, this fails loudly at initialization time.
 
-##### `self.silu_and_mul_matcher = MatcherSiluAndMul()`
+##### **`self.silu_and_mul_matcher = MatcherSiluAndMul()`**
 
 This creates a matcher object that knows how to match the SiLU+mul pattern in the FX graph. Every activation+quant fusion has a SiLU+mul as the first half of the pattern (the activation part), so the base class creates it once. We'll cover what `MatcherSiluAndMul` does internally when we get to the matcher utils.
 
-##### The Abstract Method — `register`
+##### **The Abstract Method — `register`**
 ```python
 @abstractmethod
 def register(self, pm_pass: PatternMatcherPass) -> None:
@@ -85,7 +85,7 @@ def register(self, pm_pass: PatternMatcherPass) -> None:
 
 Each subclass must implement `register`, which defines the `pattern` function (what to look for in the FX graph) and the `replacement` function (what to replace it with), then calls `register_replacement` to hook them into PyTorch's pattern matcher. The specifics differ per quantization scheme — static quant has different inputs/outputs than dynamic block quant — so this is left abstract.
 
-##### `register_replacement` — How PyTorch Pattern Matching Works
+##### **`register_replacement` — How PyTorch Pattern Matching Works**
 
 `register_replacement` is a PyTorch Inductor API (`torch._inductor.pattern_matcher.register_replacement`). It takes four key arguments:
 
@@ -99,11 +99,11 @@ Each subclass must implement `register`, which defines the `pattern` function (w
 
 When `register_replacement` is called, PyTorch traces both functions, converts them to FX subgraphs, and stores them as a pattern-replacement pair in the `PatternMatcherPass`. Later, when the pass runs on the actual model's FX graph, it searches for subgraphs that structurally match the `pattern` subgraph and swaps them with the `replacement` subgraph. This is essentially a "find and replace" on the computation graph — but at the graph IR level, not source code level.
 
-##### FX Graph — Forward Reference
+##### **FX Graph — Forward Reference**
 
 > **Note:** We'll discuss what an FX graph is, why `torch.compile` produces one, and why we need to modify it in detail when we reach `SiluMulBlockQuantPattern.register()`. That's where we'll trace through a concrete example of what the graph looks like before and after fusion.
 
-##### Helper Method — `empty_quant`
+##### **Helper Method — `empty_quant`**
 ```python
 def empty_quant(self, *args, **kwargs):
     kwargs = {"dtype": self.quant_dtype, "device": "cuda", **kwargs}
@@ -112,7 +112,9 @@ def empty_quant(self, *args, **kwargs):
 
 A convenience for creating dummy tensors with the right quantized dtype (FP8 or INT8) on CUDA. These dummy tensors are used when constructing example inputs for pattern registration — PyTorch's pattern matcher needs concrete example tensors to trace the pattern and replacement functions. The tensors' values don't matter; only their shapes and dtypes matter.
 
-#### Block 2: `MatcherSiluAndMul` — SiLU+Mul Pattern Matcher
+---
+
+#### **Block 2: `MatcherSiluAndMul` — SiLU+Mul Pattern Matcher**
 ```python
 class MatcherSiluAndMul(MatcherCustomOp):
     def __init__(self, enabled: bool | None = None) -> None:
@@ -141,15 +143,13 @@ class MatcherSiluAndMul(MatcherCustomOp):
         return SiluAndMul.forward_native(x)
 ```
 
-##### What & Why
-
 This matcher represents the SiLU+mul activation op in the FX graph. It's a "matcher" because its primary role is to produce the FX subgraph fragment that the pattern matcher should look for. When the base class `ActivationQuantPattern` calls `self.silu_and_mul_matcher(input)` inside a `pattern` function, it's this class's `forward_custom` (or `forward_native`) that gets traced.
 
-##### `MatcherCustomOp` Base Class
+##### **`MatcherCustomOp` Base Class**
 
 `MatcherSiluAndMul` inherits from `MatcherCustomOp`, which is vLLM's base class for matchers. `MatcherCustomOp` handles the dispatch between `forward_custom` and `forward_native` based on the `enabled` flag. When `enabled=True`, calling the matcher as `self.silu_and_mul_matcher(input)` invokes `forward_custom` — which uses the custom C++ op. When `enabled=False`, it falls back to `forward_native` — a pure PyTorch implementation. The pattern matcher traces whichever path is active to build the subgraph template.
 
-##### `enabled` Flag
+##### **`enabled` Flag**
 ```python
 if enabled is None:
     enabled = SiluAndMul.enabled()
@@ -157,7 +157,7 @@ if enabled is None:
 
 `SiluAndMul.enabled()` checks whether vLLM's custom SiLU+mul op is available and should be used in the current environment. If the custom op isn't compiled (e.g., CPU-only build), this returns `False` and the matcher falls back to the native path. In normal GPU inference, this is `True`.
 
-##### `inputs()`
+##### **`inputs()`**
 ```python
 def inputs(self) -> list[torch.Tensor]:
     input = self.empty(5, 4)
@@ -166,7 +166,7 @@ def inputs(self) -> list[torch.Tensor]:
 
 Returns dummy example tensors for tracing. `self.empty(5, 4)` creates a `torch.empty(5, 4)` tensor with the default dtype (BF16) on CUDA. The shape `(5, 4)` is arbitrary — it just needs to be valid for the op (i.e., last dim must be even since SiLU+mul splits it in half). These are used as `example_inputs` when registering patterns. The actual model tensors will have different shapes, but PyTorch's pattern matcher matches on graph structure, not tensor shapes.
 
-##### `forward_custom` — The Key Method
+##### **`forward_custom` — The Key Method**
 ```python
 def forward_custom(self, x: torch.Tensor) -> torch.Tensor:
     d = x.shape[-1] // 2
@@ -182,7 +182,7 @@ This is what gets traced when building the pattern subgraph. Breaking it down:
 2. `out = torch.empty(...)` — allocates the output tensor. This is required by `auto_functionalized`.
 3. `auto_functionalized(SILU_MUL_OP, result=out, input=x)` — this is the critical call.
 
-##### `auto_functionalized` — What It Is and Why It's Needed
+##### **`auto_functionalized` — What It Is and Why It's Needed**
 
 `torch.compile` operates on a *functional* graph — every operation takes inputs and returns outputs, with no in-place mutation. But vLLM's custom ops are *mutating* — they write results into pre-allocated output tensors (like `result=out`). These two worlds are incompatible.
 
@@ -195,7 +195,7 @@ So `result[1]` gives us the output of the SiLU+mul operation, but in a way that 
 
 **`SILU_MUL_OP`** is `torch.ops._C.silu_and_mul.default` — vLLM's unfused SiLU+mul custom op. This is what appears in the FX graph when the model runs SiLU+mul without fusion.
 
-##### `forward_native`
+##### **`forward_native`**
 ```python
 def forward_native(self, x: torch.Tensor) -> torch.Tensor:
     return SiluAndMul.forward_native(x)
@@ -203,7 +203,9 @@ def forward_native(self, x: torch.Tensor) -> torch.Tensor:
 
 Fallback path using pure PyTorch ops (no custom C++ kernel). This would produce a different FX subgraph — one using standard `torch.sigmoid`, `torch.mul`, etc. The pattern matcher would then look for this native pattern instead.
 
-#### Block 3: `MatcherQuantFP8` — FP8 Quantization Pattern Matcher
+---
+
+#### **Block 3: `MatcherQuantFP8` — FP8 Quantization Pattern Matcher**
 ```python
 class MatcherQuantFP8(MatcherCustomOp):
     def __init__(
@@ -248,11 +250,9 @@ class MatcherQuantFP8(MatcherCustomOp):
         )
 ```
 
-##### What & Why
-
 This matcher represents the FP8 quantization op in the FX graph — the second half of the pattern we're trying to fuse. While `MatcherSiluAndMul` handles "find the SiLU+mul node," this handles "find the quantization node that consumes SiLU+mul's output."
 
-##### Constructor — Configuration
+##### **Constructor — Configuration**
 
 The constructor takes several parameters that control what specific quantization pattern to match:
 
@@ -269,7 +269,7 @@ self.QUANT_OP = QUANT_OPS[quant_key]
 
 This stores the **unfused** quantization op — the standalone block quantization kernel that appears in the FX graph before fusion. The pattern matcher needs to find this exact op node in the graph.
 
-##### `self.quant_fp8 = QuantFP8(...)` — The Native Fallback Module
+##### **`self.quant_fp8 = QuantFP8(...)` — The Native Fallback Module**
 ```python
 self.quant_fp8 = QuantFP8(
     quant_key.scale.static,
@@ -334,7 +334,7 @@ This `self.quant_fp8` instance is only used by `forward_native` — the fallback
             ...
 ```
 
-##### The Per-Group Path (Our Focus)
+##### **The Per-Group Path (Our Focus)**
 
 This is the path taken when `quant_key.scale.group_shape.is_per_group()` returns `True` — which it does for `kFp8Dynamic128Sym` (group shape `(1, 128)`) and `kFp8Dynamic64Sym` (group shape `(1, 64)`).
 
@@ -353,7 +353,7 @@ if not self.is_tma_aligned:
 
 For non-TMA-aligned cases (which is our standard path), the scale tensor is created here via `make_scale`.
 
-##### `make_scale` and the Transposed View in the FX Graph
+##### **`make_scale` and the Transposed View in the FX Graph**
 ```python
 def make_scale(self, input: torch.Tensor, transposed: bool = False) -> torch.Tensor:
     normalized_group_shape = _normalize_quant_group_shape(
@@ -392,7 +392,7 @@ Transposed FX graph:
 
 The pattern matcher sees these as structurally different subgraphs. This is why we need separate pattern registrations for `is_scale_transposed=True` and `is_scale_transposed=False` — the FX graphs genuinely look different, and a single pattern can't match both.
 
-##### Step 3 — The `auto_functionalized` Call
+**Step 3 — The `auto_functionalized` Call**
 ```python
 _, result, scale = auto_functionalized(
     self.QUANT_OP,
@@ -418,7 +418,7 @@ This wraps the unfused block quantization op. The arguments worth noting:
 - `eps=1e-10` — minimum epsilon for numerical safety (analogous to `min_scaling_factor` in the CUDA kernel).
 - `fp8_min`, `fp8_max` — the representable range of the FP8 type.
 
-##### The `dummy_` Argument Trick — Why It Exists
+##### **The `dummy_` Argument Trick — Why It Exists**
 ```python
 dummy_is_scale_transposed=self.has_col_major_scales,
 dummy_is_tma_aligned=self.is_tma_aligned,
@@ -445,7 +445,7 @@ The same trick applies to `dummy_is_tma_aligned` — it creates a third axis of 
 
 The return is `_, result, scale` — unpacking the `auto_functionalized` tuple. `_` is the first (unused) return, `result` is the quantized tensor, `scale` is the computed per-group scales.
 
-##### Other Paths (Brief)
+##### **Other Paths (Brief)**
 
 **Static per-tensor (`self.quant_key.scale.static`):**
 ```python
@@ -466,7 +466,7 @@ return result, scale
 ```
 Similar to per-group but with per-token scale shape and no group_size parameter. Scale shape is `(num_tokens, 1)`. Used for dynamic per-token quantization schemes.
 
-##### `inputs()` Method
+##### **`inputs()` Method**
 ```python
 def inputs(self) -> list[torch.Tensor]:
     input = self.empty(5, 16)
@@ -477,7 +477,9 @@ def inputs(self) -> list[torch.Tensor]:
 
 Returns dummy inputs for tracing. For static quant, the scale is an input (pre-calibrated). For dynamic quant (our case), only the input tensor is needed — the scale is computed inside `forward_custom`.
 
-#### Block 4: `SiluMulBlockQuantPattern` Constructor
+---
+
+#### **Block 4: `SiluMulBlockQuantPattern` Constructor**
 ```python
 class SiluMulBlockQuantPattern(ActivationQuantPattern):
     """
@@ -506,11 +508,9 @@ class SiluMulBlockQuantPattern(ActivationQuantPattern):
         self.is_tma_aligned = is_tma_aligned
 ```
 
-##### What & Why
-
 This is the concrete fusion pattern class for SiLU+mul followed by FP8 dynamic block quantization. It brings together the two matchers — `MatcherSiluAndMul` (created by the base class in **Block 1**) and `MatcherQuantFP8` (created here) — to define a complete "find this two-op sequence and replace with one fused op" pattern.
 
-##### `super().__init__(quant_key)`
+##### **`super().__init__(quant_key)`**
 
 Calls `ActivationQuantPattern.__init__` (**Block 1**), which does:
 - Stores `quant_key` and `quant_dtype`
@@ -518,7 +518,7 @@ Calls `ActivationQuantPattern.__init__` (**Block 1**), which does:
 - Looks up `self.FUSED_OP` (fused kernel) from `FUSED_OPS` — for `kFp8Dynamic128Sym`, this is `torch.ops._C.silu_and_mul_per_block_quant.default`, the CUDA kernel from our first set of notes
 - Creates `self.silu_and_mul_matcher = MatcherSiluAndMul()`
 
-##### `self.quant_matcher = MatcherQuantFP8(...)`
+##### **`self.quant_matcher = MatcherQuantFP8(...)`**
 
 Creates the quantization matcher configured for this specific pattern variant. The arguments map the pattern's configuration to the matcher:
 
@@ -526,7 +526,7 @@ Creates the quantization matcher configured for this specific pattern variant. T
 - `has_col_major_scales=is_scale_transposed` — tells the matcher whether to produce the transposed `.permute` node in the FX graph pattern, and whether to include `dummy_is_scale_transposed=True` in the `auto_functionalized` call (as we covered in **Block 3**)
 - `is_e8m0` and `is_tma_aligned` — passed through for the dummy arg differentiation
 
-##### Stored Configuration
+##### **Stored Configuration**
 ```python
 self.group_size = quant_key.scale.group_shape[1]
 self.is_scale_transposed = is_scale_transposed
@@ -537,7 +537,7 @@ self.is_tma_aligned = is_tma_aligned
 - `self.group_size` — extracted from the `QuantKey`'s group shape. For `kFp8Dynamic128Sym`, `group_shape` is `(1, 128)`, so `group_shape[1]` = `128`. This will be passed to the fused kernel at replacement time.
 - The remaining three booleans are stored for use in the `register` method's `replacement` function.
 
-##### What This Class Now Has After `__init__`
+##### **What This Class Now Has After `__init__`**
 
 At this point, one instance of `SiluMulBlockQuantPattern` holds everything needed to register a fusion:
 ```
@@ -558,18 +558,18 @@ From this class:
 
 Each unique combination of `(quant_key, is_scale_transposed, is_e8m0, is_tma_aligned)` produces a separate instance with different matchers that generate structurally different FX graph patterns. This is why the `ActivationQuantFusionPass` later creates multiple instances in a nested loop.
 
-#### Block 5: `SiluMulBlockQuantPattern.get_inputs`
+---
+
+#### **Block 5: `SiluMulBlockQuantPattern.get_inputs`**
 ```python
     def get_inputs(self) -> list[torch.Tensor]:
         scale = self.quant_matcher.empty_f32(1, 1)
         return self.silu_and_mul_matcher.inputs() + [scale]
 ```
 
-##### What & Why
-
 This method constructs the list of dummy example tensors needed for `register_replacement` to trace the `pattern` and `replacement` functions. As we discussed in **Block 1**, PyTorch's pattern matcher needs concrete tensors to trace through both functions and build FX subgraphs.
 
-##### Breaking Down the Inputs
+##### **Breaking Down the Inputs**
 
 Two sources contribute to the input list:
 
@@ -579,13 +579,13 @@ Two sources contribute to the input list:
 
 The final list is: `[input_bf16(5,4), scale_f32(1,1)]`.
 
-##### Why Is Scale an Explicit Input?
+##### **Why Is Scale an Explicit Input?**
 
 This might seem surprising — in the per-group dynamic quantization path, the scale is *computed* inside `MatcherQuantFP8.forward_custom` via `make_scale`, not passed in from outside. So why is it listed as an input here?
 
 The reason is how `register_replacement` works. The `pattern` and `replacement` functions must have the **same signature** — same number of positional arguments, same types. The pattern function needs a `scale` argument because it appears in the function signature (even though the per-group path internally creates its own scale via `make_scale`). The `replacement` function also needs it to maintain signature compatibility. The actual value of this dummy scale tensor doesn't matter — it's a structural placeholder that makes the tracing machinery happy.
 
-##### How These Flow Into `register`
+##### **How These Flow Into `register`**
 
 When `register` is called (next block), it does:
 ```python
@@ -595,7 +595,9 @@ register_replacement(pattern, replacement, inps, fwd_only, pm_pass)
 
 PyTorch then calls `pattern(*inps)` and `replacement(*inps)` to trace both functions. The traced FX subgraphs become the pattern template and replacement template stored in the `PatternMatcherPass`.
 
-#### Block 6: `SiluMulBlockQuantPattern.register` — The Pattern-Replacement Core
+---
+
+#### **Block 6: `SiluMulBlockQuantPattern.register` — The Pattern-Replacement Core**
 ```python
     def register(self, pm_pass: PatternMatcherPass) -> None:
         is_scale_transposed = self.is_scale_transposed
@@ -663,7 +665,7 @@ PyTorch then calls `pattern(*inps)` and `replacement(*inps)` to trace both funct
         register_replacement(pattern, replacement, inps, fwd_only, pm_pass)
 ```
 
-##### The FX Graph — What It Is and Why We Modify It
+##### **The FX Graph — What It Is and Why We Modify It**
 
 Before diving into the code, let's establish why this machinery exists.
 
@@ -706,14 +708,14 @@ One node instead of two. One kernel launch instead of two. The intermediate tens
 
 **Why do we need to?** Because `torch.compile` doesn't automatically know that SiLU+mul followed by block quant can be replaced by a single fused kernel. We have to teach it by registering the pattern-replacement pair.
 
-##### `is_scale_transposed = self.is_scale_transposed`
+##### **`is_scale_transposed = self.is_scale_transposed`**
 ```python
 is_scale_transposed = self.is_scale_transposed
 ```
 
 This captures the instance variable into a local variable before defining the `pattern` and `replacement` closures. This is a Python closure scoping detail — the nested functions close over local variables. Using the local rather than `self.is_scale_transposed` inside the closures avoids capturing `self` entirely, which could cause issues with serialization or garbage collection of the pattern matcher state.
 
-##### The `pattern` Function — What to Find
+##### **The `pattern` Function — What to Find**
 ```python
 def pattern(
     input: torch.Tensor,
@@ -780,7 +782,7 @@ The key arguments that make this pattern variant-specific: `group_size` (128 vs 
 
 **Important:** This `pattern` function doesn't replicate the quant matcher's `forward_custom` exactly — it directly calls `auto_functionalized` with `self.quant_matcher.QUANT_OP` rather than going through `self.quant_matcher(silu_out, scale)`. This is deliberate. The pattern function needs to precisely control what the traced FX graph looks like, matching exactly what the model's compiled graph will contain. Using the matcher's `forward_custom` would add extra nodes (like the `make_scale` call) that may or may not appear in the actual model graph depending on how the model was written.
 
-##### The `replacement` Function — What to Replace With
+##### **The `replacement` Function — What to Replace With**
 ```python
 def replacement(
     input: torch.Tensor,
@@ -873,7 +875,7 @@ return at[1], at[2]                         # (quantized output, scales)
 
 `at[1]` is the quantized output, `at[2]` is the scales — matching the `pattern` function's return signature `(result, scale)`.
 
-##### `register_replacement` — Tying It Together
+##### **`register_replacement` — Tying It Together**
 ```python
 inps = self.get_inputs()
 register_replacement(pattern, replacement, inps, fwd_only, pm_pass)
@@ -890,7 +892,7 @@ Later, when `pm_pass.apply(graph)` runs on the actual model's FX graph, it:
 2. For each match, substitutes the matched subgraph with the `replacement` subgraph.
 3. Updates all edges (data flow connections) so downstream nodes consume the replacement's outputs instead of the pattern's outputs.
 
-##### The Complete Transformation Visualized
+##### **The Complete Transformation Visualized**
 
 Before fusion (pattern):
 ```
@@ -929,7 +931,9 @@ result    scale
 
 The intermediate BF16 tensor is gone. One kernel launch instead of two. This is the graph-level equivalent of the HBM bandwidth saving we analyzed in the CUDA kernel summary.
 
-#### Block 7: `ActivationQuantFusionPass` — The Top-Level Pass
+---
+
+#### **Block 7: `ActivationQuantFusionPass` — The Top-Level Pass**
 ```python
 class ActivationQuantFusionPass(VllmPatternMatcherPass):
     """
@@ -985,21 +989,19 @@ class ActivationQuantFusionPass(VllmPatternMatcherPass):
         )
 ```
 
-##### What & Why
-
 This is the top-level pass class — the entry point that `torch.compile`'s Inductor pipeline calls to perform all activation+quantization fusions. It creates every pattern variant during `__init__`, registers them all, and then applies them to the model's FX graph when `__call__` is invoked.
 
-##### `VllmPatternMatcherPass` Base Class
+##### **`VllmPatternMatcherPass` Base Class**
 
 `ActivationQuantFusionPass` inherits from `VllmPatternMatcherPass`, which is vLLM's base class for Inductor passes. It provides integration with `torch.compile`'s pass infrastructure — things like timing, logging, and pass ordering. The important contract is that the pass is callable: `torch.compile` invokes `pass_instance(graph)` to run it.
 
-##### `@enable_fake_mode`
+##### **`@enable_fake_mode`**
 
 This decorator is critical. It wraps the `__init__` method in PyTorch's "fake mode" — a tracing context where `torch.empty(...)`, `torch.zeros(...)`, etc. create **fake tensors** instead of real GPU tensors. Fake tensors have shapes, dtypes, and device metadata but don't allocate actual GPU memory and don't hold real data.
 
 Why is this needed? During `__init__`, every pattern registration calls `pattern(*inps)` and `replacement(*inps)`, which trace through `torch.empty(...)`, `auto_functionalized(...)`, etc. If these created real CUDA tensors, you'd be allocating GPU memory just to register patterns — wasteful and potentially crashing if the GPU is low on memory. Fake mode makes all of this purely symbolic: shapes and dtypes are tracked for graph tracing, but no memory is allocated.
 
-##### `PatternMatcherPass` — The Pattern Container
+##### **`PatternMatcherPass` — The Pattern Container**
 ```python
 self.patterns: PatternMatcherPass = PatternMatcherPass(
     pass_name="activation_quant_fusion_pass"
@@ -1008,7 +1010,7 @@ self.patterns: PatternMatcherPass = PatternMatcherPass(
 
 This is PyTorch Inductor's container for pattern-replacement pairs. Every `register_replacement` call (from **Block 6**) adds a pair to this container. When `self.patterns.apply(graph)` is called later, it iterates through all registered patterns and applies matching replacements to the graph. The `pass_name` is used for logging and debugging.
 
-##### Pattern Registration — The Three Groups
+##### **Pattern Registration — The Three Groups**
 
 **1. Static FP8 quantization:**
 ```python
@@ -1073,7 +1075,7 @@ This is what `torch.compile` invokes during the optimization stage. It receives 
 - `self.matched_count` — stored for inspection/testing. For a model like Qwen 2.5 with multiple FFN layers, you'd expect `matched_count` to equal the number of FFN layers (each has one SiLU+mul → block quant sequence).
 - `@VllmInductorPass.time_and_log` — decorator that logs how long the pass took. Useful for profiling compilation time.
 
-##### `uuid` — Pass Identity
+##### **`uuid` — Pass Identity**
 ```python
 def uuid(self) -> str:
     return VllmInductorPass.hash_source(
@@ -1087,7 +1089,7 @@ def uuid(self) -> str:
 
 Returns a unique hash based on the source code of the pass and all pattern classes. `torch.compile` uses this to detect when a pass has changed and needs to invalidate its compilation cache. If you modify any of the listed classes, the UUID changes, and `torch.compile` knows it needs to recompile rather than using a cached compiled graph.
 
-##### The Complete Lifecycle
+##### **The Complete Lifecycle**
 
 Putting the entire flow together from initialization to execution:
 ```
@@ -1121,12 +1123,13 @@ Putting the entire flow together from initialization to execution:
    ▼
 6. Model inference runs with fused kernels
 ```
+---
 
-#### Summary / Conclusion
+#### **Summary / Conclusion**
 
 This pattern matching pipeline solves a specific problem in vLLM's `torch.compile` integration: the model's FX graph contains two separate ops — SiLU+mul and block quantization — that we know can be replaced by a single fused CUDA kernel. But `torch.compile` doesn't know this automatically. We have to explicitly teach it what to find and what to replace it with.
 
-##### The Architecture — Three Layers
+##### **The Architecture — Three Layers**
 
 The codebase is structured in three layers, each with a clear responsibility:
 ```
@@ -1149,7 +1152,7 @@ Layer 3: Fusion Pass (ActivationQuantFusionPass)
       Applies patterns to the model's FX graph at compile time
 ```
 
-##### The Key Concepts That Make This Work
+##### **The Key Concepts That Make This Work**
 
 1. **FX Graph as the manipulation target.** `torch.compile` traces the model into a functional DAG of operations. This IR is where we perform graph surgery — replacing subgraphs with semantically equivalent but more efficient alternatives. The FX graph sits at the right abstraction level: high enough to see op-level patterns (SiLU+mul followed by quant), low enough that the replacement maps directly to a CUDA kernel launch.
 
@@ -1161,7 +1164,7 @@ Layer 3: Fusion Pass (ActivationQuantFusionPass)
 
 5. **Fake mode for zero-cost registration.** Pattern registration requires tracing, which requires tensor operations. `@enable_fake_mode` ensures these operations create symbolic tensors with no GPU memory allocation — making it safe to register 18+ patterns during initialization without touching the GPU.
 
-##### The Variant Explosion — Why 16 Patterns
+##### **The Variant Explosion — Why 16 Patterns**
 
 For `SiluMulBlockQuantPattern` alone, we register 16 variants:
 ```
@@ -1185,7 +1188,7 @@ Each leaf is a unique pattern-replacement pair. This combinatorial explosion is 
 - **Only one matches** — at runtime (`__call__`), the model's actual FX graph will match exactly one of the 16 patterns per FFN layer. The pattern matcher checks all 16 but only one fires.
 - **The alternative is worse** — without exact matching, you'd need runtime logic inside the replacement to figure out which variant to use, which complicates the graph transformation and risks correctness bugs.
 
-##### Connection to the CUDA Kernel
+##### **Connection to the CUDA Kernel**
 
 The pattern matching pipeline and the CUDA kernel solve the same problem at different levels:
 ```
@@ -1202,7 +1205,7 @@ The kernel IMPLEMENTS the fusion.
 Without it, there's no fused op to replace the pattern with.
 ```
 
-##### Where This Fits in vLLM's Compilation Pipeline
+##### **Where This Fits in vLLM's Compilation Pipeline**
 ```
 Model definition (Python)
     │
@@ -1226,3 +1229,12 @@ Runtime inference
     │  Each FFN layer executes one fused kernel instead of two
     │  ~2x reduction in HBM traffic for the activation+quant stage
 ```
+
+---
+
+This concludes the full picture — the fused CUDA kernel ([kernel notes]({{ site.baseurl }}{% post_url 2026-03-24-silu-mul-fp8-block-quant-kernel-vLLM %})) and how it integrates into vLLM's `torch.compile` pipeline. The [PR](https://github.com/vllm-project/vllm/pull/32996) is in final review — I'll update this post once it's merged, along with any related changes I make along the way.
+
+There are still a few more important pieces beyond the kernel and pattern matching: extensive tests, benchmarks, and end-to-end evals, plus getting CI checks to pass. For those, you can take help of AI-assisted coding tools — they're well-suited for generating test cases and boilerplate. But make sure to be thorough and reason through the results yourself. A passing test doesn't mean correctness if the test isn't checking the right thing, and a good benchmark number doesn't mean much if the baseline is wrong.
+
+I did fall into this trap, but was able to reason my way out. So, be careful. Also, this work took significant time, as the code repo is extensive and new to me. I'm hoping with this base, I'll be able to move faster with the next kernels — let's see. Happy coding!
+

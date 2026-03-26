@@ -974,3 +974,10 @@ Things to do(focus on this, and only this):
 Good evening Monish. Got home, had good rest. Now, prep on vLLM work for tmr's Intro call. 
 
 going to sleep, good night monish.
+
+03/25/2026 (T - 48)
+
+Good morning Monish. All the best for the intro call with Adaptive ML and DeepInfra. Both went well.
+
+
+

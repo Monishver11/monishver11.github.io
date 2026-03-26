@@ -813,6 +813,27 @@ Going to attend NVIDIA GTC. Best wishes.
 - cp-31 - done.
 - Inf eng, a few pages, one section done.
 
+Tmr:
+- Check on Adaptive ML and DeepInfra before call; done.
+- GTC reachout, check careers page, mail and linkedin msgs; done.
+- Inf eng. a few pages; done.
+- cp-31; done.
+- GEMM kernel 4;
+- vLLM kernel review ping; done
+
+03/25/2026 (T - 48)
+
+[Adaptive ML](https://www.adaptive-ml.com/engine#adapt)
+- Focus on next round
+  - LLM Inference Coding
+  - CUDA kernel Coding
+  
+[Deep Infra](https://deepinfra.com/)
+- Focus of next round
+  - Coding Interview I (Leetcode style)
+  - Coding Interview II (Leetcode style)
+  - Coding Interviw with Co-founder + Followed by behavioural questions
 
 
-
+Reflection AI (To apply)
+- Member of Technical Staff - GPU Infrastructure (https://jobs.ashbyhq.com/reflectionai/6254697d-446f-417a-a5ae-3b546590ee6b)
