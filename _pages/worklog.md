@@ -845,7 +845,8 @@ gemm kernel 3,4,5. done.
 03/28/2026 (T - 45)
 
 cp-31; done.
-gemm kernel notes
-inf eng.
-llmr a3 start
+gemm kernel notes; done.
+inf eng.; done.
+llmr a3 start. will start on monday, will finish the gemm kernel notes today, and start with next gemm kernel optimizations/CUTLASS now.
 
+03/29/2026 (T - 44)

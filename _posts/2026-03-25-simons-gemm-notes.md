@@ -10,7 +10,7 @@ giscus_comments: true
 related_posts: false
 ---
 
-#### **Intro**
+#### **Introduction**
 
 These are my notes from Simon Boehm's excellent [CUDA GEMM kernel optimization blog](https://siboehm.com/articles/22/CUDA-MMM). First and foremost, Simon really did a great job explaining the kernels and helping me internalize the intuition — hats off for the time and effort he put into it.
 
@@ -237,9 +237,9 @@ We're still far from the 30 TFLOPs peak though. The next step: use the GPU's fas
 
 ---
 
-#### *Kernel 3: Shared Memory Cache-Blocking*
+#### **Kernel 3: Shared Memory Cache-Blocking**
 
-##### *SMEM vs GMEM*
+##### **SMEM vs GMEM**
 
 Global memory (GMEM) is **off-chip** — far from the execution units, with high latency (200–500 cycles). Shared memory (SMEM) is **on-chip**, physically located on the SM, much closer to the cores. In terms of latency: registers < SMEM < L1/L2 cache < GMEM.
 
@@ -252,7 +252,7 @@ Key properties of SMEM:
 
 > **Errata in Simon's blog (Note 23):** The note says "it's possible to use more than 48KB of SMEM **per thread**." It should be **per block**.
 
-##### *The Idea: Tiling*
+##### **The Idea: Tiling**
 
 Instead of having each thread read an entire row of A and column of B from GMEM, we load **2D tiles (chunks)** of A and B into SMEM, do the work from there, then slide the tiles forward.
 
@@ -311,11 +311,11 @@ __global__ void sgemm_smem(int M, int N, int K, float alpha, const float *A,
 }
 ```
 
-##### *Results*
+##### **Results**
 
 This kernel achieves ~2980 GFLOPs — roughly a 50% improvement over Kernel 2. The improvement is modest partly because Kernel 2 already had decent L1 cache hit rates. We're still far from the ~30 TFLOPs the GPU can provide.
 
-##### *Roofline Analysis*
+##### **Roofline Analysis**
 
 The **roofline model** is a visual tool that shows the two fundamental ceilings on kernel performance:
 
@@ -329,7 +329,7 @@ The **x-axis** is arithmetic intensity (FLOPs/byte), and the **y-axis** is achie
 
 For Kernel 3: it sits on the diagonal (memory-bound region). It actually achieves *higher bandwidth* than cuBLAS, but because it does much *less work per byte loaded* (lower arithmetic intensity), overall FLOPs/s is worse. The path forward is clear: increase arithmetic intensity so we move right on the roofline, toward the compute ceiling.
 
-##### *SMEM Usage and Occupancy*
+##### **SMEM Usage and Occupancy**
 
 At BLOCKSIZE = 32, the kernel uses `2 × 32 × 32 × 4B = 8 KB` of SMEM per block. (Obtainable via `--ptxas-options=-v`: `Used 37 registers, 8192 bytes smem, 400 bytes cmem[0]`.)
 
@@ -339,7 +339,7 @@ Why does occupancy matter? Because of **zero-cost warp switching**. On a GPU, al
 
 Three resources limit how many blocks can be resident on an SM: **register count**, **warp/thread count**, and **SMEM capacity**.
 
-##### *Occupancy Calculation for Kernel 3*
+##### **Occupancy Calculation for Kernel 3**
 
 Hardware limits for the A6000 (from `cudaGetDeviceProperties`):
 
@@ -371,7 +371,7 @@ The bottleneck is threads and registers — only **1 block** fits per SM, giving
 
 66% occupancy isn't terrible, so occupancy alone doesn't explain the poor performance.
 
-##### *The Real Bottleneck: Instruction Mix*
+##### **The Real Bottleneck: Instruction Mix**
 
 Profiling the kernel reveals that the majority of executed instructions are **LDS** (shared memory loads), not FMA (the actual compute). The inner loop in PTX looks like:
 ```
@@ -390,11 +390,11 @@ The fix: have each thread compute **more than one output element**, so we get mo
 
 ---
 
-#### *Kernel 4: 1D Blocktiling — Multiple Results per Thread*
+#### **Kernel 4: 1D Blocktiling — Multiple Results per Thread**
 
 To be honest, this one took me some time to internalize, so I'll try to be as clear as possible.
 
-##### *The Idea*
+##### **The Idea**
 
 At a high level, it's simple: increase the work done by each thread by making it compute **multiple elements** of C, not just one. This reduces the ratio of memory instructions to compute instructions, which is exactly what we need. But the devil is in the details.
 
@@ -402,7 +402,7 @@ The kernel still uses the same outer loop as Kernel 3 — sliding tiles of A and
 
 The key change is in the **inner loops** — see Simon's illustration and follow along.
 
-##### *Walking Through the Inner Loop*
+##### **Walking Through the Inner Loop**
 
 Each thread now computes a **column of TM elements** in the output tile of C (not just one element). To accumulate these partial results, each thread allocates a small vector in **registers**:
 ```cuda
@@ -453,11 +453,11 @@ The key insight: `Btmp` is loaded **once** and reused across all TM rows — tha
 
 Each thread works on its own column of the output tile, and all threads execute in parallel. **This is the core logic.** If you understand this, Kernel 5 is a natural extension — instead of each thread computing a column (1D), it computes a 2D block of C, using an outer product trick. We'll get to that next.
 
-##### *A Point About the Outer Loop and Parallelism*
+##### **A Point About the Outer Loop and Parallelism**
 
 One thing worth making explicit: a thread block "owns" a fixed tile of C (determined by `blockIdx`). Its outer loop slides tiles of A horizontally and tiles of B vertically, accumulating partial results until the entire K dimension is traversed. Only then is the final result for that tile of C complete. Different thread blocks own different tiles of C and can execute this entire traversal **independently and in parallel** — there's no cross-block communication needed.
 
-##### *Results and Memory Access Analysis*
+##### **Results and Memory Access Analysis**
 
 This kernel achieves ~8600 GFLOPs — 2.2× faster than Kernel 3.
 
@@ -475,7 +475,7 @@ Let's compare the memory access patterns. K is the common dimension we tile over
 
 Both GMEM and SMEM accesses per result are reduced. As expected, the profiler shows significantly fewer cycles spent stalling on memory pressure (see Simon's warp stall comparison chart).
 
-##### *Sidenote: Compiler Optimizations*
+##### **Sidenote: Compiler Optimizations**
 
 Simon noted something interesting: if you swap the loop order (make `resIdx` the outer loop and `dotIdx` inner) and remove the explicit `Btmp` caching, performance doesn't change. The compiler is smart enough to unroll both loops (since loop counts are known at compile time) and eliminate redundant SMEM loads of `Bs` entries — arriving at the same instruction count.
 
@@ -483,7 +483,7 @@ Also, when PTX is lowered to SASS, the SMEM loads from `Bs` get **vectorized** i
 
 > **Simon's Note 39:** "This already hints at an optimization we'll perform later: transposing `As` such that we can also vectorize those loads." — we'll see this in Kernel 6.
 
-##### *Why We Need More: Arithmetic Intensity*
+##### **Why We Need More: Arithmetic Intensity**
 
 **Arithmetic intensity** = FLOPs executed per byte transferred between GMEM and SMEM (counting both loads and stores).
 
@@ -492,5 +492,164 @@ This kernel still suffers from the same stalling-for-memory problem as Kernel 3,
 Simon's visualization (Note 41) makes this clear: computing a **square** of results per thread is more efficient than a column, because a square lets you **share more inputs** across results. A TM×1 column reuses each `Btmp` across TM rows, but each `As` value is used only once. A TM×TN square reuses each `As` value across TN columns *and* each `Bs` value across TM rows — the outer product structure.
 
 The fundamental point: all our kernels perform the **same total FLOPs**. The only thing we're changing is how many GMEM/SMEM accesses we need. By computing more results per thread, each loaded value gets reused more, arithmetic intensity goes up, and we push the kernel from memory-bound toward **compute-bound** — which is where we want to be, since the GPU has far more compute throughput than memory bandwidth. We'll keep optimizing arithmetic intensity as long as we remain memory-bound.
+
+---
+
+#### **Kernel 5: 2D Blocktiling — Even More Results per Thread**
+
+As hinted at the end of Kernel 4, we now extend the idea: instead of each thread computing a **column** of results, each thread computes a **2D sub-tile** of 8×8 = 64 elements of C. This is the outer product approach.
+
+##### **Stage 1: GMEM → SMEM Loading**
+
+The first stage is the same idea as before — all threads cooperate to populate `As` and `Bs` in SMEM. But now each thread loads **multiple elements**, since the tiles are larger (BM=BN=128, BK=8) but we have fewer threads (256).
+
+Within one tile of `As` (size BM×BK = 128×8), each thread loads one element per loop iteration, but the `loadOffset` loop makes each thread **traverse multiple rows** of the tile. With `strideA = numThreads / BK = 256/8 = 32`, and `BM = 128`, each thread loads `128/32 = 4` elements of A per outer iteration. Same logic applies to B.
+
+This is a pattern of **chunked loading within a chunk** — the outer loop selects which GMEM tile to bring into SMEM, and within that tile, threads cooperatively load pieces across multiple iterations. This nested chunking becomes more layered as we go forward. I think of it like the movie Inception — a dream within a dream within a dream, and we do the actual compute in the innermost level.
+
+See Simon's image (Note 42) for the visual.
+
+##### **Stage 2: Two Separate Thread Mappings**
+
+This is critical to understand. Each thread has **two independent mappings**, serving different purposes:
+
+**Mapping 1 — for GMEM → SMEM loading (Step 5a in code):**
+```cuda
+const uint innerRowA = threadIdx.x / BK;   // row within BM×BK tile of A
+const uint innerColA = threadIdx.x % BK;   // col within BM×BK tile of A
+const uint innerRowB = threadIdx.x / BN;   // row within BK×BN tile of B
+const uint innerColB = threadIdx.x % BN;   // col within BK×BN tile of B
+const uint strideA = numThreads / BK;      // 256/8 = 32
+const uint strideB = numThreads / BN;      // 256/128 = 2
+```
+
+This determines **which GMEM elements** this thread loads into SMEM. All 256 threads cooperate to fill the entire `As` and `Bs` tiles — each thread handles a few elements via the `loadOffset` loop.
+
+**Mapping 2 — for SMEM → register computation (Step 5b) and writing results (Step 6):**
+```cuda
+const uint threadCol = threadIdx.x % (BN / TN);  // sub-tile column: 0..15
+const uint threadRow = threadIdx.x / (BN / TN);  // sub-tile row: 0..15
+```
+
+With BN/TN = 128/8 = 16, the 256 threads form a **16×16 grid of sub-tiles**. Each thread owns one TM×TN = 8×8 piece of the output. For example, thread at `(threadRow=3, threadCol=5)` owns rows 24–31 of `As` and columns 40–47 of `Bs`, and writes its 64 results to the corresponding 8×8 region of C.
+
+These mappings are **independent** — a thread might load elements at the top of `As` (Mapping 1) but compute using elements from the middle of `As` (Mapping 2).
+
+##### **Stage 3: The Inner Loops — Outer Product**
+
+Here's the full kernel with every step annotated:
+```cuda
+__global__ void sgemm_2d_blocktiling(int M, int N, int K, float alpha,
+                                      const float *A, const float *B,
+                                      float beta, float *C) {
+  // Step 0: Block-level position in C
+  const uint cRow = blockIdx.x;
+  const uint cCol = blockIdx.y;
+
+  // Step 1: Mapping 2 — which 8×8 sub-tile this thread computes
+  const uint threadCol = threadIdx.x % (BN / TN);  // 0..15
+  const uint threadRow = threadIdx.x / (BN / TN);  // 0..15
+
+  // Step 2: Mapping 1 — which elements this thread loads into SMEM
+  const uint innerRowA = threadIdx.x / BK;
+  const uint innerColA = threadIdx.x % BK;
+  const uint innerRowB = threadIdx.x / BN;
+  const uint innerColB = threadIdx.x % BN;
+  const uint strideA = numThreads / BK;  // 32
+  const uint strideB = numThreads / BN;  // 2
+
+  // Step 3: Allocate SMEM and registers
+  __shared__ float As[BM * BK];           // 128×8
+  __shared__ float Bs[BK * BN];           // 8×128
+  float threadResults[TM * TN] = {0.0};   // 64 partial results
+  float regM[TM] = {0.0};                 // register cache: one col of As sub-tile
+  float regN[TN] = {0.0};                 // register cache: one row of Bs sub-tile
+
+  // Step 4: Advance pointers to this block's starting position
+  A += cRow * BM * K;
+  B += cCol * BN;
+  C += cRow * BM * N + cCol * BN;
+
+  // Step 5: Outer loop — slide tiles along K
+  for (uint bkIdx = 0; bkIdx < K; bkIdx += BK) {
+
+    // Step 5a: GMEM → SMEM (cooperative loading, uses Mapping 1)
+    for (uint loadOffset = 0; loadOffset < BM; loadOffset += strideA) {
+      As[(innerRowA + loadOffset) * BK + innerColA] =
+          A[(innerRowA + loadOffset) * K + innerColA];
+    }
+    for (uint loadOffset = 0; loadOffset < BK; loadOffset += strideB) {
+      Bs[(innerRowB + loadOffset) * BN + innerColB] =
+          B[(innerRowB + loadOffset) * N + innerColB];
+    }
+    __syncthreads();
+
+    A += BK;
+    B += BK * N;
+
+    // Step 5b: SMEM → Registers → Compute (uses Mapping 2)
+    for (uint dotIdx = 0; dotIdx < BK; ++dotIdx) {
+      // Load one column of this thread's As sub-tile into regM
+      for (uint i = 0; i < TM; ++i) {
+        regM[i] = As[(threadRow * TM + i) * BK + dotIdx];
+      }
+      // Load one row of this thread's Bs sub-tile into regN
+      for (uint i = 0; i < TN; ++i) {
+        regN[i] = Bs[dotIdx * BN + threadCol * TN + i];
+      }
+      // Outer product: accumulate into threadResults
+      for (uint resIdxM = 0; resIdxM < TM; ++resIdxM) {
+        for (uint resIdxN = 0; resIdxN < TN; ++resIdxN) {
+          threadResults[resIdxM * TN + resIdxN] +=
+              regM[resIdxM] * regN[resIdxN];
+        }
+      }
+    }
+    __syncthreads();
+  }
+
+  // Step 6: Write results to C (uses Mapping 2)
+  for (uint resIdxM = 0; resIdxM < TM; ++resIdxM) {
+    for (uint resIdxN = 0; resIdxN < TN; ++resIdxN) {
+      C[(threadRow * TM + resIdxM) * N + threadCol * TN + resIdxN] =
+          alpha * threadResults[resIdxM * TN + resIdxN] +
+          beta * C[(threadRow * TM + resIdxM) * N + threadCol * TN + resIdxN];
+    }
+  }
+}
+```
+
+Let me walk through one thread's execution of Step 5b. Say `threadRow = 3, threadCol = 5` — this thread owns rows 24–31 of `As` and columns 40–47 of `Bs`.
+
+At `dotIdx = 0`:
+1. Load `As[row 24..31][col 0]` into `regM[0..7]` — one column of this thread's vertical strip.
+2. Load `Bs[row 0][col 40..47]` into `regN[0..7]` — one row of this thread's horizontal strip.
+3. Compute the **outer product**: `regM[i] × regN[j]` for all i, j → an 8×8 matrix of partial products. Accumulate into `threadResults`.
+
+At `dotIdx = 1`:
+1. Load `As[row 24..31][col 1]` into `regM`, `Bs[row 1][col 40..47]` into `regN`.
+2. Outer product → accumulate.
+
+Continue for all BK = 8 steps. After all outer loop iterations finish traversing K, `threadResults` holds the final 64 values for this thread's 8×8 sub-tile of C.
+
+I know this is getting complex. And to be honest, this isn't even close to the most optimized kernel — cuBLAS, CUTLASS, and CuTe push things much further with even more advanced tiling and scheduling strategies. Reading and understanding all this really makes me appreciate the work these engineers have put in. I really want to work alongside some of these people someday — wish me luck.
+
+##### **Results and Memory Access Analysis**
+
+Performance: **~16 TFLOPs** — another 2× improvement. Each thread now computes `TM × TN = 64` results.
+
+**GMEM accesses per thread:**
+- Each outer iteration (`K/BK = K/8` total), the thread loads `sizeSMEM / numThreads` elements per matrix.
+- `sizeSMEM` per matrix = BM×BK = 128×8 = 1024 floats. With 256 threads: `1024/256 = 4` loads per matrix.
+- Total: `K/8 × 2 × 4 = K` loads per thread → **K/64 per result**.
+
+**SMEM accesses per thread:**
+- Each `dotIdx` step (BK=8 per outer iteration): load TM=8 from `As` + TN=8 from `Bs` = 16 SMEM loads.
+- Per outer iteration: `8 × 16 = 128` SMEM loads.
+- Total: `K/8 × 128 = 16K` loads per thread → **K/4 per result**.
+
+##### **What's Next**
+
+Performance is reaching acceptable levels, but warp stalls from memory pipeline congestion are still too frequent. Kernel 6 addresses this with two measures: **transposing `As`** in SMEM to enable vectorized 128-bit SMEM loads (`LDS.128`), and **promising the compiler alignment** on GMEM accesses to enable wider GMEM transactions.
 
 ---
