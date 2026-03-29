@@ -26,7 +26,7 @@ That's it on the intro — let's get in.
 
 #### **Prerequisites**
 
-I'm assuming readers are comfortable with CUDA basics — I won't go deep into them, but will touch upon what's needed briefly. If you need a refresher, here are my notes for reference: [GPU Programming Intro](link-to-your-post).
+I'm assuming readers are comfortable with CUDA basics — I won't go deep into them, but will touch upon what's needed briefly. If you need a refresher, here are my notes for reference: [GPU Programming Intro]({{ site.baseurl }}{% post_url 2025-09-23-GPU-Intro %}).
 
 Also, since the visualizations Simon provides are excellent, I recommend having [his blog](https://siboehm.com/articles/22/CUDA-MMM) open in another tab while reading this.
 
@@ -140,9 +140,10 @@ Meanwhile, for B — `B[i * N + y]` — all 32 threads read the **same address**
 
 **The core problem:** consecutive threads in a warp (varying `threadIdx.x`) are mapped to different **rows**. In row-major layout, different rows are far apart in memory. So every warp issues 32 separate memory transactions instead of one coalesced 128B transaction. This is why the naive kernel achieves only 15 GB/s GMEM throughput vs. a peak of 768 GB/s.
 
+**A note on memory transactions:** Throughout these notes, B = bytes. The GPU GMEM subsystem operates in **32-byte sectors**. When a warp issues a memory instruction, the hardware serves it using the minimum number of 32B sectors needed. If all 32 threads access consecutive 4B floats (128B total, contiguous), it's served as a single 128B transaction (4 sectors). If addresses are scattered, each may require its own 32B sector access — up to 32 separate transactions in the worst case. More on this in the next kernel.
+
 > We'll track this **thread → element mapping** for every kernel going forward — it's the most critical thing to get right, as it directly determines memory access patterns and coalescing behavior.
 
-Assuming zero caching, each thread loads `2 × 4092 + 1` floats from GMEM. With 4092² threads total, that's ~548 GB of memory traffic — far above the 268 MB minimum.
 
 > **Errata in Simon's blog:** Simon writes two example threads as (0, 0) and (0, 1), and describes them as loading "the same column of B but different rows of A." But with his mapping (`x` from `threadIdx.x` = row, `y` from `threadIdx.y` = column), threads (0, 0) and (0, 1) share the same row of A and access different columns of B. For the description and diagram to be consistent, the second thread should be **(1, 0)**, not (0, 1). **[TODO: Confirm with Simon and update.]**
 
@@ -154,7 +155,7 @@ So how do we make this faster? By optimizing memory access patterns so that glob
 
 ##### **Warps and Thread Grouping**
 
-Before we dive in, let's formalize the concept of a **warp**. A warp is a hardware-level grouping of 32 threads within a block. All threads in a warp are issued the same instruction and executed by one of the **4 warp schedulers per SM**. This execution model is called **SIMT** (Single Instruction, Multiple Threads). It's similar to SIMD, but with a key difference: in SIMT, threads *can* diverge (take different branches), though divergence is expensive since the warp serializes the divergent paths. When all threads follow the same path, it's efficient — that's the happy case.
+Before we dive in, let's formalize the concept of a **warp**. A warp is a hardware-level grouping of 32 threads within a block. All threads in a warp are issued the same instruction and executed by one of the **4 warp schedulers per SM**. This execution model is called **SIMT** (Single Instruction, Multiple Threads). It's similar to SIMD, but with a key difference: in SIMT, threads *can* diverge (take different branches), though divergence is expensive since the warp serializes the divergent paths. When all threads follow the same path, it's efficient.
 
 Threads are grouped into warps based on a linearized thread ID:
 ```
@@ -204,14 +205,27 @@ Now trace the memory accesses:
 - **A:** `A[x * K + i]` — all threads have the same `x`, so they all read the **same address**. The hardware can **broadcast** this to all threads in one transaction.
 - **B:** `B[i * N + y]` — threads access `B[i*N + 0], B[i*N + 1], ..., B[i*N + 31]`. These are **32 consecutive** 4B floats = 128B → perfectly **coalesced** into a single transaction.
 
-The rest of the kernel stays identical:
+The kernel:
 ```cuda
-if (x < M && y < N) {
-  float tmp = 0.0;
-  for (int i = 0; i < K; ++i) {
-    tmp += A[x * K + i] * B[i * N + y];
+// blockDim is now 1D: 1024 threads (instead of 32x32)
+dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
+dim3 blockDim(32 * 32);
+sgemm_coalescing<<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+```
+```cuda
+__global__ void sgemm_coalescing(int M, int N, int K, float alpha, const float *A,
+                                  const float *B, float beta, float *C) {
+  // derive row and column from 1D threadIdx.x
+  const int x = blockIdx.x * BLOCKSIZE + (threadIdx.x / BLOCKSIZE);  // row
+  const int y = blockIdx.y * BLOCKSIZE + (threadIdx.x % BLOCKSIZE);  // column
+
+  if (x < M && y < N) {
+    float tmp = 0.0;
+    for (int i = 0; i < K; ++i) {
+      tmp += A[x * K + i] * B[i * N + y];
+    }
+    C[x * N + y] = alpha * tmp + beta * C[x * N + y];
   }
-  C[x * N + y] = alpha * tmp + beta * C[x * N + y];
 }
 ```
 
@@ -223,28 +237,260 @@ We're still far from the 30 TFLOPs peak though. The next step: use the GPU's fas
 
 ---
 
+#### *Kernel 3: Shared Memory Cache-Blocking*
 
-- note 8: In our example, threadIdx.x and threadIdx.y will vary from 0 to 31 based on the position of the thread in the grid. The last word should be block.
-- img adjacent to note 19 seems off. the threadidx.z should be all zeros for the first 4*16 elements.
-- in "Memory Access Pattern of the Naive Kernel", the ThreadId (0, 1), points to (1, 0) for the block, only then the image will be appropriate.
-- note 23 - Also, it’s possible to use more than 48KB of SMEM per thread by utilizing dynamic shared memory. should be per block??
-- smem loads are mentioned as 32b, 64b & 128b. is this b, bits/bytes. i think its bits, check.
-- in kernel 5, why do we chunk the smem cache at this step: // populate the SMEM caches. in kernel 4, we're not doing this? got it, so its to make each thread load multiple elements, rather than just 1, as in kernel 4.
-- in kernel 5, how we got GMEM loads calculation? specifically this part: (sizeSMEM/numThreads)
-- note 49 - "as each thread in the block issues a 4-wide load during each iteration of the GMEM to SMEM loading loop" ??
-- in warptiling, what is this: "There’s a register cache on recent GPUs, and tighter threadtiling gives us more register cache locality." ?? 
-- in warptiling: should this be threadId and not threadIdx.x - "warpId=threadIdx.x % warpSize" ?? and shouldn't it be "/", with "%" even adjacent threads will be different warps right? this is my understanding, pls correct if i'm wrong
-- note 55, link broken
-- what is this part of the code: "// execute warptile matmul. Later this will map well to // warp-wide matrix instructions, executed on tensor cores."
-- mental picture of warptiling is still not clear
-- warp tiling gives alignment, so a group of threads exucute same instruction in 4 warp schedulers and context switch faster, thus making them a bit faster. right intuition??
-- also, what relation to ILP in warptiling
-- thread swizzling ??
-- "It further means that all computation that happens inside the BK loop will be independent and can be parallelized (for example using ILP).", here is it because that addition is commutative and associative. and no need to have atomics, as order isn't important??
-- kernel 11, cutlass & smem data layout link broken
-- 
+##### *SMEM vs GMEM*
 
+Global memory (GMEM) is **off-chip** — far from the execution units, with high latency (200–500 cycles). Shared memory (SMEM) is **on-chip**, physically located on the SM, much closer to the cores. In terms of latency: registers < SMEM < L1/L2 cache < GMEM.
 
-- a clear picture of roofline analysis and what it conveys and how to interpret
-  
+Key properties of SMEM:
 
+- All threads within the same block share it — it's the primary mechanism for **intra-block communication**.
+- Each block gets its own chunk of SMEM.
+- On the SM, the L1 cache and SMEM share the same physical storage (the "unified data cache"), and the split is **configurable** — programmers can control how much to allocate to each.
+- Bandwidth is dramatically higher. As Simon notes: Volta benchmarks report ~750 GiB/s for GMEM bandwidth vs. ~12,080 GiB/s for SMEM bandwidth (from [this paper](https://arxiv.org/abs/1804.06826)). Ampere numbers are in a similar range.
+
+> **Errata in Simon's blog (Note 23):** The note says "it's possible to use more than 48KB of SMEM **per thread**." It should be **per block**.
+
+##### *The Idea: Tiling*
+
+Instead of having each thread read an entire row of A and column of B from GMEM, we load **2D tiles (chunks)** of A and B into SMEM, do the work from there, then slide the tiles forward.
+
+Concretely:
+
+- Take a tile of A (BLOCKSIZE × BLOCKSIZE) and slide it **horizontally** along A's columns.
+- Take a tile of B (BLOCKSIZE × BLOCKSIZE) and slide it **vertically** down B's rows.
+- At each step, load the current tiles into SMEM (`As` and `Bs`), compute partial dot products from SMEM, and accumulate into each thread's local result.
+
+In terms of what each thread does:
+
+1. **Load:** Each thread loads **one element** of the current tile of A and one element of B from GMEM into SMEM.
+2. **Sync (`__syncthreads`):** Wait for all threads to finish loading — this is critical because the next step needs the full tiles.
+3. **Compute:** Each thread computes the dot product of its row in `As` with its column in `Bs`, accumulating into a local variable.
+4. **Sync again (`__syncthreads`):** Before moving to the next tile, we must ensure all threads are done reading the current `As` and `Bs` — otherwise fast threads could overwrite the SMEM with the next tile before slow threads finish.
+5. **Advance:** Move the tile window forward (A shifts right by BLOCKSIZE columns, B shifts down by BLOCKSIZE rows) and repeat.
+
+I highly recommend tracing through Simon's illustration of this mentally — visualize the sliding tiles and what each thread touches at each step.
+```cuda
+__global__ void sgemm_smem(int M, int N, int K, float alpha, const float *A,
+                           const float *B, float beta, float *C) {
+  const uint cRow = blockIdx.x;
+  const uint cCol = blockIdx.y;
+  const uint threadCol = threadIdx.x % BLOCKSIZE;  // column within the tile
+  const uint threadRow = threadIdx.x / BLOCKSIZE;  // row within the tile
+
+  __shared__ float As[BLOCKSIZE * BLOCKSIZE];
+  __shared__ float Bs[BLOCKSIZE * BLOCKSIZE];
+
+  // advance pointers to the starting positions for this block
+  A += cRow * BLOCKSIZE * K;                    // row=cRow, col=0
+  B += cCol * BLOCKSIZE;                        // row=0, col=cCol
+  C += cRow * BLOCKSIZE * N + cCol * BLOCKSIZE; // row=cRow, col=cCol
+
+  float tmp = 0.0;
+  for (int bkIdx = 0; bkIdx < K; bkIdx += BLOCKSIZE) {
+    // each thread loads one element of A and B into SMEM
+    As[threadRow * BLOCKSIZE + threadCol] = A[threadRow * K + threadCol];
+    Bs[threadRow * BLOCKSIZE + threadCol] = B[threadRow * N + threadCol];
+
+    __syncthreads();  // wait for tile to be fully loaded
+
+    // advance pointers to the next tile
+    A += BLOCKSIZE;
+    B += BLOCKSIZE * N;
+
+    // dot product of this thread's row of As and column of Bs
+    for (int dotIdx = 0; dotIdx < BLOCKSIZE; ++dotIdx) {
+      tmp += As[threadRow * BLOCKSIZE + dotIdx] *
+             Bs[dotIdx * BLOCKSIZE + threadCol];
+    }
+
+    __syncthreads();  // wait before overwriting SMEM with next tile
+  }
+  C[threadRow * N + threadCol] = alpha * tmp + beta * C[threadRow * N + threadCol];
+}
+```
+
+##### *Results*
+
+This kernel achieves ~2980 GFLOPs — roughly a 50% improvement over Kernel 2. The improvement is modest partly because Kernel 2 already had decent L1 cache hit rates. We're still far from the ~30 TFLOPs the GPU can provide.
+
+##### *Roofline Analysis*
+
+The **roofline model** is a visual tool that shows the two fundamental ceilings on kernel performance:
+
+1. **Compute ceiling (horizontal line):** The GPU's peak FLOPs/s — no kernel can exceed this regardless of how efficiently it uses memory. For Simon's A6000, this is ~30 TFLOPs/s.
+2. **Memory bandwidth ceiling (diagonal line):** Performance limited by how fast data can be fed to the cores. This line has a slope equal to the peak memory bandwidth. A kernel operating at arithmetic intensity `I` (FLOPs per byte transferred) can achieve at most `I × peak_bandwidth` FLOPs/s.
+
+The **x-axis** is arithmetic intensity (FLOPs/byte), and the **y-axis** is achieved FLOPs/s. The two ceilings form a "roof" shape:
+
+- **Left of the ridge point** (where the diagonal meets the horizontal): the kernel is **memory-bound** — performance is limited by data transfer, not compute. Increasing arithmetic intensity (fewer bytes per FLOP) moves you right along the diagonal toward better performance.
+- **Right of the ridge point:** the kernel is **compute-bound** — the cores are the bottleneck. You've saturated the compute units.
+
+For Kernel 3: it sits on the diagonal (memory-bound region). It actually achieves *higher bandwidth* than cuBLAS, but because it does much *less work per byte loaded* (lower arithmetic intensity), overall FLOPs/s is worse. The path forward is clear: increase arithmetic intensity so we move right on the roofline, toward the compute ceiling.
+
+##### *SMEM Usage and Occupancy*
+
+At BLOCKSIZE = 32, the kernel uses `2 × 32 × 32 × 4B = 8 KB` of SMEM per block. (Obtainable via `--ptxas-options=-v`: `Used 37 registers, 8192 bytes smem, 400 bytes cmem[0]`.)
+
+The A6000 allows up to 48 KB of SMEM per block, so we're well under the limit. But there's a trade-off: each SM has a total of ~100 KB of SMEM. If a kernel used the full 48 KB per block, only 2 blocks could be resident on an SM simultaneously. This reduces **occupancy** — the ratio of active warps to the maximum possible active warps on an SM.
+
+Why does occupancy matter? Because of **zero-cost warp switching**. On a GPU, all resources (registers, SMEM) for every resident thread are **pre-allocated and stay resident** on the SM for the block's entire lifetime. When a warp stalls (waiting for a memory load, for example), the warp scheduler simply picks another ready warp and issues its instruction — **no save/restore overhead**. This is fundamentally different from CPU context switching, which requires saving and restoring register state to/from memory (costing cycles). Higher occupancy means a larger pool of resident warps, which means more chances to find a ready warp when one stalls, which means better latency hiding.
+
+Three resources limit how many blocks can be resident on an SM: **register count**, **warp/thread count**, and **SMEM capacity**.
+
+##### *Occupancy Calculation for Kernel 3*
+
+Hardware limits for the A6000 (from `cudaGetDeviceProperties`):
+
+| Metric | Value |
+|---|---|
+| Max threads per SM | 1536 |
+| Max warps per SM | 48 |
+| Max SMEM per SM | 102400 B |
+| Max registers per SM | 65536 |
+| Max SMEM per block | 48 KB |
+| CUDA runtime SMEM overhead per block | 1024 B |
+| Register allocation granularity | 256 regs, per warp |
+
+Kernel resource demands:
+
+| Metric | Value |
+|---|---|
+| Threads per block | 1024 |
+| Registers per thread | 37 |
+| SMEM per block | 8192 B |
+
+A block can only be assigned to an SM if **all** of its requested resources can be satisfied. Now the calculation:
+
+- **SMEM:** (8192 + 1024) B per block = 9216 B. 102400 / 9216 = 11.1 → **11 blocks** upper limit.
+- **Threads:** 1024 threads per block, max 1536 per SM → **1 block** upper limit.
+- **Registers:** 37 regs/thread × 32 threads/warp = 1184 regs/warp, rounded up to 1280 (allocation granularity is 256). 32 warps/block × 1280 = 40960 regs/block. Max 65536 per SM → **1 block** upper limit.
+
+The bottleneck is threads and registers — only **1 block** fits per SM, giving 32 active warps out of a maximum 48 = **66% occupancy**.
+
+66% occupancy isn't terrible, so occupancy alone doesn't explain the poor performance.
+
+##### *The Real Bottleneck: Instruction Mix*
+
+Profiling the kernel reveals that the majority of executed instructions are **LDS** (shared memory loads), not FMA (the actual compute). The inner loop in PTX looks like:
+```
+ld.shared.f32   %f91, [%r8+3456];   // SMEM load from As
+ld.shared.f32   %f92, [%r7+108];    // SMEM load from Bs
+fma.rn.f32      %f93, %f92, %f91, %f90;  // the actual compute
+```
+
+Two SMEM loads for every one FMA. Since SMEM loads have higher latency than an FMA, the compute units are starved. Looking at the profiler's warp stall breakdown, the dominant stall reason is **`Stall MIO Throttle`** — as Simon quotes from the [Kernel Profiling Guide](https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-reference):
+
+> "Warp was stalled waiting for the MIO (memory input/output) instruction queue to be not full. This stall reason is high in cases of extreme utilization of the MIO pipelines, which include special math instructions, dynamic branches, as well as shared memory instructions."
+
+We're not using special math instructions or dynamic branches — so it's clear the kernel is bottlenecked on SMEM access throughput.
+
+The fix: have each thread compute **more than one output element**, so we get more FMAs per SMEM load — shifting work into registers and reducing pressure on the SMEM pipeline. That's Kernel 4.
+
+---
+
+#### *Kernel 4: 1D Blocktiling — Multiple Results per Thread*
+
+To be honest, this one took me some time to internalize, so I'll try to be as clear as possible.
+
+##### *The Idea*
+
+At a high level, it's simple: increase the work done by each thread by making it compute **multiple elements** of C, not just one. This reduces the ratio of memory instructions to compute instructions, which is exactly what we need. But the devil is in the details.
+
+The kernel still uses the same outer loop as Kernel 3 — sliding tiles of A and B from GMEM into SMEM. The SMEM tile sizes are now `BM × BK` for A and `BK × BN` for B, with `BM = BN = 64, BK = 8`. Total SMEM: `(64×8 + 64×8) × 4B = 4 KB` per block.
+
+The key change is in the **inner loops** — see Simon's illustration and follow along.
+
+##### *Walking Through the Inner Loop*
+
+Each thread now computes a **column of TM elements** in the output tile of C (not just one element). To accumulate these partial results, each thread allocates a small vector in **registers**:
+```cuda
+// thread-local accumulator, stored in registers
+float threadResults[TM] = {0.0};
+```
+
+This is `TM` floats, local to each thread, living in the register file — the fastest memory on the GPU.
+
+The inner loop structure:
+```cuda
+// outer loop: slide tiles along K dimension
+for (uint bkIdx = 0; bkIdx < K; bkIdx += BK) {
+  // load one element each of A and B from GMEM → SMEM (same as Kernel 3)
+  As[innerRowA * BK + innerColA] = A[innerRowA * K + innerColA];
+  Bs[innerRowB * BN + innerColB] = B[innerRowB * N + innerColB];
+  __syncthreads();
+
+  A += BK;
+  B += BK * N;
+
+  // inner loops: compute partial results from SMEM
+  for (uint dotIdx = 0; dotIdx < BK; ++dotIdx) {
+    // cache one element of Bs (shared across all TM results)
+    float Btmp = Bs[dotIdx * BN + threadCol];
+    for (uint resIdx = 0; resIdx < TM; ++resIdx) {
+      threadResults[resIdx] +=
+          As[(threadRow * TM + resIdx) * BK + dotIdx] * Btmp;
+    }
+  }
+  __syncthreads();
+}
+```
+
+Let me walk through what one thread does, step by step. Say this thread owns column `threadCol` in the output tile and rows `threadRow * TM` through `threadRow * TM + TM - 1`.
+
+At `dotIdx = 0` (first column of the current `As` tile):
+1. Cache `Bs[0 * BN + threadCol]` — that's one element from the first row of `Bs`, at this thread's column. Store it in `Btmp`.
+2. Loop `resIdx = 0..TM-1`: multiply `As[row][0]` (first column value for each of the TM rows) by `Btmp`, and accumulate into `threadResults[resIdx]`.
+
+At `dotIdx = 1` (second column of `As`):
+1. Cache the new `Btmp = Bs[1 * BN + threadCol]`.
+2. Again loop over all TM rows of `As`, multiply by `Btmp`, accumulate.
+
+This continues for all `BK` columns. By the end, each `threadResults[resIdx]` holds the partial dot product contribution from this tile.
+
+The key insight: `Btmp` is loaded **once** and reused across all TM rows — that's TM FMAs for just 1 SMEM load from `Bs`. Each `As` element is loaded once per `resIdx`. So per `dotIdx` step: `1 + TM` SMEM loads for `TM` FMAs.
+
+Each thread works on its own column of the output tile, and all threads execute in parallel. **This is the core logic.** If you understand this, Kernel 5 is a natural extension — instead of each thread computing a column (1D), it computes a 2D block of C, using an outer product trick. We'll get to that next.
+
+##### *A Point About the Outer Loop and Parallelism*
+
+One thing worth making explicit: a thread block "owns" a fixed tile of C (determined by `blockIdx`). Its outer loop slides tiles of A horizontally and tiles of B vertically, accumulating partial results until the entire K dimension is traversed. Only then is the final result for that tile of C complete. Different thread blocks own different tiles of C and can execute this entire traversal **independently and in parallel** — there's no cross-block communication needed.
+
+##### *Results and Memory Access Analysis*
+
+This kernel achieves ~8600 GFLOPs — 2.2× faster than Kernel 3.
+
+Let's compare the memory access patterns. K is the common dimension we tile over — it determines how many outer loop iterations we do. Each outer loop step processes one tile along K and accumulates into the result.
+
+**Kernel 3** (1 result per thread, BLOCKSIZE = 32):
+
+- GMEM: `K/32` outer iterations × 2 loads (one A, one B element per thread) = `K/16` per result
+- SMEM: each dot product step loads one element from `As` and one from `Bs` → `K/32 × 32 × 2` total = `K×2` per result
+
+**Kernel 4** (TM = 8 results per thread, BK = 8):
+
+- GMEM: `K/8` outer iterations × 2 loads = `K/4` total, but shared across 8 results → `K/32` per result
+- SMEM: each `dotIdx` step loads 1 from `Bs` + TM from `As` = 9 loads. Over `K/8 × BK = K` steps total → `K×9` total, across 8 results → `K×9/8` per result
+
+Both GMEM and SMEM accesses per result are reduced. As expected, the profiler shows significantly fewer cycles spent stalling on memory pressure (see Simon's warp stall comparison chart).
+
+##### *Sidenote: Compiler Optimizations*
+
+Simon noted something interesting: if you swap the loop order (make `resIdx` the outer loop and `dotIdx` inner) and remove the explicit `Btmp` caching, performance doesn't change. The compiler is smart enough to unroll both loops (since loop counts are known at compile time) and eliminate redundant SMEM loads of `Bs` entries — arriving at the same instruction count.
+
+Also, when PTX is lowered to SASS, the SMEM loads from `Bs` get **vectorized** into `LDS.128` (128-bit loads), loading 4 floats at once.
+
+> **Simon's Note 39:** "This already hints at an optimization we'll perform later: transposing `As` such that we can also vectorize those loads." — we'll see this in Kernel 6.
+
+##### *Why We Need More: Arithmetic Intensity*
+
+**Arithmetic intensity** = FLOPs executed per byte transferred between GMEM and SMEM (counting both loads and stores).
+
+This kernel still suffers from the same stalling-for-memory problem as Kernel 3, just to a lesser extent. The fix is the same: compute even more results per thread to increase arithmetic intensity.
+
+Simon's visualization (Note 41) makes this clear: computing a **square** of results per thread is more efficient than a column, because a square lets you **share more inputs** across results. A TM×1 column reuses each `Btmp` across TM rows, but each `As` value is used only once. A TM×TN square reuses each `As` value across TN columns *and* each `Bs` value across TM rows — the outer product structure.
+
+The fundamental point: all our kernels perform the **same total FLOPs**. The only thing we're changing is how many GMEM/SMEM accesses we need. By computing more results per thread, each loaded value gets reused more, arithmetic intensity goes up, and we push the kernel from memory-bound toward **compute-bound** — which is where we want to be, since the GPU has far more compute throughput than memory bandwidth. We'll keep optimizing arithmetic intensity as long as we remain memory-bound.
+
+---
