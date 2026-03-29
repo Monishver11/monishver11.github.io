@@ -979,5 +979,17 @@ going to sleep, good night monish.
 
 Good morning Monish. All the best for the intro call with Adaptive ML and DeepInfra. Both went well.
 
+03/26/2026 (T - 47)
 
+Good afternoon Monish. 
+Linkedin msgs/resume share done to most people, met at GTC. Will apply in their job portals on Sat.
 
+03/27/2026 (T - 46)
+
+03/28/2026 (T - 45)
+
+Completed the OPT application. Good one and best wishes.
+
+03/29/2026 (T - 44)
+
+Good afternoon Monish.
