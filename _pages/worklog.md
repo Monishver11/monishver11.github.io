@@ -834,6 +834,18 @@ Tmr:
   - Coding Interview II (Leetcode style)
   - Coding Interviw with Co-founder + Followed by behavioural questions
 
+03/26/2026 (T - 47)
 
-Reflection AI (To apply)
-- Member of Technical Staff - GPU Infrastructure (https://jobs.ashbyhq.com/reflectionai/6254697d-446f-417a-a5ae-3b546590ee6b)
+cp-31; done
+inf eng. done.
+gemm kernel 3,4,5. done.
+
+03/27/2026 (T - 46)
+
+03/28/2026 (T - 45)
+
+cp-31; done.
+gemm kernel notes
+inf eng.
+llmr a3 start
+
