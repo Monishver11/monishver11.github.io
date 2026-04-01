@@ -704,6 +704,14 @@ For `A`: we load 4 contiguous floats from GMEM in one 128-bit transaction, but s
 
 For `B`: both the source (GMEM) and destination (SMEM) are contiguous, so the entire load-store is a single 128-bit read followed by a single 128-bit write.
 
+##### **How the Transpose Happens**
+
+There's no explicit transpose step or extra memory copy. The transpose is baked into the **store indexing math**.
+
+In GMEM, A is row-major — the 4 floats we load via `float4` are consecutive in the same row. When storing to SMEM, instead of placing them in the same row of `As` (i.e., `As[row * BK + col]`, contiguous), we place them in the same **column** (i.e., `As[col * BM + row]`, strided by BM). That's the transposed layout.
+
+This is why the stores must be 4 individual scalar writes — the destination addresses are BM = 128 floats apart in SMEM, so they can't be bundled into a single `float4` store (which requires contiguous addresses). The GMEM load is still a single wide `float4` read, since the source is contiguous. So we get the benefit of a vectorized load and a transposed SMEM layout, at the cost of scalar stores.
+
 ##### **Why reinterpret_cast and Not Just Unrolled Scalar Loads?**
 
 Simon raised this question — wouldn't the compiler just vectorize 4 consecutive scalar loads?
