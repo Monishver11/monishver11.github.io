@@ -653,3 +653,80 @@ Performance: **~16 TFLOPs** — another 2× improvement. Each thread now compute
 Performance is reaching acceptable levels, but warp stalls from memory pipeline congestion are still too frequent. Kernel 6 addresses this with two measures: **transposing `As`** in SMEM to enable vectorized 128-bit SMEM loads (`LDS.128`), and **promising the compiler alignment** on GMEM accesses to enable wider GMEM transactions.
 
 ---
+
+#### **Kernel 6: Vectorize SMEM and GMEM Accesses**
+
+##### **Vectorizing SMEM Loads: Transposing As**
+
+Look at Simon's illustration for a quick intuition of what changes.
+
+All the operations remain the same as Kernel 5. The only difference: we **transpose `As`** during the GMEM → SMEM transfer, so that the elements each thread loads from SMEM into registers are now **adjacent in memory** rather than strided.
+
+Why does adjacency matter? Because the GPU can issue **128-bit SMEM loads** (`LDS.128` in SASS) that fetch 4 floats (4 × 32-bit = 128-bit) in a single instruction, instead of 4 separate 32-bit `LDS` loads. For this to work, the 4 floats must be contiguous in SMEM.
+
+Before the transpose, each thread's `regM` values came from the same column of `As` but different rows — strided by `BK` elements. After transposing, those same values sit in consecutive addresses. The compiler sees this and automatically emits `LDS.128`.
+
+The `Bs` → `regN` loads were already contiguous (consecutive columns in the same row), so the compiler was already vectorizing those.
+
+Looking at the assembly (see Simon's Godbolt link): the `As` loads, which used to be 32-bit `LDS`, are now 128-bit `LDS.128` — matching what was already happening for `Bs`. This gives a ~500 GFLOPs speedup, roughly 3%.
+
+##### **Vectorizing GMEM Loads: float4**
+
+We can apply the same idea to the GMEM → SMEM transfers. Instead of loading one float at a time from global memory, we load **4 floats at once** using the `float4` vector type.
+
+**What is `float4`?** It's a CUDA built-in vector type — a struct containing 4 floats named `x, y, z, w`:
+```cuda
+struct float4 {
+  float x, y, z, w;
+};
+```
+
+When you load or store a `float4`, the compiler emits a single **128-bit** memory instruction (`LDG.E.128` or `STG.E.128`) instead of four 32-bit instructions. This is 4× fewer instructions for the same data, which reduces pressure on the memory pipeline.
+
+The code:
+```cuda
+// Load 4 floats from A in one 128-bit GMEM transaction
+float4 tmp =
+    reinterpret_cast<float4 *>(&A[innerRowA * K + innerColA * 4])[0];
+// Transpose A during the GMEM → SMEM transfer (store individually)
+As[(innerColA * 4 + 0) * BM + innerRowA] = tmp.x;
+As[(innerColA * 4 + 1) * BM + innerRowA] = tmp.y;
+As[(innerColA * 4 + 2) * BM + innerRowA] = tmp.z;
+As[(innerColA * 4 + 3) * BM + innerRowA] = tmp.w;
+
+// For B: load 4 floats from GMEM and store 4 floats to SMEM, both as float4
+reinterpret_cast<float4 *>(&Bs[innerRowB * BN + innerColB * 4])[0] =
+    reinterpret_cast<float4 *>(&B[innerRowB * N + innerColB * 4])[0];
+__syncthreads();
+```
+
+For `A`: we load 4 contiguous floats from GMEM in one 128-bit transaction, but store them individually into SMEM because we're transposing (the destination addresses aren't contiguous).
+
+For `B`: both the source (GMEM) and destination (SMEM) are contiguous, so the entire load-store is a single 128-bit read followed by a single 128-bit write.
+
+##### **Why reinterpret_cast and Not Just Unrolled Scalar Loads?**
+
+Simon raised this question — wouldn't the compiler just vectorize 4 consecutive scalar loads?
+```cuda
+// Why doesn't this also produce LDG.E.128?
+Bs[innerRowB * BN + innerColB * 4 + 0] = B[innerRowB * N + innerColB * 4 + 0];
+Bs[innerRowB * BN + innerColB * 4 + 1] = B[innerRowB * N + innerColB * 4 + 1];
+Bs[innerRowB * BN + innerColB * 4 + 2] = B[innerRowB * N + innerColB * 4 + 2];
+Bs[innerRowB * BN + innerColB * 4 + 3] = B[innerRowB * N + innerColB * 4 + 3];
+```
+
+The answer is twofold:
+
+1. **Alignment guarantee:** A 128-bit load (`LDG.E.128`) requires the address to be **16-byte aligned**. The `float* B` pointer is passed at runtime — the compiler cannot prove it's 16-byte aligned. The `reinterpret_cast<float4*>` explicitly tells the compiler: "I promise this address is aligned for a 128-bit access."
+
+2. **Explicit intent:** Even if alignment were known, the compiler isn't obligated to merge 4 scalar loads into one vector load — it *could*, but it's an optimization that requires proving contiguity and alignment. The cast removes all ambiguity: it says "this *is* a single 128-bit value," and the compiler *must* emit a wide load.
+
+> **Simon's Note 47:** Compare this to SMEM loads, where the compiler automatically generates vectorized loads because that memory is not user-managed — the compiler knows the layout and alignment of SMEM allocations.
+
+##### **Results and What's Left**
+
+Kernel 6 achieves **~19 TFLOPs**. The profiler still shows several problem areas: shared-memory **bank conflicts** (which cuBLAS avoids), **higher occupancy than necessary**, and no **double buffering** (which the CUTLASS docs suggest is quite useful).
+
+But before we get to those, there's more low-hanging fruit: **autotuning** the kernel's parameters.
+
+---

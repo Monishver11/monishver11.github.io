@@ -993,3 +993,10 @@ Completed the OPT application. Good one and best wishes.
 03/29/2026 (T - 44)
 
 Good afternoon Monish.
+
+03/30/2026 (T - 43)
+
+03/31/2026 (T - 42)
+
+To build a system that outlive emotions
+
