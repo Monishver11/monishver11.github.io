@@ -850,3 +850,7 @@ inf eng.; done.
 llmr a3 start. will start on monday, will finish the gemm kernel notes today, and start with next gemm kernel optimizations/CUTLASS now.
 
 03/29/2026 (T - 44)
+
+03/30/2026 (T - 43)
+
+03/31/2026 (T - 42)
