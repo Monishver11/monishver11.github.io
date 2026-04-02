@@ -854,3 +854,5 @@ llmr a3 start. will start on monday, will finish the gemm kernel notes today, an
 03/30/2026 (T - 43)
 
 03/31/2026 (T - 42)
+
+04/01/2026 (T - 41)

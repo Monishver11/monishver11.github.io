@@ -738,3 +738,31 @@ Kernel 6 achieves **~19 TFLOPs**. The profiler still shows several problem areas
 But before we get to those, there's more low-hanging fruit: **autotuning** the kernel's parameters.
 
 ---
+
+#### **Kernel 9: Autotuning**
+
+We've accumulated five template parameters that control the kernel's tiling strategy:
+
+- **`BM`, `BN`, `BK`:** how much data we cache from GMEM into SMEM (tile sizes).
+- **`TM`, `TN`:** how much data each thread caches from SMEM into registers (sub-tile sizes).
+
+It turns out that the optimal values for these parameters vary significantly depending on the GPU model. There's no single best configuration — it depends on the hardware's register file size, SMEM capacity, memory bandwidth, number of SMs, and more.
+
+Autotuning — systematically trying many configurations and picking the best — works, and every high-performance library uses it. As for *why* a specific configuration wins on a specific GPU, that requires digging deep into the hardware details. I agree with Simon here: the reasoning is highly dependent on many interacting factors.
+
+> **Note (Triton and cuBLAS):** Triton has built-in autotuning support via the `@triton.autotune` decorator, which lets you specify a list of configurations and automatically benchmarks them. For cuBLAS, we don't know the internals — it likely has a pre-computed mapping from problem shapes and GPU models to optimal kernel configurations, possibly with many features considered.
+
+##### **Constraints on Valid Configurations**
+
+Not all combinations of parameters are valid. Since we use `float4` (4-wide) vectorized loads for GMEM → SMEM transfers (from Kernel 6), the tile sizes must be compatible. In each iteration of the `loadOffset` loop, every thread loads 4 floats at once. So the entire block loads `4 × NUM_THREADS` floats per iteration.
+
+For `As` (total size `BM × BK` floats), this means:
+```
+BM × BK must be divisible by 4 × NUM_THREADS
+```
+
+If it's not, the tile can't be evenly divided among threads with 4-wide loads — that's a non-sensible configuration. For example: BM=64, BK=8, NUM_THREADS=256 → `64 × 8 = 512` floats, but `4 × 256 = 1024`. 512 < 1024, so there aren't even enough elements for one round of float4 loads — this configuration is invalid.
+
+The same constraint applies to `Bs` (size `BK × BN`): `BK × BN` must be divisible by `4 × NUM_THREADS`.
+
+---
