@@ -856,3 +856,13 @@ llmr a3 start. will start on monday, will finish the gemm kernel notes today, an
 03/31/2026 (T - 42)
 
 04/01/2026 (T - 41)
+
+[GPUs Go Brrr - ThunderKittens](https://hazyresearch.stanford.edu/blog/2024-05-12-tk)
+
+04/02/2026 (T - 40)
+
+Modular(next rounds):
+- Standalone Coding
+- Cultural interview/System design
+- Coding
+- Analysis interview (LLM/Model Trace) -> Perf related.
