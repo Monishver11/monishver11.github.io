@@ -866,3 +866,9 @@ Modular(next rounds):
 - Cultural interview/System design
 - Coding
 - Analysis interview (LLM/Model Trace) -> Perf related.
+
+04/03/2026 (T - 39)
+
+04/04/2026 (T - 38)
+
+- [Ace That Technical Interview - An Interviewer's Perspective - Zheng Hao Tan](https://zhenghaotan.com/blog/ace-that-technical-interview)

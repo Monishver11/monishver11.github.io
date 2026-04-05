@@ -1005,3 +1005,7 @@ To build a system that outlive emotions
 04/02/2026 (T - 40)
 
 Great work Monish on the interviews. Keep it up.
+
+04/03/2026 (T - 39)
+
+04/04/2026 (T - 38)

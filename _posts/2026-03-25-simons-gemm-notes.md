@@ -962,3 +962,12 @@ The remaining gap to cuBLAS likely comes from SMEM bank conflict avoidance (swiz
 
 ---
 
+#### **Closing Thoughts**
+
+Again, thanks to Simon for making such an in-depth and intuitive blog. I hope to write one like this on my own soon — fingers crossed.
+
+I haven't had the time to code all of these kernels up myself yet, but I need to. Coding is the bread and butter of software programmers, and even with all the AI tools available to our generation, I feel it's critically important to implement things yourself and see the results firsthand. It imprints the ideas far more deeply, and it builds the debugging instincts and pattern recognition that pay off later. Always worth it.
+
+Next, I'm focusing on H100 concepts — swizzling, bank conflicts, tensor cores, CUTLASS, and CuTe. I'm planning to add my notes on each topic separately first, then bring them together into a unified piece.
+
+Finally, as Charles Bukowski says — just go all in. That's what I'm doing, and I feel really good about the struggle.
