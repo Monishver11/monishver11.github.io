@@ -872,3 +872,16 @@ Modular(next rounds):
 04/04/2026 (T - 38)
 
 - [Ace That Technical Interview - An Interviewer's Perspective - Zheng Hao Tan](https://zhenghaotan.com/blog/ace-that-technical-interview)
+
+04/05/2026 (T - 37)
+
+04/06/2026 (T - 36)
+
+FriendliAI
+- Talk with Hiring Manager
+- Take Home Assignment
+- CEO/CTO
+
+04/07/2026 (T - 35)
+
+04/08/2026 (T - 34)
