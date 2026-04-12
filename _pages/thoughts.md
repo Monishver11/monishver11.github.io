@@ -23,6 +23,50 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+<div class="small-quote"><p>An un-opinionated person may hold stronger opinions than the rest of the population in the opinionated world. And also can do so with the portrayal of uninterested.</p></div>
+
+<div class="small-quote"><p>The indeterminate nature of human consciousness and emotions at the macroscopic level and the definitive nature of it at the microscopic level is what makes life both a tragedy and a beauty. </p></div>
+
+<div class="small-quote">
+  <p>Bet on yourself. It’s 100% worth it</p>
+  <span class="author">- Michelle Lim.</span>
+</div>
+
+<div class="small-quote"><p>Being unconventional, yet strong with conviction, focus, and action, benefits you.</p></div>
+
+<div class="small-quote"><p>Boon and curse are always intertwined. You can’t have one without the other. </p></div>
+
+<div class="small-quote">
+  <p>“All truly great thoughts are conceived while walking”</p>
+  <span class="author">- Friedrich Nietzsche, Twilight of the Idols.</span>
+</div>
+
+<div class="small-quote"><p>Most of us do not dread silence itself, but its association with a melancholic nature. </p></div>
+
+<div class="small-quote"><p>I’m just an ordinary person who believes that I can do extraordinary things. And with the right focus and action, it works like magic.</p></div>
+
+<div class="small-quote">
+  <p>“If you’re not uncomfortable, you’re probably stuck at an acceptable level.”</p>
+  <span class="author">- Cal Newport.</span>
+</div>
+
+<div class="small-quote">
+  <p>“If I don’t fully understand it myself, it’s very hard for me to actually build conviction.”</p>
+  <span class="author">- Guillermo Rauch.</span>
+</div>
+
+<div class="small-quote"><p>Learn to direct energy to where your goals are aligned. </p></div>
+
+<div class="small-quote"><p>Life disproportionately favours the optimist.</p></div>
+
+<div class="small-quote"><p>Judgmental biases cost you more than they can help you, in terms of getting and capitalising on opportunities. </p></div>
+
+<div class="small-quote"><p>Life is a finite puzzle with an infinite horizon. Enjoy it with the process of putting pieces together and creating something that you envision. </p></div>
+
+<div class="small-quote"><p>Mind is prone to being unpredictable, but behaviour isn’t.</p></div>
+
+<div class="small-quote"><p>Love will find its way back home.</p></div>
+
 ###### **February 2026**
 
 <div class="small-quote">
