@@ -675,7 +675,7 @@ The actual instruction. Decoding the qualifiers:
 - `.f16.f16.f16` — datatypes for $$D$$, $$A$$, $$B$$ respectively (with $$C$$'s type matching $$D$$).
 
 ```asm
-"{%0, %1, ..., %15},"
+"{ %0, %1, ..., %15 },"
 ```
 
 The 16 $$D$$ operands (accumulator outputs). Each is a 32-bit register. $$16 \times 32$$ bits = 512 bits = 32 FP16 values per thread (each 32-bit register packs 2 FP16 values). This matches the 32 accumulator values per thread per atom from the Z-pattern analysis.
