@@ -905,3 +905,10 @@ FriendliAI
 04/17/2026 (T - 25)
 
 04/18/2026 (T - 24)
+
+- cutlass blog 2 - read; done
+- eagle dp tests - debug
+- cp -31 + 1q graph;
+- baseline kernels read;
+- K1 kernel;
+
