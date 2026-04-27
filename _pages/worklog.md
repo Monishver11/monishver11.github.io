@@ -908,7 +908,24 @@ FriendliAI
 
 - cutlass blog 2 - read; done
 - eagle dp tests - debug
-- cp -31 + 1q graph;
+- cp -31 + 1q graph; done;
 - baseline kernels read;
 - K1 kernel;
 
+04/19/2026 (T - 23)
+
+04/20/2026 (T - 22)
+
+04/21/2026 (T - 21)
+
+04/22/2026 (T - 20)
+
+04/23/2026 (T - 19)
+
+04/24/2026 (T - 18)
+
+04/25/2026 (T - 17)
+
+04/26/2026 (T - 16)
+
+04/27/2026 (T - 15)
