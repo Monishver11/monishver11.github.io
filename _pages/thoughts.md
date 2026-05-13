@@ -23,6 +23,56 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+<div class="small-quote">
+  <p>Proximity reshapes the perceptual ordering of things.</p>
+</div>
+
+<div class="small-quote">
+  <p>In the age of generative AI, always make the first end-to-end draft yourself.</p>
+</div>
+
+<div class="small-quote">
+  <p>Reciprocity is never a guaranteed outcome in any aspect of life.</p>
+</div>
+
+<div class="small-quote">
+  <p>What you need doesn’t have to define you, and what defines you doesn’t have to be sought after as a need.</p>
+</div>
+
+<div class="small-quote">
+  <p>Never have I dealt with anything more difficult than my own soul</p>
+  <span class="author">- Anonymous.</span>
+</div>
+
+<div class="small-quote">
+  <p>Admiration helps, action wins.</p>
+</div>
+
+<div class="small-quote">
+  <p>Life is a fleeting mist of time, moments, situations and decisions. Your future self is your guiding light. And only moving forward, one step at a time, clears the uncertainty. So do it with conviction, hope and faith.</p>
+</div>
+
+<div class="small-quote">
+  <p>Dangerous men build a peaceful life</p>
+  <span class="author">- Jordan Peterson.</span>
+</div>
+
+<div class="small-quote">
+  <p>The world is quite big for us to naturally feel insignificant. In comparison, our inner world’s are small, yet complex and powerful enough for us to be significant.</p>
+</div>
+
+<div class="small-quote">
+  <p>Fantasising about struggles leads to disappointment. Struggle is what struggle has to be, for it to be fruitful towards your goal.</p>
+</div>
+
+<div class="small-quote">
+  <p>There may be different modes of price to pay(struggle, pain, sacrifice, hard work, abstinence, …), but there certainly is one every time.</p>
+</div>
+
+<div class="small-quote">
+  <p>Life isn’t all too correlative in nature, yet not uncorrelated as well to ignore its ability.</p>
+</div>
+
 <div class="small-quote"><p>An un-opinionated person may hold stronger opinions than the rest of the population in the opinionated world. And also can do so with the portrayal of uninterested.</p></div>
 
 <div class="small-quote"><p>The indeterminate nature of human consciousness and emotions at the macroscopic level and the definitive nature of it at the microscopic level is what makes life both a tragedy and a beauty. </p></div>
