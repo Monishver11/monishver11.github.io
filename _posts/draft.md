@@ -1,139 +1,200 @@
-#### **K1: Naive materialized attention**
+#### **K2: Tiled online softmax (FA2)**
 
 ##### **What's new**
 
-This is the baseline. No fusion, no tiling, no online softmax, no Tensor Cores. Just the three operations of attention done as three separate kernels, with the full $$(B, N, N)$$ score matrix materialized in GMEM between them. The point isn't to be fast. The point is to have a "before" picture: a working implementation that we can correctness-check against SDPA, profile, and then start optimizing.
+K1 materialized $$S = QK^\top$$ in GMEM and ran three sequential kernels. K2 collapses everything into a single fused kernel that follows the FA2 algorithm directly: per Q-tile we stream KV tiles, recompute $$S$$ in SMEM, run online softmax across rows, and accumulate $$O$$ in registers. The algorithm is exactly the one derived in the FA2 section; the only thing this kernel adds is the threading and SMEM layout to make it run.
 
-Reading this section, you should expect: the slowest kernel in the worklog, modest tile sizes, no special hardware features used, and a hard wall at large sequence lengths because the materialized matrix doesn't fit.
+We are still on CUDA cores. The two GEMMs ($$QK^\top$$ and $$PV$$) are hand-rolled FP32 dot products. No tensor cores, no TMA, no async pipelining; those land in K3 and K4. The point of K2 is to verify the FA2 algorithm end-to-end in a form that reads top to bottom.
 
-##### **The idea**
-
-Attention is three operations. K1 implements them in the most direct way possible, as three separately-launched kernels with the intermediate $$S$$ matrix written to GMEM and read back:
-
-$$
-\begin{aligned}
-S &= Q K^\top \cdot \text{scale} \quad (\text{plus causal mask if enabled}) \\
-P &= \text{softmax}(S) \quad (\text{in place, S becomes P}) \\
-O &= P V
-\end{aligned}
-$$
-
-Each kernel uses one thread per output element (one thread per $$S_{i,j}$$, one thread per row for the softmax, one thread per $$O_{i,j}$$). No SMEM staging, no Tensor Cores. The whole computation reads from and writes to GMEM directly.
-
-This is exactly the configuration we used to motivate FlashAttention earlier in the blog. From the attention-math section: at $$B=1, N=10^6, d$$ moderate, the materialized $$S$$ matrix alone needs about 4 TB. For the smaller sweep configs we actually run ($$N \le 16384$$, batch folded with heads), the matrix fits, but it dominates GMEM traffic and the arithmetic intensity is essentially $$I = 1$$ (every FLOP is preceded by a load). Naive GEMM, naive softmax, naive output projection, three times.
-
-Why bother implementing it? Three reasons. First, it's the right "before" picture for the worklog. Every later kernel either removes a piece of K1's badness or replaces a piece with a hardware-specific fast path; you can't appreciate the gains without seeing the baseline. Second, this is the first time we run CuTe Python end to end, so it exercises the harness (`bench.py`, `ref_check.py`, the `compile_kernel` / `run_kernel` contract) on something simple. Third, even at this level you can verify the algorithm is right by running `CHECK=1` and comparing against SDPA; this gives us confidence the layout and indexing conventions are wired up correctly before we start adding optimizations.
-
-##### **Implementation**
-
-The kernel file `kernels/k1.py` contains three CuTe classes plus the `compile_kernel` / `run_kernel` dispatchers that the harness calls.
-
-The three classes:
-
-- **`K1Score`** computes $$S_{i,j,b} = \sum_k Q_{i,k,b} K_{j,k,b} \cdot \text{scale}$$, with the causal mask applied as a write of $$-\infty$$ when $$j > i$$. One thread per $$(i, j, b)$$ output element. Grid: $$(\lceil N / 16 \rceil, \lceil N / 16 \rceil, B)$$ blocks, each $$16 \times 16 \times 1$$ threads. Reads Q and K from GMEM in FP32, accumulates in FP32, writes the result to the $$S$$ buffer.
-
-- **`K1Softmax`** does the per-row softmax. One thread per row. The thread reads the entire row of $$S$$ from GMEM to find the max, reads it again to compute exponentials and the sum, then reads it a third time to normalize. Grid: $$(\lceil N / 256 \rceil, B, 1)$$ blocks, each $$256 \times 1 \times 1$$ threads. The materialized $$S$$ is reused in place: the kernel reads $$S$$ and writes $$P$$ to the same buffer.
-
-- **`K1Output`** computes $$O_{i,j,b} = \sum_k P_{i,k,b} V_{k,j,b}$$. One thread per $$(i, j, b)$$ output element. Grid: $$(\lceil d / 16 \rceil, \lceil N / 16 \rceil, B)$$ blocks, each $$16 \times 16 \times 1$$ threads. Reads $$P$$ (still in the $$S$$ buffer) and $$V$$ from GMEM, accumulates in FP32, writes the result to $$O$$ in BF16.
-
-To keep this section anchored, here's the inner kernel for `K1Score`. The other two follow the same shape: compute the per-element coordinate, bounds-check, do the work, write the result.
+##### **Block sizes and the threading model**
 
 ```python
-@cute.kernel
-def kernel(self, mQ, mK, mS, scale: cutlass.Float32):
-    bx, by, bz = cute.arch.block_idx()
-    tx, ty, _ = cute.arch.thread_idx()
-
-    j = bx * SCORE_BLOCK_X + tx
-    i = by * SCORE_BLOCK_Y + ty
-    b = bz
-
-    if i < self.N and j < self.N:
-        # Causal mask: kv position > query position => -inf.
-        if cutlass.const_expr(self.causal) and j > i:
-            mS[i, j, b] = -cutlass.Float32.inf
-        else:
-            gQ = mQ[(None, None, b)]
-            gK = mK[(None, None, b)]
-            dot = cutlass.Float32(0.0)
-            for k in cutlass.range_constexpr(self.d):
-                dot = dot + gQ[i, k].to(cutlass.Float32) * gK[j, k].to(cutlass.Float32)
-            mS[i, j, b] = dot * scale
+Br = 64
+Bc = 64
+THREADS = 256
+THREADS_PER_ROW = 4
 ```
 
-A few CuTe-specific things to read off this code:
+One CTA handles one Q-tile of $$B_r = 64$$ rows for one batch element. 256 threads split into 64 row groups of 4 threads each. Each row group owns one Q-row of the tile.
 
-- **`cute.arch.block_idx()` and `cute.arch.thread_idx()`** are the CuTe analogues of CUDA's `blockIdx` and `threadIdx`. They return tuples; we destructure them into `(bx, by, bz)` and `(tx, ty, _)`.
-- **`mQ[(None, None, b)]`** is the CUTE slicing pattern from the foundations section: fix the batch coord at `b`, leave the other two free. The result `gQ` is a 2D view into thread block's batch.
-- **`cutlass.const_expr(self.causal)`** is the JIT-time-constant marker. The compiler resolves this at compile time and emits a specialized kernel for either causal or non-causal, with no runtime branch.
-- **`cutlass.range_constexpr(self.d)`** says "fully unroll this loop at compile time." Since `d` is a JIT-time constant (64 or 128), the K-axis dot product is emitted as 64 or 128 straight-line multiply-adds.
+Why 4 threads per row? It ties three things together at the same constant:
 
-The dispatcher pattern is what the harness calls. `compile_kernel` builds the three CuTe objects, compiles each one once, allocates the $$S$$ buffer, and returns a handle:
+- **Q-row ownership.** $$\text{THREADS} / \text{THREADS\_PER\_ROW} = 256 / 4 = 64 = B_r$$. Each row group is responsible for one row of the tile, no leftover.
+- **Output sharding along $$d$$.** Each row's $$d$$ output channels are split across the 4 threads. For $$d = 128$$, each thread holds $$128 / 4 = 32$$ FP32 values of $$O$$ in registers. For $$d = 64$$, it's 16.
+- **Row-scan partitioning across $$B_c$$.** When reducing the $$B_c = 64$$ columns of an $$S$$ row for max and sum, each of the 4 threads scans $$64 / 4 = 16$$ elements, then a sub-warp shuffle collapses the four partials.
+
+The per-row softmax state $$(m_i, \ell_i)$$ lives in registers, replicated across the 4 threads of the group. They all compute the same reduced max and sum, so they all see the same values. The output accumulator $$O_\text{acc}$$ is the only thing sharded, along $$d$$.
 
 ```python
-def compile_kernel(B, N, d, causal, tensors):
-    score = K1Score(B, N, d, causal)
-    softmax = K1Softmax(B, N)
-    output = K1Output(B, N, d)
-    scale = cutlass.Float32(1.0 / math.sqrt(d))
-    stream = get_cuda_stream()
-
-    s_storage, s_cute = _make_S_tensor(B, N)
-
-    score_compiled = cute.compile(
-        score, tensors["q_cute"], tensors["k_cute"], s_cute, scale, stream,
-    )
-    softmax_compiled = cute.compile(softmax, s_cute, stream)
-    output_compiled = cute.compile(
-        output, s_cute, tensors["v_cute"], tensors["o_cute"], stream,
-    )
-
-    return (score_compiled, softmax_compiled, output_compiled,
-            scale, s_storage, s_cute)
+row         = tidx // THREADS_PER_ROW   # 0..63, which Q-row
+col_group   = tidx %  THREADS_PER_ROW   # 0..3,  which 1/4 of the row
+d_col_start = col_group * (d // THREADS_PER_ROW)
 ```
 
-The `S` buffer is allocated *once* inside `compile_kernel` and reused across all benchmark iterations. This is important: without it, every benchmark iteration would pay an OOM-prone $$\mathcal{O}(B N^2)$$ allocation cost, which would dominate the timing.
-
-`run_kernel` is then trivial: launch the three compiled kernels in sequence on the current CUDA stream.
+##### **SMEM layout**
 
 ```python
-def run_kernel(compiled_handle, tensors):
-    (score_compiled, softmax_compiled, output_compiled,
-     scale, s_storage, s_cute) = compiled_handle
-    stream = get_cuda_stream()
-    score_compiled(tensors["q_cute"], tensors["k_cute"], s_cute, scale, stream)
-    softmax_compiled(s_cute, stream)
-    output_compiled(s_cute, tensors["v_cute"], tensors["o_cute"], stream)
+sQ_layout  = cute.make_layout((Br, d),  stride=(d, 1))    # BF16
+sKV_layout = cute.make_layout((Bc, d),  stride=(d, 1))    # BF16, reused K then V
+sS_layout  = cute.make_layout((Br, Bc), stride=(Bc, 1))   # FP32
 ```
 
-That's it. The full file is on GitHub: <!-- TODO: link to kernels/k1.py -->.
+For $$B_r = B_c = 64$$ and $$d = 128$$: 16 KB + 16 KB + 16 KB = 48 KB. Comfortably under H100's 228 KB SMEM/SM. We reuse one buffer for $$K_j$$ and $$V_j$$ because $$K_j$$ is finished with the moment $$S$$ has been exponentiated into $$P$$ (which now sits in `sS`); $$V_j$$ then overwrites the buffer.
 
-##### **Running K1**
+Layouts are plain row-major. No swizzling, which means SMEM bank conflicts are not addressed here. K3 and K4 introduce swizzled layouts.
 
-From the project root:
+##### **Mapping the FA2 algorithm to code, phase by phase**
+
+From the FA2 section: one CTA handles one Q-tile $$Q_i$$, initialises $$m_i = -\infty$$, $$\ell_i = 0$$, $$O_i = 0$$, then for each KV tile $$j$$ computes $$S_{ij}$$, runs the online softmax update, and accumulates into $$O_i$$. Finally divides by $$\ell_i$$. The kernel body follows that structure literally, in three phases.
+
+**Phase 1: load Q once, init state.**
+
+```python
+m_i = -inf
+l_i = 0.0
+for c in range_constexpr(cols_per_thread_O):
+    O_acc[c] = 0.0
+
+for it in range_constexpr(0, Br * d, THREADS):
+    ij = it + tidx
+    sQ[ij // d, ij % d] = gQ[q_row_start + ij // d, ij % d]
+cute.arch.sync_threads()
+```
+
+The Q-tile is loaded once and kept in SMEM for all KV iterations. The loop is a flat thread-strided scan: 256 threads collectively load $$B_r \cdot d$$ BF16 elements. For $$d = 128$$ each thread loads 32 elements; for $$d = 64$$ it loads 16. No coalescing optimisation; just one element per thread per inner-iteration. K3 replaces this whole loop with a single TMA call.
+
+**Phase 2a: load $$K_j$$ into SMEM.** Same shape as the Q load:
+
+```python
+for it in range_constexpr(0, Bc * d, THREADS):
+    ij = it + tidx
+    sKV[ij // d, ij % d] = gK[kv_row_start + ij // d, ij % d]
+cute.arch.sync_threads()
+```
+
+**Phase 2b: $$S = QK^\top \cdot \text{scale}$$ on CUDA cores.** Each thread takes a strided subset of the $$B_r \cdot B_c = 4096$$ output elements (16 elements per thread) and computes each as a $$d$$-length FP32 dot product. This is the most obviously inefficient piece of K2: scalar FMAs in registers with unswizzled SMEM reads, all on the FP32 pipe. K4 replaces these two nested loops with a single WGMMA call.
+
+```python
+for it in range_constexpr(0, Br * Bc, THREADS):
+    ij = it + tidx
+    si, sj = ij // Bc, ij % Bc
+    dot = 0.0
+    for k in range_constexpr(d):
+        dot += sQ[si, k].to(f32) * sKV[sj, k].to(f32)
+    val = dot * scale
+    if const_expr(causal):
+        if kv_row_start + sj > q_row_start + si:
+            val = -inf
+    sS[si, sj] = val
+cute.arch.sync_threads()
+```
+
+The causal mask is per-element: `kv_row_start + sj` is the absolute KV position, `q_row_start + si` is the absolute Q position, and any future KV is set to $$-\infty$$ before the softmax sees it.
+
+**Phase 2c: online softmax row update.** This is the FA2 recurrence verbatim. Compute the row max of $$S_{ij}$$, update $$m_i$$, rescale $$O_i$$, exponentiate $$S$$ in place into $$P$$, update $$\ell_i$$.
+
+```python
+local_max = -inf
+for c_it in range_constexpr(cols_per_thread_S):    # 16 iters
+    c = col_group + c_it * THREADS_PER_ROW
+    local_max = fmax(local_max, sS[row, c])
+row_max = cute.arch.warp_reduction_max(local_max,
+                                       threads_in_group=THREADS_PER_ROW)
+
+m_new = fmax(m_i, row_max)
+alpha = exp(m_i - m_new)
+
+for c in range_constexpr(cols_per_thread_O):
+    O_acc[c] *= alpha
+
+local_sum = 0.0
+for c_it in range_constexpr(cols_per_thread_S):
+    c = col_group + c_it * THREADS_PER_ROW
+    p = exp(sS[row, c] - m_new)
+    sS[row, c] = p
+    local_sum += p
+row_sum = cute.arch.warp_reduction_sum(local_sum,
+                                       threads_in_group=THREADS_PER_ROW)
+
+l_i = alpha * l_i + row_sum
+m_i = m_new
+cute.arch.sync_threads()
+```
+
+Tying back to the FA2 section's algorithm box: `row_max` is $$\tilde m_i^{(j)} = \max_c S_{ij}[c]$$, `m_new` is $$m_i^{(j)} = \max(m_i^{(j-1)}, \tilde m_i^{(j)})$$, `alpha` is the rescaling factor $$e^{m_i^{(j-1)} - m_i^{(j)}}$$, and `row_sum` is $$\sum_c P_{ij}[c]$$. After the update, `sS` no longer holds $$S$$; it holds $$P = \exp(S - m_\text{new})$$.
+
+Note we exponentiate every element of the row, including the ones set to $$-\infty$$ by the causal mask. $$\exp(-\infty) = 0$$, so they contribute nothing to the sum and nothing to the subsequent $$PV$$ matmul. No branch needed.
+
+**Phase 2d: load $$V_j$$, overwriting $$K_j$$.** Same shape as the K load.
+
+**Phase 2e: $$O_\text{acc} \mathrel{+}= P V_j$$.** Each thread updates its `cols_per_thread_O` columns of $$O$$ by walking $$B_c$$.
+
+```python
+for c in range_constexpr(cols_per_thread_O):
+    col = d_col_start + c
+    pv = 0.0
+    for k in range_constexpr(Bc):
+        pv += sS[row, k] * sKV[k, col].to(f32)
+    O_acc[c] += pv
+```
+
+For $$d = 128$$, each thread does $$32 \times 64 = 2048$$ mul-adds per KV iteration; for $$d = 64$$, $$16 \times 64 = 1024$$. The $$P$$ row is read redundantly by all 4 threads of the row group; that's wasted SMEM bandwidth, but in K2 we don't care.
+
+**Phase 3: finalize.**
+
+```python
+inv_l = cute.arch.rcp_approx(l_i)
+if l_i == 0.0 or l_i != l_i:               # fully-masked row
+    inv_l = 1.0
+for c in range_constexpr(cols_per_thread_O):
+    gO[q_row_start + row, d_col_start + c] = (O_acc[c] * inv_l).to(bf16)
+```
+
+`rcp_approx` is the SFU reciprocal; one instruction. The guard handles rows fully masked out by the causal mask (the first row of a Q-tile that begins below the diagonal of a KV-tile sees no valid keys, so $$\ell = 0$$). Without the guard, $$0 \cdot \infty$$ would produce NaN.
+
+##### **New CuTe primitives in K2**
+
+A handful of primitives that did not appear in K1.
+
+**`cute.struct` and `SmemAllocator`.** A `cute.struct` declares a fixed-size, aligned SMEM block. `Align[..., 1024]` enforces 1024-byte alignment; `MemRange[dtype, n]` reserves $$n$$ elements. The struct is materialised through `SmemAllocator`, and named regions are extracted with `get_tensor(layout)`. This is the standard CuTe pattern for several named SMEM tiles sharing one allocation:
+
+```python
+@cute.struct
+class SharedStorage:
+    sQ:  cute.struct.Align[cute.struct.MemRange[bf16,  cosize(sQ_layout)],  1024]
+    sKV: cute.struct.Align[cute.struct.MemRange[bf16,  cosize(sKV_layout)], 1024]
+    sS:  cute.struct.Align[cute.struct.MemRange[f32,   cosize(sS_layout)],  1024]
+```
+
+**`cute.arch.warp_reduction_max` / `_sum` with `threads_in_group`.** Sub-warp shuffle reduction. With `threads_in_group=4`, each group of 4 consecutive lanes does an independent reduction and the result is broadcast to all 4. Lowers to `__shfl_xor_sync` butterflies; the DSL hides the pattern. This is what makes the 4-thread row group work: after the reduction every thread of the group has the same `row_max` (and later `row_sum`), so the per-row state stays consistent without extra synchronisation.
+
+**`cutlass.range` vs `cutlass.range_constexpr`.** `range_constexpr` is unrolled at JIT time and needs JIT-time-constant bounds; we use it everywhere the trip count is known. `cutlass.range(n_kv, unroll=1)` is a runtime loop, used only for the KV mainloop because $$n_\text{kv} = N / B_c$$ depends on the runtime sequence length.
+
+**`cute.math.exp(..., fastmath=True)`.** Lowers to the SFU `ex2.approx.f32` (about 2 ULPs). The flag is what makes the softmax fast; without it we would get a much slower software exp.
+
+**`cute.arch.rcp_approx`.** SFU reciprocal (about 1 ULP), used in the finalize divide.
+
+The rest (`make_rmem_tensor`, `sync_threads`, `block_idx`, `thread_idx`, `.to(dtype)` casts) are direct analogues of CUDA C++ and don't need separate treatment.
+
+##### **Running K2**
 
 ```bash
-CHECK=1 SEQLEN=512 HEADDIM=64 CAUSAL=0 python bench.py k1
+CHECK=1 SEQLEN=512 HEADDIM=64 CAUSAL=0 python bench.py k2
 ```
 
-This compiles K1, runs the correctness check against SDPA, then 10 warmup + 30 timed iterations.
+##### **What we expect**
 
-<!-- TODO: actual K1 output, including the SDPA check result and the per-config timing/TFLOPS. -->
+K2 is the FA2 algorithm done correctly, with everything else still naive. Expectations:
 
-##### **What we expect to see**
-
-Three things, all bad:
-
-- **Low TFLOPS.** No Tensor Cores. Every multiply-add uses CUDA cores in FP32. The peak we can hit is bounded by the CUDA-core FP32 throughput, which on H100 is on the order of $$67$$ TFLOPS, far below the $$\sim 990$$ TFLOPS BF16 Tensor-Core peak we'd target later.
-- **OOM at large $$N$$.** The $$S$$ buffer is $$B \times N \times N \times 4$$ bytes. For $$N = 16384$$ and the larger batch values in the sweep, this exceeds H100's 80 GB. The harness catches `torch.cuda.OutOfMemoryError` and reports `[OOM: ...]` for those configs; that's expected.
-- **Softmax dominates.** One thread per row, three full passes over $$N$$ values from GMEM. For larger $$N$$ this is the slowest of the three kernels, even though it does the least arithmetic.
-
-The profiling, once we have it, should make all three of these visible.
+- TFLOPS noticeably above K1 (no GMEM round-trip on $$S$$, fused softmax), still far below peak because tensor cores are unused and the scalar FP32 GEMMs dominate.
+- HBM traffic drops by the K1 $$S$$-materialisation volume, on the order of $$2BHN^2$$ FP32 round-trip.
+- Softmax is no longer a separate kernel pass; it overlaps with the QK GEMM in the same CTA.
+- NCU will show heavy SMEM bank conflicts (unswizzled `sQ`/`sKV`/`sS`) and the vast majority of math issuing on the FMA pipe rather than the tensor pipe.
 
 ##### **Profiling**
 
-<!-- TODO: NCU profile of K1. At minimum, capture: kernel time per stage (Score, Softmax, Output), achieved compute throughput, memory throughput, the dominant stall reason for each stage. The softmax kernel especially is worth inspecting; one thread per row with sequential GMEM reads should look catastrophic. -->
+<!-- TODO: NCU output for K2 -->
 
 ##### **What's next**
 
-The first thing to fix is the materialized $$S$$ matrix. Everything else (Tensor Cores, async loads, warp specialization) is downstream of that decision; as long as we materialize $$S$$ we're paying $$\mathcal{O}(B N^2)$$ in memory and $$\mathcal{O}(B N^2)$$ in GMEM traffic for it. K2 fuses the three kernels into one and uses the tiled online softmax we derived in the math sections, so $$S$$ never leaves SMEM. This is also the first kernel where we'll see the basic FlashAttention structure (per-row state, max-tracking recurrence, output rescaling) in actual code.
+The scalar FP32 GEMM is the obvious bottleneck. K3 brings TMA to lift the GMEM->SMEM copies off the critical path with async bulk transfers; K4 then replaces the two GEMMs with WGMMA on the tensor cores.
