@@ -24,6 +24,56 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 ---
 
 <div class="small-quote">
+  <p>Side doors tend to work best when they are grounded in generosity, specificity, and proof.</p>
+  <span class="author">- Maja Wilbrink</span>
+</div>
+
+<div class="small-quote"><p>The quality of being selfish is very much similar to nature’s gravity. You need it internally to hold yourselves together and be strong enough to pull and compete with the others. You need it in balance within you and your circle of connections to maintain a healthy motion.</p></div>
+
+<div class="small-quote">
+  <p>Risk nothing, Gain nothing</p>
+  <span class="author">- Cassie, Purple Hearts.</span>
+</div>
+
+<div class="small-quote"><p>The more you’re committed to your goals, the more it burns you to shine.</p></div>
+
+<div class="small-quote"><p>Learn to ride the uncertainties of life gracefully.</p></div>
+
+<div class="small-quote">
+  <p>Don’t practice what you do not want to become</p>
+  <span class="author">- Jordan Peterson.</span>
+</div>
+
+<div class="small-quote">
+  <p>Inspiration is for amateurs,’ the artist Chuck Close once memorably observed. ‘The rest of us just show up and get to work.</p>
+  <span class="author">- Oliver Burkeman, The Antidote: Happiness for People Who Can't Stand Positive Thinking</span>
+</div>
+
+<div class="small-quote">
+  <p>True security lies in the unrestrained embrace of insecurity - in the recognition that we never really stand on solid ground, and never can.</p>
+  <span class="author">- Oliver Burkeman, The Antidote: Happiness for People Who Can't Stand Positive Thinking</span>
+</div>
+
+<div class="small-quote">
+  <p>Mortality makes it impossible to ignore the absurdity of living solely for the future.</p>
+  <span class="author">- Oliver Burkeman, Four Thousand Weeks: Time Management for Mortals</span>
+</div>
+
+<div class="small-quote">
+  <p>If you cannot control what’s inside, you will not control what’s outside</p>
+  <span class="author">- War Machine.</span>
+</div>
+
+<div class="small-quote">
+  <p>It’s the possibility of having a dream come true that makes life interesting.</p>
+  <span class="author">- Avni Barman</span>
+</div>
+
+<div class="small-quote"><p>Power appears to be forgiving, but never is.</p></div>
+
+<div class="small-quote"><p>Without an all in consensus for change in a group, uneasiness troubles everyone in some way.</p></div>
+
+<div class="small-quote">
   <p>Proximity reshapes the perceptual ordering of things.</p>
 </div>
 
