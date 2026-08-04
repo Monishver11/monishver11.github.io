@@ -23,6 +23,115 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+<div class="small-quote"><p>Discern for yourself.</p></div>
+
+<div class="small-quote">
+  <p>Show momentum to people you message</p>
+  <span class="author">- thecuriousmaverick</span>
+</div>
+
+<div class="small-quote">
+  <p>Hesitation/inaction is just as irrevocable as action.</p>
+  <span class="author">- Algorithms to Live By, The Computer Science of Human Decisions Book</span>
+</div>
+
+<div class="small-quote">
+  <p>I expect to pass through this world but once. Any good therefore that I can do, or any kindness that I can show to any fellow creature, let me do it now. Let me not defer or neglect it, for I shall not pass this way again.</p>
+  <span class="author">- Stephen Grellet</span>
+</div>
+
+<div class="small-quote">
+  <p>Clarity is a by-product of bias to action and iteration. You try new things, increase the bar for them, succeed or learn or both, you iterate. Clarity emerges.</p>
+  <span class="author">- Sohan Joshi</span>
+</div>
+
+<div class="small-quote">
+  <p>“Now, here, you see, it takes all the running you can do, to keep in the same place. If you want to get somewhere else, you must run at least twice as fast as that!”</p>
+  <span class="author">- The Red Queen</span>
+</div>
+
+<div class="small-quote">
+  <p>Imaginary evil is romantic and varied; real evil is gloomy, monotonous, barren, boring. Imaginary good is boring; real good is always new, marvelous, intoxicating.</p>
+  <span class="author">- Simone Weil</span>
+</div>
+
+<div class="small-quote"><p>The immense possibilities of what we can do within our lifetime seems impossible to comprehend.</p></div>
+
+<div class="small-quote">
+  <p>The real advantage is not access. It is being memorable after you get it.</p>
+  <span class="author">- Avni Barman</span>
+</div>
+
+<div class="small-quote">
+  <p>Luck is geographic.</p>
+  <span class="author">- Avni Barman</span>
+</div>
+
+<div class="small-quote">
+  <p>Your success in life will be determined largely by your ability to speak, your ability to write, and the quality of your ideas, in that order.</p>
+  <span class="author">- Patrick Winston</span>
+</div>
+
+<div class="small-quote">
+  <p>Be mindful of your referee’s time and do your best to land the role they are referring you for</p>
+  <span class="author">- Max Mynter</span>
+</div>
+
+<div class="small-quote">
+  <p>The one who masters desire discovers a happiness that never fades</p>
+  <span class="author">- Bhagavad Gita</span>
+</div>
+
+<div class="small-quote">
+  <p>"By believing passionately in something that does not yet exist, we create it"</p>
+  <span class="author">- Franz Kafka</span>
+</div>
+
+<div class="small-quote">
+  <p>“A formidable person is one who seems like they’ll get what they want, regardless of whatever obstacles are in the way.”</p>
+  <span class="author">— Paul Graham</span>
+</div>
+
+<div class="small-quote">
+  <p>"Learning is not attained by chance, it must be sought for with ardor and attended to with diligence."</p>
+  <span class="author">- Abigail Adams</span>
+</div>
+
+<div class="small-quote">
+  <p>To maintain an identity requires endless effort. We must constantly defend it, construct it, perform it, and protect it. Meanwhile, time slowly dismantles everything we build.</p>
+  <span class="author">- Existential Corner Substack</span>
+</div>
+
+<div class="small-quote">
+  <p>Do not disturb yourself by imagining your whole life at once.</p>
+  <span class="author">- Marcus Aurelius.</span>
+</div>
+
+<div class="small-quote">
+  <p>“Learn how to be happy with what you have while you pursue all that you want.”</p>
+  <span class="author">― Jim Rohn</span>
+</div>
+
+<div class="small-quote">
+  <p>“We must all suffer from one of two pains: the pain of discipline or the pain of regret. The difference is discipline weighs ounces while regret weighs tons.”</p>
+  <span class="author">― Jim Rohn</span>
+</div>
+
+<div class="small-quote">
+  <p>“If you really want to do something, you'll find a way. If you don't, you'll find an excuse.”</p>
+  <span class="author">― Jim Rohn</span>
+</div>
+
+<div class="small-quote">
+  <p>“Don't wish it were easier. Wish you were better.”</p>
+  <span class="author">― Jim Rohn</span>
+</div>
+
+<div class="small-quote">
+  <p>Make it exist, then make it good</p>
+  <span class="author">- Anonymous</span>
+</div>
+
 <div class="small-quote">
   <p>Side doors tend to work best when they are grounded in generosity, specificity, and proof.</p>
   <span class="author">- Maja Wilbrink</span>
