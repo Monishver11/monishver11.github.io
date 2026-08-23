@@ -1,7 +1,7 @@
 ---
 layout: post
 title: LLM Inference Systems - From the Roofline to vLLM Internals
-date: 2026-08-23 18:00:00-0400
+date: 2026-08-23 17:00:00-0400
 featured: false
 description: How LLM serving engines work, from prefill, decode, and the roofline to paged KV caches, scheduling, speculative decoding, parallelism, and the vLLM V1 internals that implement them
 tags: GPU ML
