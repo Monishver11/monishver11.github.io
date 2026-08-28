@@ -169,7 +169,15 @@ $$
 \text{FLOPs per token} \approx 2N \;+\; 2 \, L \, n_{ctx} \, d_{model}
 $$
 
-where $$N$$ is the non-embedding parameter count and the factor 2 counts the multiply and the add of a multiply-accumulate ([Kaplan et al., Eq. 2.2](https://arxiv.org/abs/2001.08361)). The first term is the matmuls against the weights; the second is attention against the context, which stays negligible until contexts get long. Training costs roughly $$6N$$ per token (forward plus backward); inference is the $$2N$$ forward only.
+This is [Kaplan et al., Eq. 2.2](https://arxiv.org/abs/2001.08361), and both terms are worth deriving rather than memorizing.
+
+**The $$2N$$ term.** Start from the general matmul count: multiplying an $$m \times k$$ matrix by a $$k \times n$$ matrix costs $$2mnk$$ FLOPs, the 2 counting the multiply and the add of each multiply-accumulate. A single token passing through a linear layer is the $$m = 1$$ case: a $$1 \times k$$ row times a $$k \times n$$ weight matrix costs $$2kn$$ FLOPs, and $$kn$$ is exactly the number of parameters in that weight matrix. So one token through one linear layer costs **2 FLOPs per parameter**, and since a forward pass is one trip through every weight matrix in the model (the QKV and output projections, the FFN matrices, all $$L$$ layers of them), the totals just add up: roughly 2 FLOPs per parameter overall, hence $$2N$$. If you want the op-by-op ledger behind this, block by block with the bytes counted too, I've worked through it in the [transformer block accounting post](/blog/2026/transformer-block-accounting/).
+
+**What $$N$$ is.** $$N$$ is the parameter count *excluding the embedding table*, and the exclusion has a mechanical justification: the input embedding is a table lookup, not a matmul, so its parameters contribute zero FLOPs. The output side is different, and worth being precise about since it's a common point of confusion: the final logits projection (hidden state times the $$d_{model} \times V$$ unembedding matrix) *is* a real matmul. The $$\approx$$ absorbs it because it's one matrix against the $$L$$ layers' worth in $$N$$: for Llama 3 8B it's $$2 \cdot 4096 \cdot 128256 \approx 1.1$$ GFLOP per token against $$2N \approx 16$$ GFLOP, about 7%, and the fraction shrinks as models grow (about 1.5% at 70B).
+
+**The attention term.** Attention against the cached context is the one part of the forward pass that is *not* a multiply through a fixed weight matrix; its operand is the KV cache, and its cost grows with context. Per layer, the new token's query is dotted against all $$n_{ctx}$$ cached keys and the resulting weights are applied to the $$n_{ctx}$$ values, work proportional to $$n_{ctx} \, d_{model}$$; Kaplan's accounting puts the total at $$2 \, L \, n_{ctx} \, d_{model}$$ per token. It stays small until contexts get long: at 8K context on Llama 3 8B it's $$2 \cdot 32 \cdot 8192 \cdot 4096 \approx 2.1$$ GFLOP against the 16 GFLOP of $$2N$$, about 13%, but it scales linearly with $$n_{ctx}$$ while $$2N$$ stays fixed.
+
+**And the $$6N$$ you'll see quoted for training.** Same $$N$$, different pass structure. Training costs roughly $$6N$$ per token: the $$2N$$ forward, plus a backward pass that costs about twice the forward, because each layer's backward computes *two* matmul-shaped quantities, the gradient with respect to the weights and the gradient with respect to the input, each about a forward's worth of work. (Those are exactly the outer-product and transposed-matmul shapes derived in the [MLP forward and backward post](/blog/2026/mlp-forward-backward/).) Inference has no backward pass, so it's the $$2N$$ forward only.
 
 ##### **Formula 3: the decode floor**
 
@@ -192,6 +200,14 @@ so single-stream decode is capped at roughly **210 tokens/s regardless of kernel
 - Bytes per element: bf16/fp16 = 2, fp8/int8 = 1, int4 = 0.5.
 - Weights at bf16 are roughly 2 bytes per parameter: the 8B model is 16 GB, 70B is 140 GB, 405B is 810 GB, before any KV cache, activations, or CUDA context. The 70B model doesn't even fit on one 80 GB GPU; that observation is where the distributed section starts.
 - vLLM defaults, from `vllm/config/cache.py` as of 2026-08-21: `gpu_memory_utilization = 0.92` (older docs say 0.9; the current code says 0.92), and a KV block size of 16 tokens (`CacheConfig.DEFAULT_BLOCK_SIZE`, applied when unset; platform or attention-backend preferences can override it, `vllm/platforms/interface.py`). Both matter in the KV cache section.
+
+##### **Why re-read the weights every step at all?**
+
+A fair objection to formula 3, and a question worth settling before moving on: the weights never change during inference, so why does every decode step pay to "read" them again? Can't they just stay where they are?
+
+They *do* stay where they are, in HBM; nothing re-uploads them from the CPU between steps. The read the floor charges is a different trip: from HBM to the compute units. Arithmetic happens in registers on the SMs, and the total on-chip storage, the 50 MB L2 plus each SM's registers and shared memory, adds up to roughly 100 MB on an H100, against 16 GB of weights for even the small model. The weights physically cannot live next to the ALUs. So each layer's matrices must stream on-chip, get used, and be overwritten by the next layer's matrices, every single forward pass; "keeping the weights fixed" is exactly what already happens, and it doesn't help, because the cost was never re-loading them onto the GPU, it was moving them across the last few centimeters. Caches don't rescue this either: within one batch-1 decode step each weight is touched exactly once, and a value used once gains nothing from any cache tier. The only reuse available is *across sequences in the same step*, which is precisely what batching exploits.
+
+Framed this way, the remedies from the rest of the post sort themselves: get more tokens out of each streaming pass (batching, speculative decoding), make the stream smaller (weight quantization), or split the stream across more HBM stacks in parallel (tensor parallelism). That's the whole menu, and it's the roofline's memory-bound prescription, reduce or amortize bytes, applied to the one byte stream that can't be skipped.
 
 **References**
 - [NVIDIA A100 page](https://www.nvidia.com/en-us/data-center/a100/), [NVIDIA H100 page](https://www.nvidia.com/en-us/data-center/h100/)
