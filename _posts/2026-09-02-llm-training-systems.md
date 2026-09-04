@@ -3,7 +3,7 @@ layout: post
 title: Large-Scale LLM Training Systems - How and Why
 date: 2026-09-02 14:00:00-0400
 featured: false
-description: How large-scale LLM training systems are designed, from the 16 bytes per parameter and mixed precision to collectives, ZeRO and FSDP, tensor, sequence, and pipeline parallelism, 4D composition, MFU, and what breaks at scale
+description: How large-scale LLM training systems are designed, from the 16 bytes per parameter and mixed precision to collectives, ZeRO and FSDP, tensor, sequence, context, expert, and pipeline parallelism, 4D composition, MFU, and what breaks at scale
 tags: GPU ML
 categories:
 giscus_comments: true
@@ -26,7 +26,8 @@ The plan:
 - Activation recomputation, and why it is a throughput optimization
 - Communication primitives: the collectives, the ring algorithm, and the cost model
 - Data parallelism: DDP, gradient accumulation, ZeRO, FSDP, and offloading
-- Tensor parallelism, sequence parallelism, and context parallelism
+- Tensor parallelism: column-then-row splits and what the all-reduces cost
+- Sequence, context, and expert parallelism
 - Pipeline parallelism: microbatches, the bubble, and the schedules
 - Composing them: 3D and 4D parallelism, and how a real run is laid out
 - MFU and HFU: the utilization numbers and how to compute them in both directions
@@ -647,9 +648,29 @@ Take the 70B model ($$h = 8192$$, 80 layers) with $$b \times s = 8192$$ tokens p
 
 Compare that with the compute for the same microbatch: $$6 \times 70 \times 10^9 \times 8192 = 3.4 \times 10^{15}$$ FLOPs spread over 8 GPUs at 989 TFLOPS each is about $$0.43$$ s at 100% utilization and about $$1.1$$ s at a realistic 40%. On NVLink the tensor-parallel traffic is a sizable fraction of the compute time and has to be at least partly overlapped (Megatron's `--tp-comm-overlap` exists for this); over PCIe or InfiniBand it *exceeds* the compute, and these all-reduces are on the critical path of every layer, each one waiting on the matmul before it. That is the quantitative reason **tensor parallelism stays inside a node**. The Megatron authors say it directly, that running TP across the slower inter-node links can be impractical, and their sweep of $$(t, p)$$ combinations peaks at $$t = 8$$, the number of GPUs in a node ([Narayanan et al., Section 3.2 and Figure 13](https://arxiv.org/abs/2104.04473)).
 
-##### **Sequence parallelism**
+The next section picks up the redundancy this leaves behind, the norm and dropout activations replicated on every rank, and the two other dimensions that split along the sequence and across experts.
 
-Look again at the per-layer activation formula with $$t$$-way tensor parallelism, $$sbh(10 + 24/t + 5as/(ht))$$. The $$24/t$$ and the attention term shrink with $$t$$; the **10** does not. Those 10 bytes per element are the activations in the parts of the layer tensor parallelism does not touch, the layer norm inputs, the dropout masks, the residual stream, which every rank computes and stores in full. At $$t = 8$$ they are more than a third of the remaining activation memory.
+**References**
+- [Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism - Shoeybi et al.](https://arxiv.org/abs/1909.08053)
+- [Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM - Narayanan et al.](https://arxiv.org/abs/2104.04473)
+- [Megatron-LM README](https://github.com/NVIDIA/Megatron-LM/blob/main/README.md)
+- [LayerNorm and RMSNorm - the fork rule](/blog/2026/layernorm-rmsnorm/)
+
+---
+
+#### **Sequence, Context, and Expert Parallelism**
+
+The four dimensions so far, data, tensor, and (next section) pipeline parallelism, split the batch, the matrices, and the layer stack. Three more dimensions split along axes those leave untouched, and each exists because one of the earlier accountings left a term behind:
+
+| Dimension | What it splits | The term it attacks | Communication it adds |
+|---|---|---|---|
+| Sequence parallelism (SP) | the norm and dropout activations between tensor-parallel blocks, along the sequence, within a TP group | the $$10\,sbh$$ that TP replicates on every rank | none beyond TP's (an all-reduce becomes a reduce-scatter plus an all-gather) |
+| Context parallelism (CP) | the whole sequence, for every layer, across a CP group | the $$b \times s$$ activation scaling when $$s$$ itself is too large | $$K$$ and $$V$$ exchanged between ranks in attention |
+| Expert parallelism (EP) | the experts of a mixture-of-experts layer across an EP group | the parameter count of a model whose weights are mostly experts each token never touches | two all-to-alls per MoE layer, dispatch and combine |
+
+##### **Sequence parallelism: the 10 that tensor parallelism leaves behind**
+
+Look again at the per-layer activation formula with $$t$$-way tensor parallelism from the recomputation section, $$sbh(10 + 24/t + 5as/(ht))$$. The $$24/t$$ and the attention term shrink with $$t$$; the **10** does not. Those 10 bytes per element are the activations in the parts of the layer tensor parallelism does not touch, the layer norm inputs, the dropout masks, the residual stream, which every rank computes and stores in full. At $$t = 8$$ they are more than a third of the remaining activation memory.
 
 [Korthikanti et al.](https://arxiv.org/abs/2205.05198) observe that those operations are **pointwise along the sequence**: a layer norm of token 5 does not depend on token 6. So the non-tensor-parallel regions can be split along the sequence dimension instead, each rank holding $$s/t$$ tokens of the full hidden state. The catch is at the boundaries, where the tensor-parallel matmuls need the whole sequence:
 
@@ -662,27 +683,97 @@ The paper names the new pair $$g$$ and $$\bar g$$. The point is that an all-redu
 
 The phrase to hold onto: *same communication volume, strictly less activation memory.*
 
-##### **Context parallelism, and the naming collision**
+##### **Context parallelism: when the sequence is the problem**
 
-"Sequence parallelism" is also used for something else, and the collision is a real source of confusion, so here are the two side by side:
+Sequence parallelism splits only the cheap regions between tensor-parallel blocks. Context parallelism (CP) splits the **input sequence itself**, so that with $$\text{CP} = c$$ each rank holds a contiguous chunk of $$s/c$$ tokens through *every* layer. Almost every operation in a transformer layer is per-token, the norms, the MLP, the QKV and output projections, so they all run unchanged on a chunk and never need to know the other chunks exist ([Megatron Core context parallelism](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html)). Activation memory per rank, including the quadratic attention term, drops by $$c$$. That is the memory story, and it is why CP is the dimension that unlocks 128K-token training: Llama 3 uses $$\text{CP} = 16$$ for its long-context stage and 1 elsewhere ([Table 4](https://arxiv.org/abs/2407.21783)).
 
-| | Megatron sequence parallelism | Context parallelism (ring attention) |
+The one operation that is *not* per-token is attention. Each query has to see the keys and values of the whole sequence, and under CP the $$K$$ and $$V$$ for the other chunks live on other ranks. There are three ways to bring them together, and all three are in production:
+
+| Method | Mechanism | Communication | Trade |
+|---|---|---|---|
+| **Ring** ([Ring Attention](https://arxiv.org/abs/2310.01889); Megatron `p2p`) | ranks pass their $$K$$ and $$V$$ chunk to the next rank around a ring, $$c-1$$ times; each rank accumulates attention against each visiting block with the online-softmax rescaling FlashAttention uses, while the next block is already in flight | point-to-point, overlapped with attention compute | fully hidden if a block's attention takes longer than its transfer; more complex with irregular masks |
+| **All-gather** (Llama 3; Megatron `all_gather`) | all-gather the full $$K$$ and $$V$$ first, then run ordinary attention for the local queries | one all-gather of $$K$$ and $$V$$ per layer, on the critical path | simple, and any mask works, including the per-document masks Llama 3 needs |
+| **All-to-all** ([DeepSpeed-Ulysses](https://arxiv.org/abs/2309.14509); Megatron `a2a`) | an all-to-all re-shards $$Q$$, $$K$$, $$V$$ from sequence-sharded to **head**-sharded, so each rank gets the full sequence for $$1/c$$ of the heads, computes full attention for them, and a second all-to-all re-shards the output back along the sequence | two all-to-alls per layer, $$4sh/c$$ bytes-equivalent per link | lowest volume, but $$c$$ cannot exceed the number of (KV) heads |
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/llm-training/cp-attention.svg" title="Context parallelism: ring and all-gather attention" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    Context parallelism on four ranks. Every rank owns one chunk of the sequence for all layers. For attention, the ring variant rotates each rank's $$K$$ and $$V$$ block around the ring over three steps, accumulating attention block by block; the all-gather variant collects every $$K$$ and $$V$$ first and then runs attention for the local queries. Editable source: <a href="/assets/img/llm-training/cp-attention.excalidraw">cp-attention.excalidraw</a>.
+</div>
+
+Llama 3's choice of the all-gather method, with its latency deliberately exposed, is the instructive one, because the report explains the arithmetic ([Section 3.3.2](https://arxiv.org/abs/2407.21783)). Under grouped-query attention the $$K$$ and $$V$$ tensors are much smaller than $$Q$$ (Llama 3 70B has 8 KV heads against 64 query heads), so the gathered bytes are small; and attention's compute grows as $$O(s^2)$$ while the gather grows as $$O(s)$$, so at 128K tokens the gather is a rounding error next to the attention it feeds. Two further details from the same paragraph are worth knowing. First, a causal mask makes the work uneven: the chunk at the end of the sequence attends to everything, the chunk at the start to almost nothing. Llama 3 balances it by cutting the sequence into $$2c$$ chunks and giving rank $$i$$ chunks $$i$$ and $$2c - 1 - i$$, one light and one heavy; Megatron Core does the same kind of balancing for its ring implementation. Second, GQA helps CP directly: the Megatron docs note that MQA and GQA reduce the CP communication volume for exactly this reason, only the few KV heads travel.
+
+Where CP sits in the hierarchy follows from its traffic: per layer, like TP, but overlappable or small, unlike TP. Llama 3 places it second, $$[\text{TP}, \text{CP}, \text{PP}, \text{DP}]$$, and the total GPU count is $$\text{TP} \times \text{CP} \times \text{PP} \times \text{DP}$$ ([Megatron Core docs](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html)).
+
+##### **The naming collision, settled**
+
+"Sequence parallelism" is used for both of the previous two ideas, and the collision is a genuine source of confusion:
+
+| | Megatron sequence parallelism | Context parallelism |
 |---|---|---|
-| Introduced in | [Korthikanti et al. 2022](https://arxiv.org/abs/2205.05198) | [Li et al. 2021](https://arxiv.org/abs/2105.13120) (which calls it "sequence parallelism"), [Ring Attention, Liu et al. 2023](https://arxiv.org/abs/2310.01889) |
-| What is split along the sequence | only the norm and dropout activations between TP blocks, within a TP group | the input and *every* activation, for the whole network |
-| Attention | unchanged: each rank has its heads' full $$K$$ and $$V$$ | each rank has $$K$$ and $$V$$ for its own sequence chunk only, and needs everyone else's |
-| Communication | all-gather and reduce-scatter at the TP boundaries; same volume as TP alone | $$K$$ and $$V$$ blocks passed around a ring, overlapped with block-wise attention compute |
-| Purpose | activation memory | sequences too long for one GPU at all |
+| Introduced in | [Korthikanti et al. 2022](https://arxiv.org/abs/2205.05198) | [Li et al. 2021](https://arxiv.org/abs/2105.13120), which calls it "sequence parallelism"; [Ring Attention](https://arxiv.org/abs/2310.01889); [DeepSpeed-Ulysses](https://arxiv.org/abs/2309.14509), which also calls it sequence parallelism |
+| What is split along the sequence | only the norm and dropout activations between TP blocks, within a TP group | the input and every activation, for the whole network |
+| Attention | unchanged: each rank has its heads' full $$K$$ and $$V$$ | each rank has $$K$$ and $$V$$ for its own chunk only and needs everyone else's |
+| Purpose | activation memory, at no extra communication | sequences too long for one GPU at all |
 
-Context parallelism (CP) is the answer to the quadratic term when the sequence itself is the problem. Each rank holds a contiguous chunk of the sequence and computes attention for its queries against *all* keys by receiving the other ranks' $$K$$ and $$V$$ blocks one at a time around a ring, accumulating the result block by block with the same online-softmax bookkeeping FlashAttention uses, while the next block is already in flight ([Ring Attention, Section 3](https://arxiv.org/abs/2310.01889)). Megatron Core's implementation partitions inputs and activations along the sequence, exchanges $$K$$ and $$V$$ over asynchronous point-to-point sends in a ring topology overlapped with attention compute, and composes with TP, PP, and DP so that the GPU count is $$\text{TP} \times \text{CP} \times \text{PP} \times \text{DP}$$ ([Megatron Core context parallelism](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html)). Llama 3 uses $$\text{CP} = 16$$ for its 128K-context stage and $$\text{CP} = 1$$ for everything else ([Table 4](https://arxiv.org/abs/2407.21783)); it is the dimension you turn on when the sequence gets long and off otherwise.
+When a paper or a flag says "sequence parallel", check which of the two it means: if it is a companion to tensor parallelism and costs nothing, it is the first; if it is about long context and touches attention, it is the second, and modern frameworks call that one context parallelism.
+
+##### **Expert parallelism: splitting a model that is mostly experts**
+
+A mixture-of-experts (MoE) layer replaces the single dense MLP with $$E$$ separate MLPs, the **experts**, and a small **router** that picks, for each token, the $$k$$ experts that token will go through; the token's output is the gate-weighted sum of those $$k$$ experts' outputs. GShard used top-2 routing ([Lepikhin et al.](https://arxiv.org/abs/2006.16668)), the Switch Transformer argued for top-1 ([Fedus et al.](https://arxiv.org/abs/2101.03961)), and DeepSeek-V3 routes each token to 8 of 256 routed experts plus 1 shared expert that every token uses ([DeepSeek-V3, Section 4.2](https://arxiv.org/abs/2412.19437)). The point of the design is the ratio it creates: compute per token scales with $$k$$, parameters scale with $$E$$. DeepSeek-V3 has 671B parameters and activates 37B per token.
+
+That ratio is a problem for everything in this post that assumed parameters and FLOPs go together. **All 671B parameters must be resident**, because any token may route to any expert, so the $$16N$$ accounting applies to the full count while the $$6N$$ per token applies only to the active slice. And tensor parallelism is a poor fit for experts: each expert is a small MLP (DeepSeek-V3's have an intermediate width of 2048, against 7168 for the hidden size), so slicing it eight ways produces GEMMs too thin to run efficiently while still paying TP's collectives; Megatron's MoE guide recommends an expert tensor-parallel degree of 1 for fine-grained MoE models for exactly this reason ([Megatron Core MoE README](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/transformer/moe/README.md)).
+
+**Expert parallelism (EP)** is the natural split instead: keep each expert whole and place different experts on different GPUs, $$E / \text{EP}$$ per rank. DeepSeek-V3 deploys its 256 routed experts uniformly over 64 GPUs across 8 nodes, four experts per GPU per layer ([Section 4.2](https://arxiv.org/abs/2412.19437)). The consequence is that tokens have to travel to their experts, and that traffic is the **all-to-all** from the primitives table:
+
+1. **Dispatch.** After the router decides, every rank sends each of its tokens' hidden vectors to the ranks hosting that token's $$k$$ experts. Since every rank sends to every other rank, this is one all-to-all.
+2. **Compute.** Each rank runs its resident experts on whatever tokens arrived, one grouped or batched GEMM per expert.
+3. **Combine.** A second all-to-all sends each expert output back to the token's home rank, which sums the $$k$$ results with the router's gate weights.
+
+The backward pass mirrors both, so an MoE layer costs two all-to-alls forward and two backward. GShard framed the same movement as an all-to-all resharding on TPUs ([Section 3.3.2](https://arxiv.org/abs/2006.16668)); Megatron-LM's `--moe-token-dispatcher-type alltoall` and the DeepEP-backed dispatcher are the GPU versions, with `--expert-model-parallel-size` setting the EP degree ([MoE README](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/transformer/moe/README.md)).
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/llm-training/ep-all-to-all.svg" title="Expert parallelism: dispatch, expert compute, combine" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    Expert parallelism on four ranks with eight experts, two per rank, and top-2 routing. The router on each rank picks two experts per token; a dispatch all-to-all carries each token's hidden vector to the ranks holding those experts, each rank runs its resident experts on what arrived, and a combine all-to-all returns the outputs to be gate-weighted and summed at home. Editable source: <a href="/assets/img/llm-training/ep-all-to-all.excalidraw">ep-all-to-all.excalidraw</a>.
+</div>
+
+**What it costs.** Each token's $$h$$-vector is sent to $$k$$ experts and $$k$$ results come back, so per MoE layer a rank sends roughly $$2\,k\,b\,s\,h$$ bytes-per-element, less whatever fraction of experts happen to be local. For DeepSeek-V3, $$h = 7168$$ and $$k = 8$$ in bf16 is $$8 \times 7168 \times 2 = 115$$ KB per token per layer each way, and there are 58 MoE layers (61 layers with the first three dense). Compare tensor parallelism's four all-reduces at $$t = 8$$, $$16 \times 7168 \times 2 \times 7/8 = 200$$ KB per token per layer: the same order of magnitude, but EP's traffic crosses **nodes**, since 64 experts' worth of GPUs do not fit in one. The report is candid about the result: cross-node expert parallelism gave a compute-to-communication ratio of about 1:1 ([Section 3.2.1](https://arxiv.org/abs/2412.19437)), which is why the two engineering investments of that run, DualPipe's overlap of a forward chunk's dispatch and combine with a backward chunk's compute, and custom all-to-all kernels, both exist. Two tricks in those kernels are worth knowing because they are the bandwidth ladder applied to routing ([Section 3.2.2](https://arxiv.org/abs/2412.19437)): **node-limited routing** caps each token at 4 destination nodes so that InfiniBand carries at most 4 copies of it, and each copy is sent once over InfiniBand to a same-index GPU on the target node and then forwarded over NVLink (160 GB/s on their H800 nodes against 50 GB/s for InfiniBand) to the GPUs that actually host the experts. With that structure a token could reach 13 experts for the same cross-node cost as its 8.
+
+**Load balance.** A synchronous step ends when the busiest GPU finishes, so if the router sends 30% of tokens to one expert, the GPU hosting it becomes the straggler for every step. Three families of remedy:
+
+| Remedy | Mechanism | Where |
+|---|---|---|
+| Expert capacity | cap the tokens an expert may take per batch at $$(\text{tokens}/E) \times$$ a capacity factor; overflow tokens skip the layer (Switch reports typically under 1% dropped at factor 1.0 to 1.25) | [GShard](https://arxiv.org/abs/2006.16668), [Switch Transformer](https://arxiv.org/abs/2101.03961); Megatron `--moe-expert-capacity-factor` |
+| Auxiliary loss | add a differentiable loss that penalizes uneven routing, with a small coefficient (Switch uses $$10^{-2}$$) | same; Megatron `--moe-router-load-balancing-type aux_loss` |
+| Auxiliary-loss-free | add a per-expert bias to the routing score used for top-$$k$$ selection only, and nudge it up or down after each step depending on whether the expert was under- or over-loaded; the gate weights themselves are untouched, so the loss is not distorted | [DeepSeek-V3, Section 2.1.2](https://arxiv.org/abs/2412.19437), bias update rate $$10^{-3}$$; Megatron `--moe-router-enable-expert-bias` |
+
+Megatron also supports "dropless" MoE, where no token is ever discarded and the expert GEMMs are sized to whatever arrives, at the cost of dynamic shapes.
+
+**How EP composes.** The older constraint was $$\text{EP} \leq \text{DP}$$: an expert-parallel group was carved out of a data-parallel group, since the attention layers on those ranks are replicas of each other while their experts are different. Megatron Core's "parallel folding" removes that coupling by giving the attention layers and the MoE layers separate parallelism layouts, $$\text{TP} \times \text{CP} \times \text{DP} \times \text{PP}$$ for attention and $$\text{ETP} \times \text{EP} \times \text{EDP} \times \text{PP}$$ for the experts, so that a run can use high TP and CP where attention wants them and high EP with no TP where the experts want it ([MoE README](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/transformer/moe/README.md)). DeepSeek-V3 is the existence proof of the shape this produces: 16-way pipeline parallelism, 64-way expert parallelism across 8 nodes, ZeRO-1 data parallelism, and no tensor parallelism at all ([Section 3.2](https://arxiv.org/abs/2412.19437)). The ordering rule survives, but the dimension on the fast link changes with the model: for a dense model it is TP, for a fine-grained MoE it is the expert all-to-all.
+
+##### **The three, side by side**
+
+| | Sequence parallelism | Context parallelism | Expert parallelism |
+|---|---|---|---|
+| Group | the TP group | a CP group, inside the PP stage | an EP group, usually spanning nodes |
+| What each rank holds | $$s/t$$ tokens of the norm and dropout activations, full tokens elsewhere | $$s/c$$ tokens of everything | $$E/\text{EP}$$ whole experts, all tokens' attention |
+| Collectives per layer | all-gather and reduce-scatter at each TP boundary | ring point-to-point, all-gather, or all-to-all, in attention only | two all-to-alls forward, two backward |
+| Memory effect | activations $$\div t$$ across the whole layer | activations $$\div c$$, including the attention scores | parameters $$\div \text{EP}$$ for the experts |
+| Turn it on when | always, with TP | the sequence is too long for one rank | the model is a mixture of experts |
 
 **References**
-- [Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism - Shoeybi et al.](https://arxiv.org/abs/1909.08053)
-- [Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM - Narayanan et al.](https://arxiv.org/abs/2104.04473)
 - [Reducing Activation Recomputation in Large Transformer Models - Korthikanti et al.](https://arxiv.org/abs/2205.05198)
-- [Sequence Parallelism: Long Sequence Training from System Perspective - Li et al.](https://arxiv.org/abs/2105.13120), [Ring Attention with Blockwise Transformers - Liu et al.](https://arxiv.org/abs/2310.01889)
-- [Megatron Core context parallelism](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html), [Megatron-LM README](https://github.com/NVIDIA/Megatron-LM/blob/main/README.md), [Megatron-LM arguments](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/training/arguments.py)
-- [LayerNorm and RMSNorm - the fork rule](/blog/2026/layernorm-rmsnorm/)
+- [Sequence Parallelism: Long Sequence Training from System Perspective - Li et al.](https://arxiv.org/abs/2105.13120), [Ring Attention with Blockwise Transformers - Liu et al.](https://arxiv.org/abs/2310.01889), [DeepSpeed-Ulysses - Jacobs et al.](https://arxiv.org/abs/2309.14509)
+- [Megatron Core context parallelism](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/features/context_parallel.html), [Megatron Core MoE README](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/transformer/moe/README.md), [Megatron-LM arguments](https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/training/arguments.py)
+- [GShard - Lepikhin et al.](https://arxiv.org/abs/2006.16668), [Switch Transformers - Fedus et al.](https://arxiv.org/abs/2101.03961)
+- [DeepSeek-V3 Technical Report](https://arxiv.org/abs/2412.19437)
 - [The Llama 3 Herd of Models](https://arxiv.org/abs/2407.21783)
 
 ---
@@ -817,7 +908,7 @@ The Megatron paper's guidelines, restated as a procedure ([Section 3](https://ar
 3. **Everything else to data parallelism.** It scales best, because its one collective per step hides behind the backward pass.
 4. **Then tune the microbatch and $$m$$.** Raise the number of microbatches until the bubble is a few percent, and set the microbatch size as large as memory allows so the GEMMs are efficient; the global batch follows as $$\text{DP} \times \text{microbatch} \times m$$.
 
-Context parallelism enters when the sequence length forces it, and expert parallelism when the model is a mixture of experts: the experts are sharded across GPUs and every token is routed to its experts and back by an all-to-all, which is a different enough traffic pattern that DeepSeek-V3 dropped tensor parallelism entirely and ran $$\text{PP} = 16$$ with $$\text{EP} = 64$$ across 8 nodes ([Section 3.2](https://arxiv.org/abs/2412.19437)). The framework is the same; the dimensions on the fast link change with the model.
+Context parallelism enters when the sequence length forces it, and expert parallelism when the model is a mixture of experts, as the previous section laid out; the DeepSeek-V3 layout of $$\text{PP} = 16$$ and $$\text{EP} = 64$$ across 8 nodes with no tensor parallelism ([Section 3.2](https://arxiv.org/abs/2412.19437)) is what the same procedure produces when the expert all-to-all, not the TP all-reduce, is the traffic that needs the fast link.
 
 **References**
 - [The Llama 3 Herd of Models](https://arxiv.org/abs/2407.21783)
@@ -929,7 +1020,8 @@ The things worth carrying out of this post, each one traceable to a section abov
 - **A ring all-reduce costs each rank $$2S(p-1)/p$$**, because it is a reduce-scatter plus an all-gather, each moving the $$p-1$$ chunks a rank does not already own. That identity is what ZeRO's sharded optimizer step exploits, and the $$(p-1)/p$$ is why the cost is flat in $$p$$.
 - **ZeRO 1, 2, 3 shard optimizer state, gradients, and parameters**, for $$4 + 12/D$$, $$2 + 14/D$$, and $$16/D$$ bytes per parameter. Stages 1 and 2 cost no extra communication; stage 3 costs $$1.5\times$$ for the second parameter gather, and FSDP hides it by prefetching the next layer's gather behind the current layer's compute.
 - **Gradient accumulation** sums $$k$$ microbatch gradients before one optimizer step: activations of one microbatch at a time, the collective once per step, and under pipeline parallelism the same microbatches fill the pipe.
-- **Tensor parallelism splits column-then-row** so the nonlinearity needs no sync, costs four all-reduces per layer on the critical path, and stays inside the node. Sequence parallelism splits the norm and dropout regions along the sequence for the same communication and less memory; context parallelism splits the sequence itself and rings the keys and values.
+- **Tensor parallelism splits column-then-row** so the nonlinearity needs no sync, costs four all-reduces per layer on the critical path, and stays inside the node.
+- **Sequence parallelism** splits the norm and dropout regions along the sequence for the same communication and less memory. **Context parallelism** splits the sequence itself and brings keys and values together by ring, all-gather, or all-to-all. **Expert parallelism** keeps each expert whole on one GPU and moves tokens to experts with a dispatch and a combine all-to-all, which becomes the dominant traffic in MoE training.
 - **The pipeline bubble is $$(p-1)/m$$** of ideal time. 1F1B keeps it with $$p$$ microbatches in flight instead of GPipe's $$m$$; interleaving divides it by $$v$$; zero-bubble schedules fill it with deferred weight-gradient work.
 - **Chattiest on the fastest link**: TP on NVLink, then CP, then PP across nodes, then DP outermost. Llama 3 runs $$[8, 1, 16, 64]$$ on 8,192 GPUs at 43% MFU.
 - **MFU $$= 6N \cdot \text{tokens/s} / (\text{GPUs} \cdot \text{peak})$$**, tokens per second because that is what you can measure. HFU also counts recomputation, so it is never lower. Good large dense runs sit around 40 to 55%, and the estimate runs in both directions from three numbers.
@@ -1023,6 +1115,15 @@ Training has $$m$$ microbatches to fill the pipe, chosen freely. Decode produces
 
 **25. The rule for assigning parallelism dimensions to the hardware, in one sentence, with justification.**
 Chattiest on the fastest link: TP does four all-reduces of the hidden state per layer, so NVLink inside the node; PP sends one activation per stage boundary per microbatch, point to point and asynchronous, so across nodes; DP reduces gradients once per step, overlapped with the backward, so outermost. Llama 3's order is $$[\text{TP}, \text{CP}, \text{PP}, \text{DP}]$$.
+
+**25b. Three ways to do attention under context parallelism, and why Llama 3 chose the one with exposed latency.**
+Ring: pass $$K$$ and $$V$$ blocks around the CP ring, overlapped with block-wise attention. All-gather: collect all $$K$$ and $$V$$, then attend locally. All-to-all (Ulysses): re-shard from sequence to heads, attend on full sequences for a subset of heads, re-shard back. Llama 3 uses all-gather because under GQA the gathered $$K$$ and $$V$$ are small and attention is $$O(s^2)$$ against the gather's $$O(s)$$, and because it supports document masks easily.
+
+**25c. Why expert parallelism instead of tensor parallelism for a mixture of experts, and what does it communicate?**
+Every expert must be resident since any token may route anywhere, but each expert is a small MLP, so slicing it produces thin GEMMs that still pay TP's collectives. EP keeps experts whole and places different experts on different ranks; tokens travel to their $$k$$ experts and back through a dispatch all-to-all and a combine all-to-all per MoE layer, roughly $$2khb$$ bytes per token per layer in bf16, and that traffic crosses nodes.
+
+**25d. Three ways to keep expert load balanced.**
+Expert capacity with a capacity factor (overflow tokens skip the layer); an auxiliary load-balancing loss; and DeepSeek-V3's auxiliary-loss-free bias, added to the routing score for top-$$k$$ selection only and nudged after each step.
 
 ##### **Collectives and utilization**
 
