@@ -373,21 +373,7 @@ The four bold rows are the ones training uses constantly. All-reduce is the data
 
 ##### **The ring algorithm, and where $$(p-1)/p$$ comes from**
 
-The volume column deserves a derivation, because the same factor shows up in every communication estimate for the rest of the post and it is not obvious where it comes from.
-
-Take an all-reduce of an $$S$$-byte vector on $$p$$ ranks arranged in a logical ring, rank $$i$$ sending only to rank $$i+1$$. Cut the vector into $$p$$ chunks of $$S/p$$ bytes each. The algorithm runs in two phases:
-
-**Reduce-scatter, $$p-1$$ steps.** In each step, every rank sends one chunk-sized partial sum to its right neighbor and receives one from its left neighbor, adding what it receives to its own copy of that chunk. The chunks are staggered so that no two ranks are working on the same chunk at the same time. After $$p-1$$ steps, chunk $$i$$ has visited every rank and picked up every rank's contribution, and it comes to rest on one rank, which now holds the **complete sum for that chunk**. Every rank owns one fully reduced chunk.
-
-**All-gather, $$p-1$$ steps.** Now circulate the finished chunks: each rank passes the completed chunk it holds to the right and receives another, and after $$p-1$$ more steps every rank has all $$p$$ completed chunks.
-
-Count the bytes. In each of the $$2(p-1)$$ steps each rank sends $$S/p$$ bytes, so the total each rank sends (and receives) is:
-
-$$
-2(p-1)\,\frac{S}{p} = 2S\,\frac{p-1}{p}
-$$
-
-That is the all-reduce row of the table, and each phase alone gives the reduce-scatter and all-gather rows, $$S(p-1)/p$$. The $$(p-1)/p$$ has a plain meaning: of the $$p$$ chunks, a rank already has its own, so it only needs to send and receive the other $$p-1$$, and $$p-1$$ chunks of size $$S/p$$ is $$(p-1)/p$$ of the vector. For $$p = 8$$ that is $$7/8$$ of $$S$$ per phase; for large $$p$$ it is essentially $$S$$. So **a ring all-reduce costs each rank about $$2S$$ of traffic no matter how many ranks participate**, which is what makes it scale, and [Patarasuk and Yuan](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf) prove it cannot be beaten: any all-reduce algorithm must have some rank communicate at least $$2S(p-1)/p$$, so the ring is bandwidth-optimal.
+The volume column deserves a derivation, because the same factor shows up in every communication estimate for the rest of the post and it is not obvious where it comes from. The picture first, since the whole derivation is a walk through it:
 
 <div class="row justify-content-center">
     <div class="col-sm-11 mt-3 mt-md-0">
@@ -395,45 +381,87 @@ That is the all-reduce row of the table, and each phase alone gives the reduce-s
     </div>
 </div>
 <div class="caption">
-    Top: a tree all-reduce on four devices reduces up to a root and broadcasts back down in $$\log p$$ hops. Bottom: the ring all-reduce as reduce-scatter (after which the diagonal, one chunk per device, holds a complete sum) followed by all-gather (after which every device holds every summed chunk). $$A_j$$ is the sum over devices of chunk $$j$$. Editable source: <a href="/assets/img/llm-training/ring-tree-allreduce.excalidraw">ring-tree-allreduce.excalidraw</a>.
+    All-reduce on four devices $$d_0$$ to $$d_3$$. Device $$d_0$$ holds the vector $$a$$, cut into four chunks $$a_0, a_1, a_2, a_3$$; $$d_1$$ holds $$b$$, $$d_2$$ holds $$c$$, $$d_3$$ holds $$d$$, cut the same way. $$A_j = a_j + b_j + c_j + d_j$$ is the sum of chunk $$j$$ across devices, and the goal is $$A = (A_0, A_1, A_2, A_3)$$ on every device. Top: the tree reduces whole vectors up to a root and broadcasts the result down. Bottom: the ring moves one chunk per step; after the reduce-scatter each device owns one finished chunk (the diagonal), and after the all-gather every device owns all four. Editable source: <a href="/assets/img/llm-training/ring-tree-allreduce.excalidraw">ring-tree-allreduce.excalidraw</a>.
 </div>
 
-The identity the ring makes visible, **all-reduce $$=$$ reduce-scatter $$+$$ all-gather**, is more than an implementation detail. It is the hinge that the entire ZeRO family turns on: if an all-reduce is already two phases with a moment in the middle where each rank holds one fully reduced slice, then a rank can do useful work on its slice *between the phases*, and that is exactly where the sharded optimizer step goes. We'll see it in the data parallelism section.
+**The setup.** There are $$p$$ devices ($$p = 4$$ in the figure) and each holds its own vector of $$S$$ bytes: $$d_0$$ holds $$a$$, $$d_1$$ holds $$b$$, and so on. In training, "its own vector" is that rank's local gradient. Every vector is cut into $$p$$ equal chunks of $$S/p$$ bytes each, so $$a = (a_0, a_1, a_2, a_3)$$, and in the ring's left grid a row is a device and a column is a chunk index. The all-reduce has to produce the elementwise sum $$A = a + b + c + d$$ on every device. Since the sum is elementwise, it can be done chunk by chunk: $$A_j = a_j + b_j + c_j + d_j$$, and the right grid, every device holding $$A_0$$ to $$A_3$$, is the finished state.
 
-##### **The cost model**
+The devices form a logical ring, $$d_0 \to d_1 \to d_2 \to d_3 \to d_0$$, and each device only ever sends to its right neighbor and receives from its left. The algorithm has two phases.
 
-The standard model for one message is a latency term plus a bandwidth term:
+**Phase 1, reduce-scatter: $$p - 1$$ steps.** Give each device one chunk index to end up owning: device $$j$$ will own chunk $$j$$, which is the diagonal in the middle grid. Follow one chunk's journey. $$A_1$$ will end on $$d_1$$, and its trip starts on the device *after* it: $$d_2$$ sends its $$c_1$$ to $$d_3$$, which adds its own $$d_1$$ and sends $$c_1 + d_1$$ on to $$d_0$$, which adds $$a_1$$ and sends $$a_1 + c_1 + d_1$$ to $$d_1$$, which adds $$b_1$$ and now holds $$A_1$$. Three hops, three additions, one finished chunk. Every other chunk makes the same trip one device over: $$A_0$$'s trip starts at $$d_1$$ and ends at $$d_0$$, $$A_2$$'s starts at $$d_3$$ and ends at $$d_2$$, $$A_3$$'s starts at $$d_0$$ and ends at $$d_3$$. Because the four trips are staggered, at every step each device sends exactly one chunk and receives exactly one, so all four links are busy at once; that is the trick that makes the ring efficient. After $$p - 1 = 3$$ steps the middle grid holds: device $$j$$ has the complete $$A_j$$, and the other chunks on each device are stale partial sums that are no longer needed.
 
-$$
-T(S) = \alpha + \frac{S}{B}
-$$
-
-where $$\alpha$$ is the fixed per-message startup cost and $$B$$ is the link bandwidth. The ring runs $$2(p-1)$$ sequential steps, so its all-reduce time is roughly:
+Count the bytes for one device in this phase: $$p - 1$$ steps, one chunk of $$S/p$$ bytes sent per step:
 
 $$
-T_{\text{ring}} \approx 2(p-1)\,\alpha + 2\,\frac{p-1}{p}\,\frac{S}{B}
+(p-1)\,\frac{S}{p} = S\,\frac{p-1}{p}
 $$
 
-The bandwidth term is optimal, as we saw. The latency term is not: it grows linearly in $$p$$, and [Patarasuk and Yuan](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf) note exactly this, that the ring is optimal in the bandwidth term but not the latency term because its number of rounds is proportional to the number of processes. A tree needs only $$O(\log p)$$ rounds at the price of a worse bandwidth term. So which algorithm wins depends on the message size:
+That is the reduce-scatter row of the table.
 
-| Regime | What dominates | What to do about it |
-|---|---|---|
-| Small messages, many ranks | $$\alpha$$ terms | fewer, larger messages: **bucket** many small tensors into one collective; prefer tree-like algorithms |
-| Large messages | $$S/B$$ term | ring-style bandwidth-optimal algorithms; put the traffic on the fastest link available |
+**Phase 2, all-gather: $$p - 1$$ more steps.** Now the finished chunks circulate. In the first step $$d_1$$ sends $$A_1$$ to $$d_2$$, $$d_2$$ sends $$A_2$$ to $$d_3$$, and so on around the ring; in each later step every device forwards the chunk it just received. After $$p - 1$$ steps each chunk has visited every device, and the right grid holds $$A_0$$ to $$A_3$$ everywhere. The byte count is the same as phase 1: $$p - 1$$ chunks of $$S/p$$ sent per device, $$S(p-1)/p$$, the all-gather row.
 
-This is why gradient **bucketing** matters so much in data-parallel training: a model has thousands of parameter tensors, and all-reducing them one at a time would pay $$\alpha$$ thousands of times per step. Fusing them into a few large buckets moves the same bytes at a fraction of the latency cost. PyTorch's DDP defaults to 25 MiB buckets, and the next section shows how it uses them.
-
-A worked number to set the scale. All-reducing the 70B model's bf16 gradients, $$S = 140$$ GB, across the 8 GPUs of one node over NVLink (450 GB/s per direction):
+**Total.** Two phases of $$p - 1$$ steps, each step moving one $$S/p$$-byte chunk per device:
 
 $$
-2 \times \frac{7}{8} \times 140 \text{ GB} = 245 \text{ GB per rank}, \qquad \frac{245}{450} \approx 0.54 \text{ s}
+2\,(p-1)\,\frac{S}{p} = 2S\,\frac{p-1}{p}
 $$
 
-Across 64 GPUs over 400 Gb/s InfiniBand (50 GB/s per direction), the per-rank volume barely changes, $$2 \times 63/64 \times 140 = 276$$ GB, but the time becomes about 5.5 s. Those are the numbers that have to be hidden behind compute for data parallelism to work, and hiding them is the next section's main subject.
+sent by each device, and the same amount received. The $$(p-1)/p$$ now has a plain reading: the answer has $$p$$ chunks, and in each phase a device already holds one of them (the chunk it is reducing, or the finished chunk it owns), so it only has to move the other $$p - 1$$. For $$p = 4$$ that is $$3/4$$ of $$S$$ per phase and $$1.5\,S$$ in total; for $$p = 8$$, $$7/8$$ and $$1.75\,S$$; as $$p$$ grows it approaches $$2S$$. So **a ring all-reduce costs each device about $$2S$$ of traffic no matter how many devices take part**, which is what lets it scale.
+
+**What "bandwidth-optimal" means.** [Patarasuk and Yuan](https://www.cs.fsu.edu/~xyuan/paper/09jpdc.pdf) prove that *any* all-reduce algorithm, however clever, must have at least one device that sends or receives $$2S(p-1)/p$$ bytes (their Lemma 4, stated in data items). The ring hits that bound exactly, on every device at once. So if the time of a collective is set by how many bytes have to pass through the busiest link, nothing can beat the ring; it is optimal in the bandwidth term. That statement is only about bytes. It says nothing about how many sequential steps the algorithm takes, and that is exactly where the ring is weak, as the cost model below shows.
+
+**The tree, for contrast.** The top half of the figure reduces the same four vectors up a binary tree: $$d_0$$ and $$d_1$$ send $$a$$ and $$b$$ (all four chunks at once) to an intermediate node that forms $$a + b$$, likewise $$c + d$$, then the root forms $$A_0$$ to $$A_3$$ and broadcasts it back down. It finishes in $$2\log_2 p$$ hops, 4 for four devices against the ring's $$2(p-1) = 6$$, and 6 against 14 for eight. But every hop moves a whole $$S$$-byte vector, and the node under the root handles several vectors' worth, so its busiest link carries more than the ring's $$2S(p-1)/p$$. Fewer, larger hops: latency-friendly and bandwidth-heavy, the mirror image of the ring.
+
+The identity the ring makes visible, **all-reduce $$=$$ reduce-scatter $$+$$ all-gather**, is more than an implementation detail. It is the hinge the entire ZeRO family turns on: if an all-reduce is already two phases with a moment in the middle where each device holds one fully reduced chunk (the diagonal), then a device can do useful work on its chunk *between the phases*, and that is exactly where the sharded optimizer step goes. We'll see it in the data parallelism section.
+
+##### **The cost model: latency, bandwidth, throughput**
+
+Three words that are easy to mix up, so a mental model first. Think of a link between two GPUs as a water pipe.
+
+| Term | Symbol | What it is | Pipe picture |
+|---|---|---|---|
+| **Latency** | $$\alpha$$ | the fixed time between sending a message and its first byte arriving, whatever its size: handshake, kernel launch, switch hops | how long after you open the tap before any water comes out the far end |
+| **Bandwidth** | $$B$$ | the rate at which the link carries bytes once they are flowing, a property of the hardware: 450 GB/s per direction for NVLink, 50 GB/s for 400 Gb/s InfiniBand | the pipe's diameter |
+| **Throughput** | | what you actually achieved: bytes delivered divided by the time it took, including the waiting | how much water you collected per second, from tap-open to tap-close |
+
+Bandwidth is the ceiling; throughput is what a particular transfer got. For one message of $$n$$ bytes, the time is
+
+$$
+T(n) = \alpha + \frac{n}{B}
+$$
+
+and the throughput is $$n / T(n)$$. A tiny message spends almost all of its time in $$\alpha$$ and its throughput is a small fraction of $$B$$; a huge message spends almost all of its time in $$n/B$$ and its throughput approaches $$B$$. The two terms are equal at $$n = \alpha B$$, the message size at which half the time is waiting: for every microsecond of latency on a 450 GB/s link, that crossover is $$450$$ KB. Messages far below $$\alpha B$$ are **latency-bound** (the link is mostly idle), messages far above it are **bandwidth-bound** (the link is mostly full). Note that $$n$$ here is one message; it is not the $$S$$ of the previous subsection, which was the whole vector being reduced.
+
+Now apply this to the ring. It runs $$2(p-1)$$ sequential steps, and each step is one message of $$S/p$$ bytes, so:
+
+$$
+T_{\text{ring}} = 2(p-1)\left(\alpha + \frac{S}{pB}\right) = \underbrace{2(p-1)\,\alpha}_{\text{latency term}} + \underbrace{2\,\frac{p-1}{p}\,\frac{S}{B}}_{\text{bandwidth term}}
+$$
+
+The bandwidth term is the optimal one from above. The latency term is paid once per step, and there are $$2(p-1)$$ steps, so it grows linearly with the number of devices; Patarasuk and Yuan say exactly this, that the ring is optimal in the bandwidth term but not the latency term. A tree pays $$\alpha$$ only $$2\log_2 p$$ times. Which term matters depends on $$S$$:
+
+| Regime | When | What $$T_{\text{ring}}$$ looks like | What helps |
+|---|---|---|---|
+| Latency-bound | $$S$$ is small, well under $$p\,\alpha B$$ | $$\approx 2(p-1)\alpha$$: independent of $$S$$, grows with $$p$$ | send fewer messages: **bucket** many small tensors into one collective; use tree-shaped algorithms with fewer steps |
+| Bandwidth-bound | $$S$$ is large, well over $$p\,\alpha B$$ | $$\approx 2S/B$$: independent of $$p$$, proportional to $$S$$ | move fewer bytes (smaller dtype, sharding), use a faster link, or overlap the transfer with compute |
+
+Read the two "independent of" notes slowly, because they are the point. In the latency-bound regime, making the vector smaller does nothing and adding devices makes it worse. In the bandwidth-bound regime, adding devices costs nothing extra (that is the ring's optimality at work) and the only lever is the number of bytes over the link's speed.
+
+**Why gradient bucketing matters.** A transformer's gradient is not one vector; it is hundreds of separate tensors, one per weight matrix, bias, and norm, and many of them are tiny: a norm's weight vector on the 70B model is $$8192$$ elements, 16 KB in bf16, far below any plausible $$\alpha B$$. All-reducing each tensor on its own would pay the full latency term, $$2(p-1)\alpha$$, hundreds of times per step, and most of those calls would be pure waiting. Bucketing concatenates the tensors into a few large buffers and runs one collective per buffer. PyTorch's DDP uses 25 MiB buckets by default; at that size each collective is deep in the bandwidth-bound regime, so the total time is close to (total gradient bytes) $$/ B$$ no matter how many tensors the model has. The next section shows how DDP does this on the fly during the backward pass.
+
+##### **A worked number**
+
+To set the scale, all-reduce the 70B model's bf16 gradient. Every rank holds its own copy, $$S = 70 \times 10^9 \times 2 = 140$$ GB.
+
+*Eight GPUs in one node, over NVLink.* Each chunk is $$S/p = 140/8 = 17.5$$ GB. The reduce-scatter is 7 steps of one chunk each, $$7 \times 17.5 = 122.5$$ GB sent per rank; the all-gather is another 7 steps and another 122.5 GB; total $$245$$ GB sent and 245 GB received per rank, which is the formula's $$2 \times 7/8 \times 140$$. Every rank sends over its own link at the same time, so the collective takes as long as one rank's traffic, not the sum over ranks: $$245 / 450 \approx 0.54$$ s at 450 GB/s per direction. The latency term is invisible here; 14 steps of $$\alpha$$ are microseconds against half a second.
+
+*Sixty-four GPUs across eight nodes, over 400 Gb/s InfiniBand.* Each chunk is $$140/64 = 2.19$$ GB; 63 steps per phase, $$63 \times 2.19 = 138$$ GB per phase, $$276$$ GB in total per rank, the formula's $$2 \times 63/64 \times 140$$. The per-rank bytes barely moved (the ring is bandwidth-optimal, so adding ranks did not add traffic), but the link is nine times slower: $$276 / 50 \approx 5.5$$ s.
+
+Half a second to five seconds, per step, for one collective. Those are the numbers that have to be hidden behind compute for data parallelism to work at all, and hiding them is the next section's main subject.
 
 ##### **Overlap is the whole game**
 
-A collective that runs while the GPU is otherwise idle is fully exposed: its time adds directly to the step. A collective that runs while the GPU computes something else is free, up to the bandwidth of the link. Every well-designed training system is built around finding compute to hide each collective behind:
+A collective that runs while the GPU is otherwise idle is fully exposed: its time adds directly to the step. A collective that runs while the GPU computes something else is free, up to the bandwidth of the link. Every well-designed training system is built around finding compute to hide each collective behind. Stated here only as a principle; each of the following is worked out in its own section:
 
 - DDP launches the all-reduce of one bucket of gradients while the backward pass is still computing the gradients of earlier layers.
 - FSDP all-gathers the parameters of layer $$i+1$$ while layer $$i$$ computes.
