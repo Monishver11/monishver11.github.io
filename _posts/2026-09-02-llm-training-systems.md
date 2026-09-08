@@ -366,7 +366,7 @@ In all of the following there are $$p$$ ranks (GPUs), and $$S$$ is the size in b
     </div>
 </div>
 <div class="caption">
-    The eight collectives, before and after, on four devices. Letters are data chunks, numbers are values being summed, and the reduce-scatter row shows four vectors being summed elementwise with device $$i$$ keeping slice $$i$$ of the result. Editable source: <a href="/assets/img/llm-training/collectives.excalidraw">collectives.excalidraw</a>.
+    The eight collectives, before and after, on four devices. Letters are data chunks, numbers are values being summed, and the reduce-scatter row shows four vectors being summed elementwise with device i keeping slice i of the result. Editable source: <a href="/assets/img/llm-training/collectives.excalidraw">collectives.excalidraw</a>.
 </div>
 
 The four bold rows are the ones training uses constantly. All-reduce is the data-parallel gradient sync and the tensor-parallel sync. All-gather and reduce-scatter are what ZeRO and FSDP use to assemble and disassemble sharded state, and what sequence parallelism uses at its boundaries. All-to-all is the expert-parallel dispatch in mixture-of-experts models.
@@ -381,7 +381,7 @@ The volume column deserves a derivation, because the same factor shows up in eve
     </div>
 </div>
 <div class="caption">
-    All-reduce on four devices $$d_0$$ to $$d_3$$. Device $$d_0$$ holds the vector $$a$$, cut into four chunks $$a_0, a_1, a_2, a_3$$; $$d_1$$ holds $$b$$, $$d_2$$ holds $$c$$, $$d_3$$ holds $$d$$, cut the same way. $$A_j = a_j + b_j + c_j + d_j$$ is the sum of chunk $$j$$ across devices, and the goal is $$A = (A_0, A_1, A_2, A_3)$$ on every device. Top: the tree reduces whole vectors up to a root and broadcasts the result down. Bottom: the ring moves one chunk per step; after the reduce-scatter each device owns one finished chunk (the diagonal), and after the all-gather every device owns all four. Editable source: <a href="/assets/img/llm-training/ring-tree-allreduce.excalidraw">ring-tree-allreduce.excalidraw</a>.
+    All-reduce on four devices d0 to d3. Device d0 holds the vector a, cut into four chunks a0, a1, a2, a3; d1 holds b, d2 holds c, d3 holds d, cut the same way. Aj is the sum of chunk j across devices (aj + bj + cj + dj), and the goal is A = (A0, A1, A2, A3) on every device. Top: the tree reduces whole vectors up to a root and broadcasts the result down. Bottom: the ring moves one chunk per step; after the reduce-scatter each device owns one finished chunk (the diagonal), and after the all-gather every device owns all four. Editable source: <a href="/assets/img/llm-training/ring-tree-allreduce.excalidraw">ring-tree-allreduce.excalidraw</a>.
 </div>
 
 **The setup.** There are $$p$$ devices ($$p = 4$$ in the figure) and each holds its own vector of $$S$$ bytes: $$d_0$$ holds $$a$$, $$d_1$$ holds $$b$$, and so on. In training, "its own vector" is that rank's local gradient. Every vector is cut into $$p$$ equal chunks of $$S/p$$ bytes each, so $$a = (a_0, a_1, a_2, a_3)$$, and in the ring's left grid a row is a device and a column is a chunk index. The all-reduce has to produce the elementwise sum $$A = a + b + c + d$$ on every device. Since the sum is elementwise, it can be done chunk by chunk: $$A_j = a_j + b_j + c_j + d_j$$, and the right grid, every device holding $$A_0$$ to $$A_3$$, is the finished state.
@@ -390,7 +390,7 @@ The devices form a logical ring, $$d_0 \to d_1 \to d_2 \to d_3 \to d_0$$, and ea
 
 **Phase 1, reduce-scatter: $$p - 1$$ steps.** Give each device one chunk index to end up owning: device $$j$$ will own chunk $$j$$, which is the diagonal in the middle grid. Follow one chunk's journey. $$A_1$$ will end on $$d_1$$, and its trip starts on the device *after* it: $$d_2$$ sends its $$c_1$$ to $$d_3$$, which adds its own $$d_1$$ and sends $$c_1 + d_1$$ on to $$d_0$$, which adds $$a_1$$ and sends $$a_1 + c_1 + d_1$$ to $$d_1$$, which adds $$b_1$$ and now holds $$A_1$$. Three hops, three additions, one finished chunk. Every other chunk makes the same trip one device over: $$A_0$$'s trip starts at $$d_1$$ and ends at $$d_0$$, $$A_2$$'s starts at $$d_3$$ and ends at $$d_2$$, $$A_3$$'s starts at $$d_0$$ and ends at $$d_3$$. Because the four trips are staggered, at every step each device sends exactly one chunk and receives exactly one, so all four links are busy at once; that is the trick that makes the ring efficient. After $$p - 1 = 3$$ steps the middle grid holds: device $$j$$ has the complete $$A_j$$, and the other chunks on each device are stale partial sums that are no longer needed.
 
-Count the bytes for one device in this phase: $$p - 1$$ steps, one chunk of $$S/p$$ bytes sent per step:
+Count the bytes for one device in this phase: $$p - 1$$ steps, and in each step it sends one chunk of $$S/p$$ bytes to its right neighbor and receives one from its left. Counting the sent side (the received side is identical):
 
 $$
 (p-1)\,\frac{S}{p} = S\,\frac{p-1}{p}
@@ -438,7 +438,7 @@ $$
 T_{\text{ring}} = 2(p-1)\left(\alpha + \frac{S}{pB}\right) = \underbrace{2(p-1)\,\alpha}_{\text{latency term}} + \underbrace{2\,\frac{p-1}{p}\,\frac{S}{B}}_{\text{bandwidth term}}
 $$
 
-The bandwidth term is the optimal one from above. The latency term is paid once per step, and there are $$2(p-1)$$ steps, so it grows linearly with the number of devices; Patarasuk and Yuan say exactly this, that the ring is optimal in the bandwidth term but not the latency term. A tree pays $$\alpha$$ only $$2\log_2 p$$ times. Which term matters depends on $$S$$:
+The bandwidth term is the optimal one from above. The latency term is paid once per step, and there are $$2(p-1)$$ steps, so it grows linearly with the number of devices; Patarasuk and Yuan say exactly this, that the ring is optimal in the bandwidth term but not the latency term. A tree pays $$\alpha$$ only $$2\log_2 p$$ times. Which term matters depends on $$S$$, and the dividing line comes from setting the two terms equal: $$2(p-1)\alpha = 2\frac{p-1}{p}\frac{S}{B}$$ gives $$S = p\,\alpha B$$, the single-message crossover $$\alpha B$$ scaled by $$p$$ because each step's message is only $$S/p$$:
 
 | Regime | When | What $$T_{\text{ring}}$$ looks like | What helps |
 |---|---|---|---|
@@ -455,7 +455,7 @@ To set the scale, all-reduce the 70B model's bf16 gradient. Every rank holds its
 
 *Eight GPUs in one node, over NVLink.* Each chunk is $$S/p = 140/8 = 17.5$$ GB. The reduce-scatter is 7 steps of one chunk each, $$7 \times 17.5 = 122.5$$ GB sent per rank; the all-gather is another 7 steps and another 122.5 GB; total $$245$$ GB sent and 245 GB received per rank, which is the formula's $$2 \times 7/8 \times 140$$. Every rank sends over its own link at the same time, so the collective takes as long as one rank's traffic, not the sum over ranks: $$245 / 450 \approx 0.54$$ s at 450 GB/s per direction. The latency term is invisible here; 14 steps of $$\alpha$$ are microseconds against half a second.
 
-*Sixty-four GPUs across eight nodes, over 400 Gb/s InfiniBand.* Each chunk is $$140/64 = 2.19$$ GB; 63 steps per phase, $$63 \times 2.19 = 138$$ GB per phase, $$276$$ GB in total per rank, the formula's $$2 \times 63/64 \times 140$$. The per-rank bytes barely moved (the ring is bandwidth-optimal, so adding ranks did not add traffic), but the link is nine times slower: $$276 / 50 \approx 5.5$$ s.
+*Sixty-four GPUs across eight nodes, over 400 Gb/s InfiniBand.* First the units: InfiniBand is quoted in gigabits per second, and 400 Gb/s is $$400 / 8 = 50$$ GB/s per direction, which is the figure the bandwidth ladder uses and the one to divide by. Each chunk is $$140/64 = 2.19$$ GB; 63 steps per phase, $$63 \times 2.19 = 138$$ GB per phase, $$276$$ GB in total per rank, the formula's $$2 \times 63/64 \times 140$$. The per-rank bytes barely moved (the ring is bandwidth-optimal, so adding ranks did not add traffic), but the link is nine times slower than NVLink's 450 GB/s: $$276 / 50 \approx 5.5$$ s.
 
 Half a second to five seconds, per step, for one collective. Those are the numbers that have to be hidden behind compute for data parallelism to work at all, and hiding them is the next section's main subject.
 
@@ -498,7 +498,7 @@ The mechanics that make this fast are in PyTorch's implementation, and they are 
     </div>
 </div>
 <div class="caption">
-    One data-parallel step on one rank. The backward pass produces gradients for the last layer first; as each bucket fills, its all-reduce launches on a separate stream and overlaps the backward computation still in flight. With gradient accumulation over $$k$$ microbatches, the all-reduces are skipped for the first $$k-1$$ backward passes and run once. Editable source: <a href="/assets/img/llm-training/ddp-overlap.excalidraw">ddp-overlap.excalidraw</a>.
+    One data-parallel step on one rank. The backward pass produces gradients for the last layer first; as each bucket fills, its all-reduce launches on a separate stream and overlaps the backward computation still in flight. With gradient accumulation over k microbatches, the all-reduces are skipped for the first k minus 1 backward passes and run once. Editable source: <a href="/assets/img/llm-training/ddp-overlap.excalidraw">ddp-overlap.excalidraw</a>.
 </div>
 
 The cost of DDP per step is one all-reduce over the entire gradient, $$2S(p-1)/p$$ per rank with $$S$$ the gradient bytes, most of it hidden. The memory cost is the problem: every rank holds the full 16 bytes per parameter, and adding ranks does nothing about it. A 70B model needs 1.12 TB *per GPU* under plain DDP, whether there are 8 GPUs or 8,000.
@@ -624,7 +624,7 @@ One **all-reduce** sums the partials and every rank holds $$Y$$. Column-then-row
     </div>
 </div>
 <div class="caption">
-    The tensor-parallel MLP on two ranks. $$A$$ is split by columns so each rank computes its own GeLU with no communication; $$B$$ is split by rows so each rank's partial product is summed by one all-reduce. $$f$$ and $$g$$ are the two conjugate operators described next. Editable source: <a href="/assets/img/llm-training/tp-mlp.excalidraw">tp-mlp.excalidraw</a>.
+    The tensor-parallel MLP on two ranks. A is split by columns so each rank computes its own GeLU with no communication; B is split by rows so each rank's partial product is summed by one all-reduce. f and g are the two conjugate operators described next. Editable source: <a href="/assets/img/llm-training/tp-mlp.excalidraw">tp-mlp.excalidraw</a>.
 </div>
 
 ##### **The $$f$$ and $$g$$ operators**
@@ -729,7 +729,7 @@ The one operation that is *not* per-token is attention. Each query has to see th
     </div>
 </div>
 <div class="caption">
-    Context parallelism on four ranks. Every rank owns one chunk of the sequence for all layers. For attention, the ring variant rotates each rank's $$K$$ and $$V$$ block around the ring over three steps, accumulating attention block by block; the all-gather variant collects every $$K$$ and $$V$$ first and then runs attention for the local queries. Editable source: <a href="/assets/img/llm-training/cp-attention.excalidraw">cp-attention.excalidraw</a>.
+    Context parallelism on four ranks. Every rank owns one chunk of the sequence for all layers. For attention, the ring variant rotates each rank's K and V block around the ring over three steps, accumulating attention block by block; the all-gather variant collects every K and V first and then runs attention for the local queries. Editable source: <a href="/assets/img/llm-training/cp-attention.excalidraw">cp-attention.excalidraw</a>.
 </div>
 
 Llama 3's choice of the all-gather method, with its latency deliberately exposed, is the instructive one, because the report explains the arithmetic ([Section 3.3.2](https://arxiv.org/abs/2407.21783)). Under grouped-query attention the $$K$$ and $$V$$ tensors are much smaller than $$Q$$ (Llama 3 70B has 8 KV heads against 64 query heads), so the gathered bytes are small; and attention's compute grows as $$O(s^2)$$ while the gather grows as $$O(s)$$, so at 128K tokens the gather is a rounding error next to the attention it feeds. Two further details from the same paragraph are worth knowing. First, a causal mask makes the work uneven: the chunk at the end of the sequence attends to everything, the chunk at the start to almost nothing. Llama 3 balances it by cutting the sequence into $$2c$$ chunks and giving rank $$i$$ chunks $$i$$ and $$2c - 1 - i$$, one light and one heavy; Megatron Core does the same kind of balancing for its ring implementation. Second, GQA helps CP directly: the Megatron docs note that MQA and GQA reduce the CP communication volume for exactly this reason, only the few KV heads travel.
