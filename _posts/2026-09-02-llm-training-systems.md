@@ -491,11 +491,12 @@ From here on the word "batch" is doing several jobs, and the parallelism section
 | Global batch | | the data consumed per **optimizer step**, across all ranks; the number the optimizer cares about. Llama 3 uses 16M tokens ([Table 4](https://arxiv.org/abs/2407.21783)) |
 | Data-parallel degree | $$D$$ | how many ranks process *different* data in parallel; each holds a full replica (DDP) or a shard of one (ZeRO, FSDP) |
 | Batch per rank | global $$/ D$$ | the share of the global batch one data-parallel rank is responsible for each step; Llama 3's "batch per DP rank" of 32 is 32 sequences of 8,192 tokens |
-| Microbatch | $$b$$ sequences of $$s$$ tokens | what one rank pushes through **one forward and backward pass** at a time; the $$b$$ and $$s$$ in the activation formula, and the thing activation memory limits |
+| Hidden dimension | $$h$$ | the width of one token's activation row: a token is a row of $$h$$ values, and every matmul in the layer multiplies rows of this width ($$h = 8192$$ for Llama 3 70B). Not a batch quantity, but it sits next to the two below in every formula |
+| Microbatch | a tensor of shape $$(b, s, h)$$ | what one rank pushes through **one forward and backward pass** at a time: $$b$$ sequences, each of $$s$$ tokens, each token a row of $$h$$ values, so $$b \times s$$ token rows go through the matmuls together. These are the $$b$$, $$s$$, $$h$$ of the activation formula, and the microbatch is what activation memory limits |
 | Accumulation steps | $$k$$ | microbatches per rank per optimizer step, so batch per rank $$= b \times k$$; under pipeline parallelism these same microbatches are the pipeline's $$m$$ |
 | Ranks in a collective | $$p$$ | the number of participants in whatever collective is being costed (the primitives section); for a data-parallel gradient sync, $$p = D$$. The pipeline section reuses $$p$$ for the number of stages, and says so |
 
-The one relation to keep in mind: **global batch $$= D \times b \times k$$** (in sequences; multiply by $$s$$ for tokens). The optimizer sees the left side; memory sees only $$b$$; communication is paid once per step, whatever $$k$$ is.
+The one relation to keep in mind: **global batch $$= D \times b \times k$$** sequences, or $$D \times b \times k \times s$$ tokens. The optimizer sees the left side; activation memory sees only the one $$(b, s, h)$$ microbatch in flight; communication is paid once per step, whatever $$k$$ is.
 
 ##### **Distributed data parallel**
 
