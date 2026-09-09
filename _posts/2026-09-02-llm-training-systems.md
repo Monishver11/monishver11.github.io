@@ -699,7 +699,29 @@ Take the 70B model ($$h = 8192$$, 80 layers) with $$b \times s = 8192$$ tokens p
 | Time on PCIe Gen5, 64 GB/s | $$\approx 1.2$$ s |
 | Time on 400 Gb/s InfiniBand, 50 GB/s | $$\approx 1.5$$ s |
 
-Compare that with the compute for the same microbatch: $$6 \times 70 \times 10^9 \times 8192 = 3.4 \times 10^{15}$$ FLOPs spread over 8 GPUs at 989 TFLOPS each is about $$0.43$$ s at 100% utilization and about $$1.1$$ s at a realistic 40%. On NVLink the tensor-parallel traffic is a sizable fraction of the compute time and has to be at least partly overlapped (Megatron's `--tp-comm-overlap` exists for this); over PCIe or InfiniBand it *exceeds* the compute, and these all-reduces are on the critical path of every layer, each one waiting on the matmul before it. That is the quantitative reason **tensor parallelism stays inside a node**. The Megatron authors say it directly, that running TP across the slower inter-node links can be impractical, and their sweep of $$(t, p)$$ combinations peaks at $$t = 8$$, the number of GPUs in a node ([Narayanan et al., Section 3.2 and Figure 13](https://arxiv.org/abs/2104.04473)).
+Compare that with the compute for the same microbatch: $$6 \times 70 \times 10^9 \times 8192 = 3.4 \times 10^{15}$$ FLOPs spread over 8 GPUs at 989 TFLOPS each is about $$0.43$$ s at 100% utilization and about $$1.1$$ s at a realistic 40%.
+
+##### **Why tensor parallelism stays inside the node**
+
+The table above is the whole argument, but it is worth walking through slowly, because "TP stays in the node" is the single most consequential placement rule in this post and it should feel inevitable rather than remembered.
+
+**First, the traffic is on the critical path.** The four all-reduces per layer are not background work. Each one sits between two matmuls that depend on it: the row-parallel matmul produces partial sums, the all-reduce adds them, and the *next* block cannot start until the sum exists, because its input is that sum. So every layer, twice per direction, the GPUs stop computing and wait for a collective to finish. Unlike the data-parallel gradient sync, which can hide behind the backward pass, there is very little compute to hide a tensor-parallel all-reduce behind. Its time adds almost directly to the step. (Megatron has a `--tp-comm-overlap` option that recovers part of it by splitting the matmul and overlapping pieces, but the dependency is structural.)
+
+**Second, there are a lot of them.** Four per layer times 80 layers is 320 all-reduces per microbatch, in the forward and backward passes together, each on a hidden-state tensor of $$b \times s \times h$$ elements. That is what produced the 75 GB per rank per microbatch above.
+
+**Third, put the bytes on each rung of the bandwidth ladder** and compare with the compute of the same microbatch:
+
+| Link | One-way bandwidth | Time for the 75 GB | Against about 1.1 s of compute |
+|---|---|---|---|
+| NVLink, inside the node | 450 GB/s | 0.17 s | a sizable tax, partly recoverable by overlap |
+| PCIe Gen5 | 64 GB/s | 1.2 s | longer than the compute itself |
+| InfiniBand, across nodes | 50 GB/s | 1.5 s | longer than the compute itself |
+
+Inside the node the all-reduces cost a noticeable fraction of the step and are worth engineering around. Across nodes they would take longer than all of the arithmetic they are interleaved with; the GPUs would spend most of every layer waiting on the network, and adding more of them would make it worse. That is the sense in which tensor parallelism cannot leave the node: not that it is impossible, but that its 320 synchronizations per microbatch are only affordable on a link fast enough to make each one short.
+
+**Fourth, this is what the Megatron authors found, and said.** Their communication analysis gives the per-layer tensor-parallel volume as $$8bsh(t-1)/t$$ per device per microbatch, and they state that when $$t$$ is larger than the number of GPUs in a single node, performing tensor parallelism across the slower inter-node links can be impractical ([Narayanan et al., Section 3.2](https://arxiv.org/abs/2104.04473)). They then measured it, sweeping tensor-parallel and pipeline-parallel sizes for a fixed 64-GPU budget, and throughput per GPU peaks when the tensor-parallel size equals the number of GPUs in a node, 8 on their DGX A100 nodes, and falls off beyond it ([Section 5.4.1, Figure 13](https://arxiv.org/abs/2104.04473)).
+
+**So the rule.** Tensor parallelism is set to at most the number of GPUs that share NVLink, 8 on a DGX-class node, and never more. If the model still does not fit at TP 8, the answer is a different dimension, pipeline parallelism, whose communication is one activation per stage boundary rather than four all-reduces per layer, and which therefore tolerates the slow link. Llama 3's configuration table has TP at exactly 8 in every row for this reason, and the composition section builds the rest of the placement on top of it.
 
 The next section picks up the redundancy this leaves behind, the norm and dropout activations replicated on every rank, and the two other dimensions that split along the sequence and across experts.
 
