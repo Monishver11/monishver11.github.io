@@ -482,6 +482,21 @@ If a system is not overlapping, the communication is visible directly as a gap i
 
 Data parallelism is the oldest and simplest way to use more GPUs: give each one a copy of the model and a different slice of the batch. It is also where the 16-bytes-per-parameter problem bites hardest, and the ZeRO family is the response. This section builds up from the plain version.
 
+##### **Vocabulary: batch, microbatch, and the letters**
+
+From here on the word "batch" is doing several jobs, and the parallelism sections that follow lean on the distinctions, so here they are in one place:
+
+| Term | Symbol | Meaning |
+|---|---|---|
+| Global batch | | the data consumed per **optimizer step**, across all ranks; the number the optimizer cares about. Llama 3 uses 16M tokens ([Table 4](https://arxiv.org/abs/2407.21783)) |
+| Data-parallel degree | $$D$$ | how many ranks process *different* data in parallel; each holds a full replica (DDP) or a shard of one (ZeRO, FSDP) |
+| Batch per rank | global $$/ D$$ | the share of the global batch one data-parallel rank is responsible for each step; Llama 3's "batch per DP rank" of 32 is 32 sequences of 8,192 tokens |
+| Microbatch | $$b$$ sequences of $$s$$ tokens | what one rank pushes through **one forward and backward pass** at a time; the $$b$$ and $$s$$ in the activation formula, and the thing activation memory limits |
+| Accumulation steps | $$k$$ | microbatches per rank per optimizer step, so batch per rank $$= b \times k$$; under pipeline parallelism these same microbatches are the pipeline's $$m$$ |
+| Ranks in a collective | $$p$$ | the number of participants in whatever collective is being costed (the primitives section); for a data-parallel gradient sync, $$p = D$$. The pipeline section reuses $$p$$ for the number of stages, and says so |
+
+The one relation to keep in mind: **global batch $$= D \times b \times k$$** (in sequences; multiply by $$s$$ for tokens). The optimizer sees the left side; memory sees only $$b$$; communication is paid once per step, whatever $$k$$ is.
+
 ##### **Distributed data parallel**
 
 In plain distributed data parallel (DDP), every rank holds a full replica of the model, the optimizer state included. Each step, every rank runs the forward and backward pass on its own microbatch, producing a local gradient. The gradients are then **averaged across ranks with an all-reduce**, so that every rank holds the same gradient, the gradient of the loss over the whole global batch. Every rank then applies the same optimizer update to its identical copy of the weights, and the replicas stay in lockstep without ever exchanging weights ([Li et al., Section 3](https://arxiv.org/abs/2006.15704)).
@@ -568,7 +583,16 @@ PyTorch's `FullyShardedDataParallel` is the same idea as ZeRO's third stage, and
     The FSDP lifecycle of three units on one rank. Each unit's parameters are all-gathered just before use and freed after, in both passes; gradients are reduce-scattered in the backward pass. The next unit's all-gather is prefetched during the current unit's compute so the communication stream stays ahead of the compute stream. Editable source: <a href="/assets/img/llm-training/fsdp-lifecycle.excalidraw">fsdp-lifecycle.excalidraw</a>.
 </div>
 
-Two practical variants are worth knowing. Llama 3 uses FSDP as its outermost parallelism and does *not* reshard the parameters after the forward pass, keeping the gathered weights around so the backward pass needs no second all-gather ([Section 3.3.2](https://arxiv.org/abs/2407.21783)): communication back down to $$2\Psi$$, memory back up by the gathered weights, a trade that makes sense when the other parallelism dimensions have already made each rank's share of the weights small. And FSDP's hybrid sharding shards within a group of ranks (say, one node) while replicating across groups ([Section 3.1](https://arxiv.org/abs/2304.11277)), which keeps the all-gather and reduce-scatter traffic on NVLink and leaves only the smaller cross-group reduction for the slower network.
+Two practical variants are worth knowing.
+
+**Keep the weights after the forward pass.** Llama 3 uses FSDP as its outermost parallelism and does *not* reshard the parameters after the forward pass, keeping the gathered weights around so the backward pass needs no second all-gather ([Section 3.3.2](https://arxiv.org/abs/2407.21783)): communication back down to $$2\Psi$$, memory back up by the gathered weights, a trade that makes sense when the other parallelism dimensions have already made each rank's share of the weights small.
+
+**Hybrid sharding.** Full sharding across all $$W$$ ranks puts the $$3\Psi$$ of all-gather and reduce-scatter traffic on whatever link connects the farthest ranks, which across nodes is the slow one. Hybrid sharding ([Zhao et al., Section 3.2](https://arxiv.org/abs/2304.11277)) picks a **sharding factor** $$F$$ smaller than $$W$$, say $$F = 8$$ for one node, shards each parameter only within groups of $$F$$ ranks, and *replicates* across the $$W/F$$ groups. Two things change:
+
+- *Memory.* Each rank now holds $$1/F$$ of the state rather than $$1/W$$: the 16 bytes per parameter are divided by 8, not by 64. For the 70B model that is 140 GB per GPU, which does not fit, so on its own hybrid sharding suits models that are only somewhat too large to replicate; for larger models it is combined with tensor and pipeline parallelism, which shrink each group's share first.
+- *Communication.* The all-gathers and the reduce-scatter, the traffic that made ZeRO-3 cost $$1.5\times$$ DDP, now run **inside the node over NVLink**. What crosses the network is only the last step of the gradient reduction: after each group has reduce-scattered, every rank holds a $$\Psi/F$$ gradient shard that must still be averaged with the same shard on the other $$W/F$$ replicas, one all-reduce of $$\Psi/F$$ elements. The paper states the equivalence directly: the single reduce-scatter over all ranks becomes a reduce-scatter within each sharded group followed by an all-reduce within each replicated group.
+
+Put numbers on it for the 70B model on 64 GPUs. Fully sharded across all 64, each rank moves about $$3 \times 140 \times 63/64 = 413$$ GB per step, much of it across InfiniBand at 50 GB/s, on the order of 8 s if exposed. Hybrid with $$F = 8$$: the in-node part is $$3 \times 140 \times 7/8 = 368$$ GB per rank at 450 GB/s, about 0.8 s, and the cross-node part is an all-reduce of a $$140/8 = 17.5$$ GB shard across 8 replicas, $$2 \times 7/8 \times 17.5 = 31$$ GB per rank at 50 GB/s, about 0.6 s. The slow link carries a twelfth of the bytes it did, at the price of holding eight times the state per GPU. That is the trade hybrid sharding offers, and it is the same rule as everywhere else in this post: put the heavy traffic on the fast link.
 
 ##### **Offloading**
 
