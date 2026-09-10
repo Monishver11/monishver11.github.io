@@ -342,6 +342,15 @@ PagedAttention ([Kwon et al., SOSP 2023](https://arxiv.org/abs/2309.06180)) appl
 
 The accounting flips immediately. Blocks are allocated on demand as the sequence grows, so reservation waste disappears. All blocks are the same size, so external fragmentation is *impossible*: any free block fits any request. What remains is internal fragmentation in each sequence's last partial block, bounded by $$\text{block\_size} - 1 = 15$$ token slots per sequence; the launch blog puts the total waste under 4%, versus the 60 to 80% before. The paper's claimed result: 2-4x serving throughput over FasterTransformer and Orca at the same latency, larger at longer sequences ([paper abstract](https://arxiv.org/abs/2309.06180)). Nearly all of that is just the bigger batch the reclaimed memory affords.
 
+<div class="row justify-content-center">
+    <div class="col-sm-11 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/llm-inference/paged-kv.svg" title="Paged KV cache: logical blocks, block table, physical pool" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    The paging indirection for one request. Its 54 tokens form 4 logical blocks (the last one partial, the only internal fragmentation there is); the block table maps each logical block to a physical block id; and the physical pool holds those blocks scattered wherever free space happened to be, interleaved with another request's blocks and with free blocks that still carry old cached contents. Editable source: <a href="/assets/img/llm-inference/paged-kv.excalidraw">paged-kv.excalidraw</a>.
+</div>
+
 ##### **How many blocks exist: startup memory accounting**
 
 The block pool's size is decided once, at startup, by measurement rather than estimation. From `determine_available_memory` in `vllm/v1/worker/gpu_worker.py` and `request_memory` in `vllm/v1/worker/utils.py`, as of 2026-08-21:
@@ -365,13 +374,28 @@ For Llama 3 8B at bf16 with block size 16: $$2 \cdot 16 \cdot 8 \cdot 128 \cdot 
 
 ##### **The three layers of the V1 design**
 
+Before the data structures, a quick cast of characters, because the rest of this section leans on them. vLLM V1 splits serving across processes ([docs/design/arch_overview.md](https://github.com/vllm-project/vllm/blob/main/docs/design/arch_overview.md)): an **API server** process handles HTTP and tokenization, and an **engine core** process runs the serving loop itself. Inside the engine core lives the **scheduler**: every step, it decides which requests run and how many tokens each gets, and, since KV memory is the resource those decisions hinge on, it also owns all the KV bookkeeping below. The **workers** (one process driving each GPU) hold the model weights and the physical KV pool, and execute the fused forward pass they are told to run. The division of labor to hold onto: the scheduler *decides* and does its bookkeeping on the CPU; the workers *execute* on the GPU; and what crosses between them each step is a small instruction packet, which requests to run, how many tokens each, and which physical block ids to write KV into. The full architecture, why the processes are split this way and what else lives where, gets its own section near the end of the post (The Engine at Runtime); this much is enough for everything here.
+
+With the roles fixed, the memory machinery is three layers:
+
 | Layer | Class / file (as of 2026-08-21) | Job |
 |---|---|---|
 | Block bookkeeping | `KVCacheBlock`, `BlockPool` (`vllm/v1/core/block_pool.py`) | every block object preallocated at init; tracks `ref_cnt` and `block_hash`; free blocks live on an intrusive doubly-linked list |
 | Per-request logic | `KVCacheManager` (`vllm/v1/core/kv_cache_manager.py`) | `get_computed_blocks()` (prefix-cache hits), `allocate_slots()`, `free()`; called by the **scheduler**, not the worker |
 | GPU-side mapping | block table (`vllm/v1/worker/block_table.py`) | logical-to-physical indices fed to the attention kernels; append-only in V1 |
 
+One field in that first row needs defining now, because everything below uses it: **`ref_cnt` is a block's reference count, the number of live requests currently using that block**. It exists because blocks can be *shared*: prefix caching (the next section's subject) lets several requests point at the same physical block instead of each computing its own copy, and a shared block can only be recycled once nobody points at it, i.e., when its count is back to zero.
+
 Two design choices in that table repay attention. First, every `KVCacheBlock` is preallocated and the free list is a hand-rolled intrusive doubly-linked list: the scheduler's hot loop performs allocation and free at very high rates, so this avoids Python object churn, and the intrusive links give O(1) removal from the *middle* of the free list, which the prefix cache needs when a cache hit pulls a freed block back into service. Second, **the scheduler owns all allocation decisions**; the worker just receives block ids inside its per-step instructions. Memory is the scarce resource that admission and preemption decisions hinge on, so the policy lives in one place, the engine core, and the worker stays a dumb executor.
+
+<div class="row justify-content-center">
+    <div class="col-sm-11 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/llm-inference/free-queue.svg" title="The block pool free queue as an intrusive doubly-linked list" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    The free queue. Every block on it has ref count 0 but keeps its bytes and its hash; allocation pops from the HEAD (evicting that block's old cached identity), freed blocks append at the TAIL, and a prefix-cache hit can "touch" a block out of the middle, lifting it back into use with its neighbors relinking around it in O(1) thanks to the intrusive prev/next pointers. The touch and the head-to-tail LRU ordering are exactly the mechanics the next two subsections walk through. Editable source: <a href="/assets/img/llm-inference/free-queue.excalidraw">free-queue.excalidraw</a>.
+</div>
 
 ##### **allocate and free, step by step**
 
@@ -388,7 +412,24 @@ The subtle and load-bearing fact: **freeing a block does not erase it**. A freed
 
 ##### **Preemption: free everything, recompute later**
 
-When memory runs out mid-flight, V1's answer is maximally simple. `Scheduler._preempt_request` (`vllm/v1/core/sched/scheduler.py`) frees *all* of the victim's blocks, resets its computed-token count to zero, and prepends it to the waiting queue. Recovery is recomputation, possibly accelerated by prefix-cache hits on its own earlier blocks if they haven't been evicted yet. V0 had a second mechanism, swapping blocks out to CPU memory, and V1 deleted it along with the `--swap-space` flag and its metrics ([docs/design/metrics.md](https://github.com/vllm-project/vllm/blob/main/docs/design/metrics.md)): once blocks became shared, deduplicated state under prefix caching, recompute-on-preemption was simpler than tracking swapped shared blocks, and prefix hits make the recompute cheap in the common case.
+Now the failure path. Mid-serving, some running request needs one more block for its next token, and `allocate_slots()` reports the pool is empty. The engine can't partially refuse (a request either gets its block or can't run this step), so one running request must give up its memory so the rest can make progress. The scheduler picks that request, the **victim** (which one it picks is a policy question, covered in the scheduling section), and `Scheduler._preempt_request` (`vllm/v1/core/sched/scheduler.py`) does three things to it:
+
+1. **All of the victim's blocks are freed** back to the free queue. Per the free semantics above, their contents and hashes stay intact for now; they've just become reclaimable by others.
+2. **Its progress counter is zeroed** (`num_computed_tokens = 0`). The victim keeps its *tokens*, the prompt and everything it has generated so far live in the request's CPU-side state; what the engine records is that no KV cache exists for them anymore.
+3. **It moves to the front of the waiting queue**, first in line to be re-admitted once memory frees up.
+
+Recovery, at re-admission, is recomputation: the victim's full token sequence (prompt plus its already-generated output) runs through prefill again to rebuild the KV that was thrown away. In the good case even that is cheap: if the victim's freed blocks are still sitting in the free queue un-overwritten, the prefix-cache lookup finds them and the "recompute" is mostly a cache hit on its own old blocks.
+
+V0 had a second mechanism, swapping a preempted request's blocks out to CPU memory and back, and V1 deleted it along with the `--swap-space` flag and its metrics ([docs/design/metrics.md](https://github.com/vllm-project/vllm/blob/main/docs/design/metrics.md)): once blocks became shared, deduplicated state under prefix caching, tracking swapped shared blocks was more machinery than it was worth, while free-and-recompute needs nothing beyond what this section already built.
+
+<div class="row justify-content-center">
+    <div class="col-sm-11 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/llm-inference/request-lifecycle.svg" title="One request's blocks through admission, decode, and preemption" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    One request's blocks through the whole lifecycle. Admission finds half the prompt already cached (those blocks are touched, ref count up) and pops fresh blocks for the rest; decode grows the cache one block at a time; preemption frees all of them to the free-queue tail, deepest first, zeroes the progress counter, and sends the request to the front of the waiting queue, with the freed blocks' contents intact until someone else reuses them. Editable source: <a href="/assets/img/llm-inference/request-lifecycle.excalidraw">request-lifecycle.excalidraw</a>.
+</div>
 
 Two closing notes for completeness. Hybrid models (mixing full attention, sliding-window attention, and Mamba state layers) give each layer type its own KV spec and manage them in groups via a hybrid coordinator (`vllm/v1/core/kv_cache_coordinator.py`, `single_type_kv_cache_manager.py`, [docs/design/hybrid_kv_cache_manager.md](https://github.com/vllm-project/vllm/blob/main/docs/design/hybrid_kv_cache_manager.md)). And quantizing the KV cache to fp8 halves `page_size_bytes`, doubling the block count from the same pool; the per-token-head scales it needs are budgeted inside the page size (`vllm/v1/kv_cache_interface.py`). More on that in the quantization section.
 
