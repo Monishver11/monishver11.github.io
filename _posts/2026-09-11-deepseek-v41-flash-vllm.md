@@ -309,7 +309,7 @@ Flags you did not pass still get values, and several of them are specific to thi
 | `--gpu-memory-utilization` | 0.92 | `vllm/config/cache.py` |
 | `--kv-cache-dtype` | `fp8_ds_mla` | `auto` resolves to it; bf16 is rejected for this layout |
 | CUDA graphs | breakable, full and piecewise | `DeepseekV41ForCausalLM` is in `DEFAULT_BREAKABLE_CUDAGRAPH_ARCHITECTURES` (`vllm/config/vllm.py`), which sets `VLLM_USE_BREAKABLE_CUDAGRAPH=1` and disables torch.compile |
-| Engram placement | pinned host memory, one full copy per DP rank | `vllm/config/engram.py` and `common/engram.py`; next section |
+| Engram placement | pinned host memory; on the recipe image, one table sharded across all eight ranks at 23.6 GiB per rank (see the correction in the next section) | `vllm/config/engram.py` and `common/engram.py`; next section |
 | DSpark | off | opt-in via `--speculative-config` |
 | DeepGEMM warmup | `relax` | `VLLM_DEEP_GEMM_WARMUP` |
 | Attention backend | FlashMLA sparse (`FLASHMLA_SPARSE_DSV41`) on SM90 and SM100 | `nvidia/model.py` |
@@ -322,7 +322,7 @@ Two to internalize: this model never goes through torch.compile, and instead get
     </div>
 </div>
 <div class="caption">
-    One node, one command. The Rust front end owns the port and routes each request to the least-loaded engine core; the DP coordinator keeps the eight cores' forward passes in lockstep. Each core drives one GPU holding a full copy of the attention and dense weights (about 11 GiB) and a 48-expert slice of every layer (about 32 GiB), with the expert all-to-all crossing NVLink every layer. Under the default configuration, each core also holds its own full 189 GiB Engram table in pinned host RAM and reads it over UVA. Editable source: <a href="/assets/img/deepseek-v41-flash-vllm/dp8-topology.excalidraw">dp8-topology.excalidraw</a>.
+    One node, one command. The Rust front end owns the port and routes each request to the least-loaded engine core; the DP coordinator keeps the eight cores' forward passes in lockstep. Each core drives one GPU holding a full copy of the attention and dense weights (about 11 GiB) and a 48-expert slice of every layer (about 32 GiB), with the expert all-to-all crossing NVLink every layer. Under the default configuration the Engram tables live in pinned host RAM and are read over UVA. The diagram shows one full 189 GiB table per core, which is what the config docstring implies; the recipe image's startup log shows one table sharded across the eight cores at 23.6 GiB each (see the correction in the Engram placement section). Editable source: <a href="/assets/img/deepseek-v41-flash-vllm/dp8-topology.excalidraw">dp8-topology.excalidraw</a>.
 </div>
 
 ##### **The Engram placement problem**
@@ -331,7 +331,9 @@ This is the part of the config that surprised me, and it is the first thing I wo
 
 The resolution chain in vLLM, as of 2026-09-11: `VllmConfig._resolve_and_verify_engram_config` leaves `engram_config` as `None` unless you pass `--engram-config` or set the legacy `VLLM_PLE_CPU_OFFLOAD` (`vllm/config/vllm.py`). The Engram module then builds its table with `cpu_offload=engram_config.cpu_offload if engram_config else True` (`vllm/models/deepseek_v4_1/common/engram.py`). So **with no flag, the tables go to pinned host memory**, allocated with `device="cpu", pin_memory=True`, and are read from the GPU over unified virtual addressing. The table is sharded by hash column across tensor-parallel ranks (`ParallelEngramEmbedding`), and with `embedding_across_dp` at its default of `False`, "each DP rank has a separate TP-sharded embedding replica" (`vllm/config/engram.py`).
 
-Put the two together for this command. TP is 1, so the shard is the whole table. DP is 8, so there are eight replicas. That is eight copies of 188.8 GiB, about 1.5 TiB of pinned host memory, before anything else on the host. Whether that boots depends on the node's RAM, which NVIDIA's DGX B300 page does not state in the spec table I could find, so check it before launching:
+Put the two together for this command and the docstring predicts: TP is 1, so the shard is the whole table; DP is 8, so there are eight replicas, about 1.5 TiB of pinned host memory. That is what I originally wrote here.
+
+**Correction (2026-09-11).** The recipe image does not do that. Its startup log says `Engram tables are sharded over 8 ranks (TP=1 x DP=8)` and then, twice per rank for layers 1 and 14, `Engram table offloaded to pinned host memory: ~48,001,000 rows x 256, 11.80 GiB per rank`. So a node holds **one** table, 23.6 GiB per rank and 188.8 GiB in total, which is exactly the checkpoint's table size. The host-memory peak measured during startup with the default placement was about 792 GiB, most of it the 475 GiB checkpoint's page cache rather than the tables, and a 400 GiB container still got killed by the OOM killer. The details, and the test of moving the tables into HBM, are in the [measurement post](/blog/2026/deepseek-v41-flash-b300-benchmark/). Whether `main` with no flag matches the image depends on how the Engram parallel group is sized (`get_parallel_size` in `vllm/config/engram.py` and the `_ETP` group in `vllm/distributed/parallel_state.py`), so check the `sharded over` log line on whatever build you run, and check the host's RAM before launching either way:
 
 ```bash
 free -g
@@ -341,14 +343,14 @@ The alternatives, and what each costs per GPU (weights from the recipe's memory 
 
 | Layout | Attention and dense per GPU | Experts per GPU | Engram, default (host) | Engram if resident on GPU |
 |---|---|---|---|---|
-| DP8, EP8 (this command) | 11.4 GiB, replicated | 32.4 GiB | 8 host copies of 188.8 GiB | 188.8 GiB per GPU, leaving about 14 GiB for KV at 0.92 utilization |
+| DP8, EP8 (this command) | 11.4 GiB, replicated | 32.4 GiB | per the docstring, 8 host copies of 188.8 GiB; as measured on the recipe image, one host copy sharded 8 ways | per the docstring, 188.8 GiB per GPU; as measured on the recipe image, 23.6 GiB per GPU |
 | DP8, EP8 with `--engram-config '{"embedding_across_dp": true}'` | 11.4 GiB | 32.4 GiB | one host copy, sharded 8 ways | 23.6 GiB per GPU |
 | TP8, EP8 (the recipe's TEP strategy) | about 1.4 GiB, sharded | 32.4 GiB | one host copy, sharded 8 ways | 23.6 GiB per GPU |
 | 2x TP4, EP4 (SGLang's verified 8x B300 layout, run as two replicas) | 2.9 GiB | 64.9 GiB | 2 host copies, each sharded 4 ways | 47.2 GiB per GPU |
 
 The knob to keep the tables in HBM is `--engram-config '{"cpu_offload": false}'`. Note the trap in the resolution chain: because `EngramConfig.cpu_offload` defaults to `False` while an absent config means `True`, passing any `--engram-config` at all without that key also moves the tables onto the GPU. Under DP8 that is 188.8 GiB of each B300 gone to a lookup table, which is why the DP-sharding flag exists.
 
-What this means for the tuning plan: the recipe's DP8 command is the throughput layout for MoE models in general, but for this model it multiplies the one component that does not shard for free. The first experiment is not a kernel; it is the layout matrix above, with Engram on host versus GPU, measured at fixed concurrency. Open [PR #56512](https://github.com/vllm-project/vllm/pull/56512) adds asynchronous prefetch for offloaded lookups, shares a single host table across DP replicas through `/dev/shm`, and adds Engram DP sharding; when it lands, the DP8 row changes.
+What this means for the tuning plan: the recipe's DP8 command is the throughput layout for MoE models in general, and on the recipe image the Engram table does shard across it. What remains is placement: the default reads the table from pinned host memory over UVA on every token. The first experiment is not a kernel; it is Engram on host versus GPU, measured at fixed concurrency. Open [PR #56512](https://github.com/vllm-project/vllm/pull/56512) adds asynchronous prefetch for offloaded lookups, shares a single host table across DP replicas through `/dev/shm`, and adds Engram DP sharding; when it lands, the DP8 row changes.
 
 **References**
 - [vLLM data parallel deployment](https://docs.vllm.ai/en/latest/serving/data_parallel_deployment/), [expert parallel deployment](https://docs.vllm.ai/en/latest/serving/expert_parallel_deployment/), [docker deployment](https://docs.vllm.ai/en/latest/deployment/docker/), [parallelism scaling](https://docs.vllm.ai/en/latest/serving/parallelism_scaling/), [tool calling](https://docs.vllm.ai/en/latest/features/tool_calling/)
@@ -400,7 +402,7 @@ Everything below is a hypothesis, ordered by how much I expect it to matter, eac
 
 **H2: the Engram lookup is a random-access host read in the critical path.** By default every token gathers 24 rows of 256 FP8 bytes from a pinned host table over UVA, twice per token, at layers 1 and 14. The bandwidth is nothing; the latency is a PCIe round trip per gather with no prefetch on main. Check: run the layout matrix with `--engram-config '{"cpu_offload": false}'` on a layout where the table fits, and compare ITL at fixed concurrency. If the gap is large, the prefetch PR is the fix; if it is small, leave the tables on the host and spend the HBM on batch.
 
-**H3: DP8 is the wrong layout for this model until Engram shards across DP.** Beyond the host-memory multiplier, DP8 replicates the 7.6 GB dense-weight read on every rank each step, while TP8 divides it, and that read is most of the byte floor. Check: TEP8 versus DP8 versus two TP4 replicas at the same concurrency per node. SGLang's verified 8x B300 layout is two TP4 replicas, a data point rather than a verdict.
+**H3: DP8 replicates the dense-weight read.** (This hypothesis originally also carried a host-memory multiplier from Engram replication; the [measurement post](/blog/2026/deepseek-v41-flash-b300-benchmark/) found that the recipe image shards the table across the eight ranks, so that half is withdrawn.) DP8 replicates the 7.6 GB dense-weight read on every rank each step, while TP8 divides it, and that read is most of the byte floor. Check: TEP8 versus DP8 versus two TP4 replicas at the same concurrency per node. SGLang's verified 8x B300 layout is two TP4 replicas, a data point rather than a verdict.
 
 **H4: the MoE backend that `auto` picks matters on SM100.** The MegaMoE backends (`deep_gemm_mega_moe`, `flashinfer_moe_ep_mega_deep_gemm`, `flashinfer_moe_ep_mega_cutedsl`) exist for exactly this checkpoint shape and require EP plus SM100. Which one `auto` resolves to is not documented. Check the startup log for the selected backend, then sweep `--kernel-config '{"moe_backend": ...}'` across the three at a saturating batch, where the expert GEMMs dominate.
 
@@ -449,7 +451,7 @@ One cross-vendor discrepancy to carry in your head: DeepSeek's reference encoder
 - **The model is built to cache less.** Four layers write main KV, at 2.5 entries per token, in FP4; the decoder's KV is projected from the encoder so prefill runs half the network; the sliding-window caches are replayed rather than persisted. The paper's 890 bytes per token is the HBM cost on DeepSeek's stack.
 - **vLLM today stores twice that.** The fp8 layout is 584 bytes per entry, FP4 is an open PR, and bounded replay is an open PR. Size off vLLM's numbers, and expect both to move.
 - **The byte floor on 8x B300 is about 1 ms per decode step; the only public measurement is 25x that, on AMD.** The gap is fixed per-step cost, and the trace points at mHC's kernel count. Measure launches before bytes.
-- **DP8 multiplies Engram.** Default placement is one full 189 GiB copy per DP rank in pinned host memory, eight copies for this command. TP8 or DP sharding turns that into one. This is the first experiment.
+- **Engram placement is the first experiment, not Engram capacity.** I originally wrote here that DP8 pins eight copies of the 189 GiB table; the recipe image's log shows one table sharded across the eight ranks, 23.6 GiB each. What remains is that the default reads it from pinned host memory over UVA on every token. The [measurement post](/blog/2026/deepseek-v41-flash-b300-benchmark/) tests moving it to HBM.
 - **Several flags are inert or redundant in this exact command.** The encoder-parallel flag needs TP above 1; the tokenizer mode is auto-selected; the privileged flag is there for RDMA.
 - **The admission defaults are large.** 1024 sequences per rank and 16,384 tokens per step, on a model whose step cost stops improving once every expert is touched, with a known router crash above 256 sequences.
 - **The image is not main.** Built from a deleted staging branch, a day before the keystone merge, with its build commit unlabeled. Read PRs with that in mind.
@@ -479,7 +481,7 @@ Block $$l$$ mixes its input with the previous block's coefficient $$A_{l-1}$$ in
 About 12 KB: 24 gathers of 256 FP8 values per module, two modules. The concern is placement and latency, not bandwidth: the tables are 189 GiB, the addresses are random, and vLLM's default reads them from pinned host memory with no prefetch on main.
 
 **7. Under the recipe's DP8 command, how many copies of the Engram table exist and where?**
-Eight, one per DP rank, each the full 188.8 GiB, in pinned host memory, because TP is 1 (no sharding) and `embedding_across_dp` defaults to false.
+One table, sharded across the eight ranks at 23.6 GiB per rank, in pinned host memory, per the recipe image's startup log. The config docstring for `embedding_across_dp` describes a per-DP-rank replica instead, so check the `sharded over` log line on the build you run.
 
 **8. Which flag in the command does nothing, and why?**
 `--mm-encoder-tp-mode data`, because the ViT's data-parallel path is only taken when the tensor-parallel world size exceeds 1, and this command has TP 1.
