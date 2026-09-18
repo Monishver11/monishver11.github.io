@@ -28,7 +28,7 @@ Right now, I’m specializing in **ML performance engineering** and hardware-awa
 
 ##### **Beyond the technical stuff**
 
-Outside of work and school, I’m a national-level Lawn tennis player, and I also explore my creative side through art; you can check out some of my work on Instagram at [@knotted.arts](https://instagram.com/knotted.arts).
+Outside of work and school, I’m a national-level Lawn tennis player, and I also explore my creative side through art; you can see some of my work on the [Art](/art/) page.
 
 I value curiosity, meaningful work, and genuine connections. This site reflects that; it’s not just about the technical journey, but also about growth, reflection, and the process of figuring things out. Whether you’re here for the technical content, personal musings, or just passing through, I hope you find something worthwhile.
 

@@ -1,0 +1,84 @@
+{% comment %}
+  Renders every entry of _data/art.yml (in file order) as an image beside its quote.
+  include.layout picks the arrangement: editorial | feed | grid | masonry (default editorial).
+  Posts with several images get a fixed-shape slider with arrows and dots, like Instagram.
+{% endcomment %}
+{% assign art_layout = include.layout | default: "editorial" %}
+{% case art_layout %}
+  {% when "feed" %}
+    {% assign art_sizes = "(max-width: 575px) 92vw, 560px" %}
+  {% when "masonry" %}
+    {% assign art_sizes = "(max-width: 575px) 45vw, 300px" %}
+  {% when "grid" %}
+    {% assign art_sizes = "(max-width: 575px) 92vw, 290px" %}
+  {% else %}
+    {% assign art_sizes = "(max-width: 767px) 92vw, 480px" %}
+{% endcase %}
+
+<div class="art-gallery art-layout-{{ art_layout }}">
+  {% for piece in site.data.art %}
+    {% assign art_alt = piece.quote | newline_to_br | strip_newlines | replace: "<br />", " " | escape %}
+    {% assign art_first = piece.files | first %}
+    <div class="art-item art-kind-{{ piece.kind }}" id="art-{{ piece.id }}">
+      <div class="art-media">
+        {% if piece.files.size > 1 %}
+          <div class="art-slider" style="aspect-ratio: {{ art_first.width }} / {{ art_first.height }}">
+            <div class="art-track">
+              {% for f in piece.files %}
+                <div class="art-frame">
+                  {% include figure.liquid path=f.path class="img-fluid rounded" alt=art_alt zoomable=true sizes=art_sizes %}
+                </div>
+              {% endfor %}
+            </div>
+            <button class="art-nav art-prev" type="button" aria-label="Previous image">&#8249;</button>
+            <button class="art-nav art-next" type="button" aria-label="Next image">&#8250;</button>
+            <div class="art-dots" aria-hidden="true">
+              {% for f in piece.files %}<span{% if forloop.first %} class="active"{% endif %}></span>{% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <div class="art-frame">
+            {% include figure.liquid path=art_first.path class="img-fluid rounded" alt=art_alt zoomable=true sizes=art_sizes %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="art-quote">
+        {% if piece.quote != "" %}
+          <p>{{ piece.quote | escape | newline_to_br }}</p>
+        {% endif %}
+        <span class="art-meta">
+          <span class="art-medium">{{ piece.medium }}</span>
+          &middot; {{ piece.date | date: "%b %Y" }}
+          {% if piece.credit %}&middot; after {{ piece.credit }}{% endif %}
+        </span>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".art-slider").forEach(function (slider) {
+      var track = slider.querySelector(".art-track");
+      var dots = slider.querySelectorAll(".art-dots span");
+      var count = dots.length;
+      var index = function () {
+        return Math.round(track.scrollLeft / track.clientWidth);
+      };
+      var go = function (i) {
+        i = Math.max(0, Math.min(count - 1, i));
+        track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+      };
+      slider.querySelector(".art-prev").addEventListener("click", function () { go(index() - 1); });
+      slider.querySelector(".art-next").addEventListener("click", function () { go(index() + 1); });
+      var update = function () {
+        var i = index();
+        dots.forEach(function (d, k) { d.classList.toggle("active", k === i); });
+        slider.classList.toggle("at-start", i === 0);
+        slider.classList.toggle("at-end", i === count - 1);
+      };
+      track.addEventListener("scroll", update, { passive: true });
+      update();
+    });
+  });
+</script>
