@@ -207,3 +207,274 @@ So the C++ dispatch chain becomes plain code in the port. The port does not sele
 - CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py) (the DSL kernel) and [`python/CuTeDSL/cutlass/utils/hopper_helpers.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/utils/hopper_helpers.py) (`make_trivial_tiled_mma`)
 
 ---
+
+#### **How a kernel is assembled** {#assembly}
+
+This section reads the type definitions that build one kernel. It reads example 49 first, then the W4A8 kernel, and then the CuTe DSL code that does the same job.
+
+##### **Example 49: four type definitions, in a fixed order**
+
+Example 49 builds its kernel with four `using` declarations (`49_collective_builder.cu`, lines 307 to 337). Here they are, shortened:
+
+```c++
+// 1. The epilogue collective.
+using CollectiveEpilogue = typename cutlass::epilogue::collective::CollectiveBuilder<
+    cutlass::arch::Sm90, cutlass::arch::OpClassTensorOp,
+    Shape<_128,_128,_64>, Shape<_1,_1,_1>,          // tile shape, cluster shape
+    cutlass::epilogue::collective::EpilogueTileAuto,
+    ElementAccumulator, ElementCompute,
+    ElementC, LayoutC, AlignmentC,
+    ElementD, LayoutD, AlignmentD,
+    EpilogueScheduleType,
+    cute::conditional_t<UseCustomEVT, CustomEVT, DefaultOperation>>::CollectiveOp;   // CustomEVT in our variant
+
+// 2. The mainloop collective. Its stage count depends on the epilogue's shared memory.
+using CollectiveMainloop = typename cutlass::gemm::collective::CollectiveBuilder<
+    cutlass::arch::Sm90, cutlass::arch::OpClassTensorOp,
+    ElementA, LayoutA, AlignmentA,
+    ElementB, LayoutB, AlignmentB,
+    ElementAccumulator,
+    Shape<_128,_128,_64>, Shape<_2,_1,_1>,          // tile shape, cluster shape
+    cutlass::gemm::collective::StageCountAutoCarveout<                  // when StageCountType is the
+        static_cast<int>(sizeof(typename CollectiveEpilogue::SharedStorage))>,   // default StageCountAuto
+    MainloopScheduleType>::CollectiveOp;
+
+// 3. The kernel: a problem shape plus the two collectives.
+using GemmKernel = cutlass::gemm::kernel::GemmUniversal<
+    Shape<int,int,int,int>, CollectiveMainloop, CollectiveEpilogue, TileSchedulerType>;
+
+// 4. The host-side handle.
+using Gemm = cutlass::gemm::device::GemmUniversalAdapter<GemmKernel>;
+```
+
+The order is not free. The epilogue comes first because the mainloop builder needs its size. `StageCountAutoCarveout<N>` tells the mainloop builder to keep `N` bytes of shared memory free (`collective_builder_decl.hpp`, line 50). Here `N` is the size of the epilogue's shared storage. The builder then fills the rest of the shared memory with as many mainloop stages as fit. Section 3 shows this calculation.
+
+The problem shape `Shape<int,int,int,int>` is (M, N, K, L), where L is the batch count. All four values are `int`, so they are runtime values, and one compiled kernel serves every problem size. The tile shape and the cluster shape use `_128` and `_2`, which are compile-time constants.
+
+There is one surprise in the example. The epilogue builder gets the cluster shape `1x1x1`, and the mainloop builder gets `2x1x1`. In `v4.7.1`, every SM90 epilogue builder takes the cluster shape as a template parameter, but no SM90 epilogue builder uses it in its body. Some builders only pass it on to another builder (`epilogue/collective/builders/sm90_builder.inl`). The TMA warp-specialized builder and the implementation it uses do not read it. So the mismatch has no effect. I found this by a search of the builder source, not from a statement in the documentation.
+
+##### **The W4A8 kernel: the same four definitions, with the operands swapped**
+
+The W4A8 kernel uses the same four definitions in the same order (`w4a8_mm_entry.cu`, lines 113 to 156). Four things are different.
+
+**The K tile.** The tile shape is a template parameter `TileShape_MN`, with the K extent added by `cute::append`:
+
+```c++
+static int constexpr TileShapeK = 128 * 8 / sizeof_bits<MmaType>::value;   // MmaType = float_e4m3_t
+```
+
+`sizeof_bits` of FP8 is 8, so `TileShapeK` is 128 elements, which is 128 bytes of FP8. In the INT4 operand, a 128-element K tile is 64 bytes.
+
+**The operands are swapped.** vLLM computes D = A·B, where A is the FP8 activation matrix (M by K, row-major) and B is the INT4 weight matrix (K by N, column-major). But the mainloop builder gets B in its first slot and A in its second slot:
+
+```c++
+using CollectiveMainloopShuffled = typename cutlass::gemm::collective::CollectiveBuilder<
+    ArchTag, OperatorClass,
+    cute::tuple<ElementB, cutlass::Array<ElementScale, ScalePackSize>>,   // slot A: INT4 weights + scales
+    LayoutB_Reordered, AlignmentB,
+    ElementA, LayoutA_Transpose, AlignmentA,                               // slot B: FP8 activations
+    ElementAccumulator, TileShape, ClusterShape,
+    cutlass::gemm::collective::StageCountAutoCarveout<
+        static_cast<int>(sizeof(typename CollectiveEpilogue::SharedStorage))>,
+    KernelSchedule>::CollectiveOp;
+```
+
+So the kernel computes the transpose, Dᵀ = Bᵀ·Aᵀ. Bᵀ is N by K, and Aᵀ is K by M. The epilogue builder gets `LayoutTranspose<LayoutC>` and `LayoutTranspose<LayoutD>`, which is column-major. A column-major N by M matrix has the same bytes as a row-major M by N matrix. So the kernel writes Dᵀ, and the memory holds D in the layout that vLLM expects.
+
+<div class="row justify-content-center">
+    <div class="col-sm-11 mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/cutlass-hopper-gemm/operand-swap.svg" title="The W4A8 operand swap" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    Left: the product that vLLM asks for. Right: the product that the kernel computes. The INT4 weights and their scales go into the builder's A slot, because only the A operand of WGMMA can come from registers, where the conversion to FP8 happens. The FP8 activations go into the B slot. The kernel writes D transposed in column-major order, which is the same memory as D in row-major order. Editable source: <a href="/assets/img/cutlass-hopper-gemm/operand-swap.excalidraw">operand-swap.excalidraw</a>.
+</div>
+
+Three facts explain the swap. The first two come from the README of CUTLASS example 55, together with one PTX rule.
+
+1. The README says that the narrow type must go through the register file, where it is converted to the wider type. The PTX ISA allows the A operand of WGMMA to come from registers, but the B operand must come from shared memory. So the INT4 weights must be the A operand.
+2. The README says that if the narrow type is in the B slot, the collective swaps and transposes the operands itself, and that the TMA epilogues do not support this implicit swap. My inference from this: a kernel that wants a TMA epilogue must do the swap explicitly, as W4A8 does. The comment in `w4a8_mm_entry.cu` says the same: the cooperative TMA epilogue is "the only epi supporting the required swap + transpose".
+3. The README says that for an 8-bit by 4-bit GEMM, both operands must be K-major. `LayoutA_Transpose` is column-major for a K by M matrix, which is K-major. The INT4 weights are column-major K by N, which is also K-major.
+
+The builder code shows reason 2. It sets `SwapAB = IsMixedInput ? !IsATransformed : ...` (`sm90_gmma_builder.inl`, line 413). `IsATransformed` is true if the A slot holds a tuple. The builder also wraps a narrow A type without scales in a tuple (line 396), so it is true in that case too. W4A8 puts its tuple in the A slot, so `SwapAB` is false, and the builder does not swap a second time.
+
+**The scale type is an array.** The first slot is `cute::tuple<int4b_t, cutlass::Array<float_e4m3_t, 8>>`. The tuple tells the builder that the INT4 operand has scales. The README says that the scale-only mode for FP8 by INT4 is "significantly slower" than direct conversion, and that a lookup-table method fixes this. To select the lookup-table method, the scale type must be `cutlass::Array<ElementScale, 8>`. The README adds that this method needs a different encoding of the weights and the scales. In vLLM, two C++ ops make this encoding when the weights are loaded (`w4a8_mm_entry.cu`, lines 380 to 429). `cutlass_encode_and_reorder_int4b` re-encodes the INT4 values with the nibble lookup table in `w4a8_utils.cu` and reorders them. `cutlass_pack_scale_fp8` stores each FP8 scale as an `Array` of 8 elements. The Python method `process_weights_after_loading` in `mixed_precision/cutlass.py` calls both ops (lines 79 and 86). Part 5 explains both.
+
+The fourth difference, `LayoutB_Reordered`, is the weight layout that `compute_memory_reordering_atom` makes. Part 5 explains it too.
+
+##### **In the CuTe DSL: a constructor, a host method and a setup method**
+
+The CuTe DSL has no builder, so `dense_gemm_persistent.py` makes the same choices in three methods of one class.
+
+1. **`__init__`** (line 251) takes the choices that the user makes: the accumulator type, the tile shape (M, N), the cluster shape (M, N), and two tile-order options, `swizzle_size` and `raster_along_m`. The K extent of the tile is not an argument.
+2. **`__call__`** (line 405, with `@cute.jit` on line 404) reads the data types and the layouts from the input tensors (lines 433 to 438). It checks them, calls `_setup_attributes`, makes the TMA atoms, computes the grid, declares the shared memory struct, and launches the kernel.
+3. **`_setup_attributes`** (line 328) does the work of the two builders. It makes the tiled MMA, sets the K extent of the tile, computes the cluster layout and the multicast counts, picks the epilogue tile, computes the stage counts, and makes the shared memory layouts.
+
+Two of these choices follow the C++ code closely.
+
+**The K extent of the tile** is four MMA instructions: `mma_inst_tile_k = 4` (line 358), and the tile K is the instruction's K times 4. The K of one WGMMA is 16 for 16-bit types and 32 for FP8, so the tile K is 64 for BF16 and 128 for FP8. For FP8, this is the same 128 as W4A8's `TileShapeK`.
+
+**The stage count** follows the same principle as `StageCountAutoCarveout`. The epilogue's shared memory is reserved first, and the mainloop gets the rest (`_compute_stages`, lines 1008 to 1022):
+
+```python
+ab_bytes_per_stage = size(A tile) * a_bits // 8 + size(B tile) * b_bits // 8
+epi_bytes = size(epi_tile) * c_bits // 8 * 4          # epi_stage = 4
+ab_stage = (smem_capacity // occupancy - (1024 + epi_bytes)) // ab_bytes_per_stage
+```
+
+The 1024 bytes are kept for the mbarriers. The C++ builder differs in the details. It rounds the bytes of a stage and the carveout up to multiples of 128, and it adds the size of one stage's pipeline barriers to each stage (`sm90_gmma_builder.inl`, lines 71 to 85). The DSL code reserves a flat 1024 bytes, and it computes the epilogue's bytes from the epilogue tile and 4 epilogue stages. For a 128 by 128 BF16 tile with K = 64, one stage holds 128·64·2 + 128·64·2 = 32,768 bytes. Section 3 completes this calculation with the epilogue tile and the shared memory capacity.
+
+##### **What the port must change here**
+
+The DSL example accepts only operands of the same width. `__call__` raises an error if the widths are different (lines 444 to 447):
+
+```python
+if cutlass.const_expr(self.a_dtype.width != self.b_dtype.width):
+    raise TypeError(f"Type width mismatch: {self.a_dtype.width} != {self.b_dtype.width}")
+```
+
+So the port starts from this class, but it changes these parts:
+
+| Part | Dense DSL example | W4A8 port |
+|---|---|---|
+| Operand widths | Equal, checked in `__call__` | 4 bits (weights) and 8 bits (activations) |
+| Operand order | A and B as given | The weights in the A position and the activations in the B position, as in the C++ swap |
+| Output | C as given | The output written as Dᵀ (N by M, column-major), which is D in memory |
+| Extra inputs | None | The group scales, and the per-token and per-channel scales |
+| Stage count | A and B bytes per stage | INT4 bytes plus FP8 bytes plus scale bytes per stage |
+| K extent of the tile | Four MMA instructions | 128, the same value for FP8 |
+| Weight and scale preparation | None | Two C++ ops run when the weights are loaded. The port must keep them or write them again. |
+
+The table lists what must change. It does not say how. The later parts show how, one piece at a time.
+
+**References**
+- CUTLASS v4.7.1, [`examples/49_hopper_gemm_with_collective_builder/49_collective_builder.cu`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/examples/49_hopper_gemm_with_collective_builder/49_collective_builder.cu) (the four type definitions)
+- CUTLASS v4.7.1, [`examples/55_hopper_mixed_dtype_gemm/README.md`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/examples/55_hopper_mixed_dtype_gemm/README.md) (the narrow type goes through registers, the implicit swap and the TMA epilogue, the K-major rule, the lookup-table scale mode)
+- PTX ISA, [`wgmma.mma_async`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#asynchronous-warpgroup-level-matrix-instructions-wgmma-mma) (A may be in registers, B must be in shared memory)
+- CUTLASS v4.7.1, [`include/cutlass/gemm/collective/collective_builder_decl.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/collective_builder_decl.hpp) (`StageCountAutoCarveout`), [`include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl) (`SwapAB`), [`include/cutlass/epilogue/collective/builders/sm90_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/builders/sm90_builder.inl) (the epilogue builder)
+- vLLM, `csrc/libtorch_stable/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the W4A8 type definitions)
+- CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py) (`__init__`, `__call__`, `_setup_attributes`, `_compute_stages`)
+
+---
+
+#### **What the CollectiveBuilder chooses** {#builder}
+
+The mainloop builder turns about ten template arguments into a complete `CollectiveMma` type. This section opens the builder and lists each choice that it makes. Then it shows the CuTe DSL code that makes the same choice by hand. The numbers are for the example 49 variant: FP16 operands, a 128 by 128 by 64 tile, a 2x1x1 cluster and the cooperative schedule.
+
+The builder is a set of partial specializations of `CollectiveBuilder`. Example 49 selects the one marked `GMMA_TMA_WS_SS` (`collective/builders/sm90_gmma_builder.inl`, lines 195 to 309). "WS" means warp-specialized, and "SS" means that WGMMA reads both operands from shared memory. W4A8 selects a different one, `GMMA_TMA_WS_RS`, which starts at line 313. The last subsection explains the differences.
+
+##### **The six choices of the SS builder**
+
+| # | Choice | C++ code in the builder | Result for example 49 |
+|---|---|---|---|
+| 1 | Warpgroups per tile | `AtomLayoutMNK` is `Shape<_2,_1,_1>` if the schedule is cooperative, else `Shape<_1,_1,_1>` | 2 MMA warpgroups. Each one computes 64 rows of the 128-row tile. |
+| 2 | The tiled MMA | `make_tiled_mma(GMMA::ss_op_selector<...>(), AtomLayoutMNK{})` | A WGMMA atom of 64 by 128 by 16 (FP16), tiled 2 times along M |
+| 3 | The TMA copy for A and for B | `sm90_cluster_shape_to_tma_atom(shape<1>(ClusterShape))` for A, and `shape<0>` for B | A: `SM90_TMA_LOAD` (cluster N is 1). B: `SM90_TMA_LOAD_MULTICAST` (cluster M is 2). |
+| 4 | The shared memory layout atoms | `ss_smem_selector<Major, Element, BLK_MN, BLK_K>()` | `Layout_K_SW128_Atom` for both A and B |
+| 5 | The number of pipeline stages | `compute_stage_count_or_override<...>(StageCountType{})` | 6 stages (calculation below) |
+| 6 | The dispatch policy | `MainloopSm90TmaGmmaWarpSpecialized<Stages, ClusterShape, Schedule>`, or the `FP8` version of it for FP8 inputs | `MainloopSm90TmaGmmaWarpSpecialized<6, Shape<_2,_1,_1>, KernelTmaWarpSpecializedCooperative>` |
+
+The builder also sets `SmemCopyAtomA` and `SmemCopyAtomB` to `void`. In an SS mainloop, no thread copies an operand from shared memory to registers, because WGMMA reads both operands from shared memory through descriptors. This line changes for W4A8.
+
+Choices 3, 4 and 5 need more explanation.
+
+**Choice 3, the TMA copies.** In a 2x1x1 cluster, the two CTAs compute two tiles that are next to each other along M. They use different rows of A, but the same columns of B. So one TMA load of a B tile can write it into the shared memory of both CTAs. This is TMA multicast. The rule in the builder follows from this. The A tile is shared by the CTAs along N, so A uses multicast only if the cluster's N extent is more than 1. The B tile is shared by the CTAs along M, so B uses multicast only if the cluster's M extent is more than 1. Part 2 explains multicast in detail.
+
+**Choice 4, the shared memory layout atom.** For a K-major operand, `ss_smem_selector` takes the widest of four layout atoms whose K width divides the tile's K extent (`collective/builders/sm90_common.inl`, lines 307 to 324). It tests the 128-byte swizzle atom first, then the 64-byte and the 32-byte swizzle atoms, and last the interleaved atom, which has no swizzle. For FP16 with K = 64, one row of the tile is 64 · 2 = 128 bytes, so the builder picks the 128-byte swizzle, `Layout_K_SW128_Atom`. The [DSL post](/blog/2026/fa3-cute/#swizzle) explains this swizzle.
+
+**Choice 5, the stage count.** `StageCountAutoCarveout` selects this function (`sm90_gmma_builder.inl`, lines 68 to 85, abridged):
+
+```c++
+constexpr auto mainloop_pipeline_bytes = sizeof(typename cutlass::PipelineTmaAsync<1>::SharedStorage);
+constexpr int stage_bytes_ =
+  cutlass::bits_to_bytes(a_bits * size<0>(TileShapeMNK{}) * size<2>(TileShapeMNK{})) +
+  cutlass::bits_to_bytes(b_bits * size<1>(TileShapeMNK{}) * size<2>(TileShapeMNK{}));
+constexpr int stage_bytes = cutlass::round_up(stage_bytes_, alignment) +
+  static_cast<int>(mainloop_pipeline_bytes);
+constexpr int carveout_bytes = cutlass::round_up(carveout_bytes_, alignment);
+constexpr int capacity_bytes = capacity_bytes_ / alignment * alignment;
+return (capacity_bytes - carveout_bytes) / stage_bytes;
+```
+
+Here are the numbers for example 49:
+
+| Term | Value | Source |
+|---|---|---|
+| A tile, 128 · 64 FP16 | 16,384 bytes | |
+| B tile, 128 · 64 FP16 | 16,384 bytes | |
+| Pipeline barriers for one stage: one full barrier and one empty barrier, 8 bytes each | 16 bytes | `pipeline/sm90_pipeline.hpp`, `PipelineTmaAsync::SharedStorage` |
+| `stage_bytes` | 32,784 bytes | |
+| `capacity_bytes`, `sm90_smem_capacity_bytes` | 232,448 bytes (227 KB) | `sm90_common.inl`, line 57 |
+| `carveout_bytes`, the epilogue's shared storage | 33,792 bytes (see below) | |
+| Stages | floor((232,448 − 33,792) / 32,784) = 6 | |
+
+The carveout is the size of the epilogue's `SharedStorage`. I calculated it from the epilogue source and did not compile it, so this value is unverified. The cooperative epilogue tile for a 128 by 128 tile is 128 by 32, which gives 4 epilogue subtiles. C and D are both FP16, so the epilogue reuses the C buffers for D, with 4 stages: 4 · 128 · 32 · 2 bytes = 32,768 bytes. The C load pipeline adds 4 · 16 = 64 bytes of barriers. The visitor nodes of example 49's custom tree have empty shared storage. The C buffer is aligned to 1,024 bytes for its 128-byte swizzle, so the struct size rounds up to 33,792 bytes. The result is robust: after the rounding to 128 bytes, any carveout from 3,072 to 35,712 bytes gives 6 stages.
+
+##### **In the CuTe DSL: the same six choices, written by hand**
+
+`dense_gemm_persistent.py` makes each choice in `__init__` or `_setup_attributes`. The results are the same as the builder's results for most choices, but not for all of them.
+
+| # | Choice | CuTe DSL code | Same result as C++? |
+|---|---|---|---|
+| 1 | Warpgroups per tile | `atom_layout_mnk = (2, 1, 1) if tile M > 64 and tile N > 128 else (1, 1, 1)` (lines 283 to 287) | **No.** For a 128 by 128 tile, the DSL uses one MMA warpgroup, and that warpgroup computes the atom 2 times along M. The C++ cooperative builder always uses 2 warpgroups. |
+| 2 | The tiled MMA | `sm90_utils.make_trivial_tiled_mma(a_dtype, b_dtype, a_major, b_major, acc_dtype, atom_layout_mnk, tiler_mn=(64, tile N))` (line 348). Its `a_source` argument defaults to `OperandSource.SMEM`. | Yes |
+| 3 | The TMA copies | `CopyBulkTensorTileG2SOp()` if the multicast count is 1, else `CopyBulkTensorTileG2SMulticastOp()` (lines 1244 to 1248). The multicast count of A is the cluster's N extent, and of B the cluster's M extent (lines 366 and 367). | Yes |
+| 4 | The shared memory layout atoms | `sm90_utils.get_smem_layout_atom(...)` picks the 128-byte, 64-byte or 32-byte swizzle if the major mode's size in bits is a multiple of 1024, 512 or 256, else the interleaved atom (`hopper_helpers.py`, lines 194 to 213). `cute.tile_to_shape` then tiles the atom to the staged shape. | Yes |
+| 5 | The number of stages | `_compute_stages` (section 2) | Yes for this tile: 6 stages. See below. |
+| 6 | The dispatch policy | None. The class is the implementation. | Not applicable |
+
+For choice 5, the DSL code gets the same 6 stages, but its terms are different. Its capacity is `(228 - 1) * 1024` = 232,448 bytes (`cutlass_dsl/cutlass.py`, line 178), the same as C++. With one MMA warpgroup, the DSL uses the non-cooperative epilogue tile, 64 by 32. So it reserves 4 · 64 · 32 · 2 = 16,384 bytes for the epilogue, plus 1,024 bytes for barriers. Then (232,448 − 17,408) // 32,768 = 6.
+
+##### **What changes in the W4A8 builder**
+
+W4A8 selects the `GMMA_TMA_WS_RS` builder (`sm90_gmma_builder.inl`, lines 313 to 505). It makes the same six choices, with these differences:
+
+1. **The tiled MMA** uses `GMMA::rs_op_selector` with both operands K-major. The atom reads A from registers. For FP8, the atom's K is 32.
+2. **The smem-to-register copy.** `SmemCopyAtomA` is no longer `void`. It is `Copy_Atom<cute::AutoVectorizingCopy, ElementA>`, because the MMA warpgroups must copy the INT4 tile from shared memory into registers before they convert it. The builder sets it on the transformed operand's side, which is A for W4A8 (lines 479 and 480).
+3. **The shared memory layout atoms** come from `rs_smem_selector`, not `ss_smem_selector`.
+4. **The stage count** uses `compute_stage_count_or_override_single_affine_transformed_input` (lines 133 to 162). This version adds the scale bytes of one K tile to each stage: the scale width in bits, times the tile's M extent, times 1. The W4A8 scale type is `Array<float_e4m3_t, 8>`, which is 64 bits.
+5. **The dispatch policy** is `MainloopSm90TmaGmmaRmemAWarpSpecializedMixedInput`, as section 1 showed.
+
+After the swap, the tile shape means something new. The tile's M extent covers rows of the weight, which are output channels. The tile's N extent covers tokens. The W4A8 configurations have a tile M of 128 or 256 and a tile N from 16 to 256 (`w4a8_mm_entry.cu`, lines 255 to 265). So for a decode step with only a few tokens, the kernel can use a tile N of 16. A WGMMA with N = 16 is a legal instruction, because the PTX ISA allows N from 8 to 256 in steps of 8. Without the swap, the few tokens would be the M extent, and the WGMMA's M is fixed at 64.
+
+Here is one stage of the `128x16` configuration, before the rounding and the barriers are added:
+
+| Term | Value |
+|---|---|
+| INT4 weight tile, 128 · 128 · 4 bits | 8,192 bytes |
+| FP8 activation tile, 16 · 128 · 8 bits | 2,048 bytes |
+| Scales, 64 bits · 128 · 1 | 1,024 bytes |
+| Sum | 11,264 bytes |
+
+The full stage count needs the alignment of the RS smem atoms and the size of the W4A8 epilogue's storage. Part 5 computes both.
+
+##### **What the port must choose by hand**
+
+The port has no builder, so it must make all six choices in its own `_setup_attributes`:
+
+| # | Choice | What the port must do |
+|---|---|---|
+| 1 | Warpgroups per tile | Always use `(2, 1, 1)`, as the cooperative C++ kernel does. The DSL example's rule would give one warpgroup for most W4A8 tiles. |
+| 2 | The tiled MMA | Call `make_trivial_tiled_mma` with `a_source=OperandSource.RMEM`, the FP8 type for both operands, and both operands K-major. |
+| 3 | The TMA copies | Use the same multicast rule. Only the `128x256_2x1x1` configuration has a cluster larger than 1. |
+| 4 | The shared memory layout atoms | Choose an atom for the 4-bit weight tile and a layout for the scales. The DSL example has no 4-bit case. |
+| 5 | The number of stages | Add the scale bytes to the stage formula. |
+| 6 | The dispatch policy | Nothing. The port's class is the implementation. |
+
+**References**
+- CUTLASS v4.7.1, [`include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl) (the SS and RS builders and the stage count functions) and [`include/cutlass/gemm/collective/builders/sm90_common.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/builders/sm90_common.inl) (`sm90_smem_capacity_bytes`, `sm90_cluster_shape_to_tma_atom`, `ss_smem_selector`)
+- CUTLASS v4.7.1, [`include/cutlass/epilogue/collective/builders/sm90_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/builders/sm90_builder.inl) and [`include/cutlass/epilogue/collective/sm90_epilogue_tma_warpspecialized.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/sm90_epilogue_tma_warpspecialized.hpp) (the epilogue tile, its stages and its shared storage)
+- CUTLASS v4.7.1, [`include/cutlass/pipeline/sm90_pipeline.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/pipeline/sm90_pipeline.hpp) (`PipelineTmaAsync::SharedStorage`)
+- CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py), [`python/CuTeDSL/cutlass/utils/hopper_helpers.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/utils/hopper_helpers.py) and [`python/CuTeDSL/cutlass/cutlass_dsl/cutlass.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/cutlass_dsl/cutlass.py) (the DSL choices and the capacity map)
+- vLLM, `csrc/libtorch_stable/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the ten tile configurations)
+- PTX ISA, [`wgmma.mma_async`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#asynchronous-warpgroup-level-matrix-instructions-wgmma-mma) (the legal N values)
+
+---
+
+#### **Wrapping up**
+
+CUTLASS 3.x gives each independent choice in a GEMM its own level: the instruction, the tiling over threads, the order of work over time, the order of tiles over the grid, and the epilogue. A dispatch policy connects the levels, so W4A8 can change only its mainloop and its epilogue fusion and keep the same kernel, scheduler and host adapter. The `CollectiveBuilder` makes six choices for the mainloop: the warpgroups per tile, the tiled MMA, the TMA copies, the shared memory atoms, the stage count and the policy. The CuTe DSL has no levels above CuTe and no builder. So the port writes the three highest levels as one Python class, and it makes the six choices by hand in its setup code.
+
+Part 2 opens the kernel level: the cooperative warp-specialized kernel, its warp roles and register counts, the persistent tile scheduler, and clusters with TMA multicast, each next to the same code in `dense_gemm_persistent.py`.
+
+If you find a mistake anywhere in here, please let me know and I'll fix it.
