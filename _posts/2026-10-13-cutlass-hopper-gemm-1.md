@@ -49,6 +49,18 @@ Let's get started.
 
 #### **The five levels of CUTLASS 3.x** {#levels}
 
+First, why the levels exist. A GEMM kernel is a set of choices: the hardware instruction, the arrangement of instructions over threads, the order of copies and MMAs over time, the order of output tiles over the grid, and the work that is done on the accumulator before the store. NVIDIA's [CUTLASS 3.x design post](https://developer.nvidia.com/blog/cutlass-3-x-orthogonal-reusable-and-composable-abstractions-for-gemm-kernel-design/) calls these choices largely independent, but the best combination depends on the hardware and on the problem shape. So CUTLASS 3.x gives each choice its own level. You can change the choice at one level and keep the other levels as they are. The post calls this design a "hierarchical system of composable, orthogonal building blocks".
+
+| Choice | Level that owns it | Example of a change at that level only |
+|---|---|---|
+| The hardware instruction | Atom | A BF16 WGMMA or an FP8 WGMMA |
+| The arrangement of instructions over threads (space) | Tiled MMA and copy | One or two warpgroups for each tile |
+| The order of work over time: pipeline stages, warp roles, barriers | Collective | The dense mainloop or the mixed-input mainloop |
+| The output tile that each CTA computes next | Kernel, through its tile scheduler | A persistent scheduler or a stream-K scheduler |
+| The work on the accumulator before the store | Epilogue collective | A plain store or a scaling epilogue |
+
+There are two ways to use the levels. In the first way, you give the `CollectiveBuilder` the data types, the tile shape and the schedule, and it chooses the rest. In the second way, you write one level yourself and keep the others. The W4A8 kernel uses both ways. It uses the builder, and it changes only two things: the mainloop and the epilogue fusion. Its kernel, tile scheduler and device adapter are the same as for a dense GEMM.
+
 The CUTLASS 3.x GEMM API has five levels. The GEMM API document lists them from the highest level to the lowest: device, kernel, collective, tiled MMA and copy, and atom. Each level has one main class, and each class is a template over the classes of the levels below it. The table gives the class at each level, the file where the Hopper version of it lives, and the job of the level. The text in quotation marks in the last column is quoted from the GEMM API document. The rest of that column is my summary.
 
 | Level | Main class | Hopper source (v4.7.1) | Job |
@@ -186,6 +198,7 @@ The CuTe DSL has no tag dispatch. `dense_gemm_persistent.py` is one Python class
 So the C++ dispatch chain becomes plain code in the port. The port does not select a cooperative kernel class and a mixed-input mainloop class. It is one class whose `kernel` method contains the cooperative warp roles and the mixed-input mainloop directly.
 
 **References**
+- NVIDIA Technical Blog, [CUTLASS 3.x: Orthogonal, Reusable, and Composable Abstractions for GEMM Kernel Design](https://developer.nvidia.com/blog/cutlass-3-x-orthogonal-reusable-and-composable-abstractions-for-gemm-kernel-design/) (why the levels exist)
 - CUTLASS v4.7.1, [`media/docs/cpp/gemm_api_3x.md`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/media/docs/cpp/gemm_api_3x.md) (the five levels, the loop-nest pseudocode, the definitions of collective, kernel and atom, and the launch note) and [`media/docs/cpp/cutlass_3x_design.md`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/media/docs/cpp/cutlass_3x_design.md) (tag-dispatch policies)
 - [`include/cutlass/gemm/dispatch_policy.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/dispatch_policy.hpp) (the kernel schedule tags and the mainloop policies)
 - [`include/cutlass/gemm/kernel/sm90_gemm_tma_warpspecialized_cooperative.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/kernel/sm90_gemm_tma_warpspecialized_cooperative.hpp) (the kernel specialization)
