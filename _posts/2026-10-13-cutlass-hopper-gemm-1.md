@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CUTLASS C++ Hopper GEMM, part 1, the layers and the builder [W4A8]
-date: 2026-10-13 12:00:00-0400
+date: 2026-10-13 00:00:00-0400
 featured: false
 description: Part 1 of a series that reads the CUTLASS 3.x C++ Hopper GEMM stack from the source, as the base for porting vLLM's W4A8 kernel to the CuTe DSL. This part covers the five levels of CUTLASS 3.x, how a kernel is assembled from them, and what the CollectiveBuilder chooses
 tags: GPU
