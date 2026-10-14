@@ -16,7 +16,7 @@ Hello all. This post is a top-to-bottom tour of LLM inference systems: what happ
 
 The angle throughout is performance. Almost every design decision in a modern inference engine traces back to one fact: generating a token is cheap on arithmetic and expensive on memory traffic. Once that fact is internalized, the whole stack, paged KV caches, continuous batching, speculative decoding, disaggregated prefill, stops looking like a pile of unrelated tricks and starts looking like one idea applied at different layers. So we'll build the performance model first, with real numbers, and then walk the stack with that model in hand.
 
-Concepts come first, but everything is anchored in a real engine: vLLM's V1 architecture. It's open source, it's the engine whose design documents actually explain their reasoning, and pointing at the file that implements an idea keeps the discussion honest. One convention up front: vLLM moves fast, so every vLLM file path, symbol name, and default quoted here was verified against `main` as of 2026-08-21, and I've kept that stamp next to the claims most likely to move. Papers and official docs are linked inline where each claim is made, and each major section ends with its references.
+Concepts come first, but everything is anchored in a real engine: vLLM's V1 architecture. It's open source, it's the engine whose design documents actually explain their reasoning, and pointing at the file that implements an idea keeps the discussion honest. One convention up front: vLLM moves fast, so every vLLM file path, symbol name, and default quoted here was verified against `main` as of 2026-08-21, and I've kept that stamp next to the claims most likely to move. A fact check on 2026-10-13 corrected several numbers and vLLM details against the sources and vLLM `main`; the corrected vLLM facts carry that date. Papers and official docs are linked inline where each claim is made, and each major section ends with its references.
 
 The plan:
 
@@ -45,7 +45,7 @@ Let's get started.
 
 ##### **Autoregressive generation**
 
-An LLM generates text one token at a time, and each new token depends on all the tokens before it. That single property sets up everything that follows. Producing $$m$$ output tokens requires at least $$m$$ sequential forward passes; there is no way to parallelize across the output positions of a single request, because position $$t+1$$'s input includes position $$t$$'s output.
+An LLM generates text one token at a time, and each new token depends on all the tokens before it. That single property sets up everything that follows. Producing $$m$$ output tokens with plain autoregressive decoding requires $$m$$ sequential forward passes of the model (speculative decoding, covered later, gets several tokens out of one pass); there is no way to parallelize across the output positions of a single request, because position $$t+1$$'s input includes position $$t$$'s output.
 
 It has a second consequence that is easy to miss and that a serving engine cannot ignore: **output length is unknown at admission time**. When a request arrives, the engine does not know whether it will generate 5 tokens or 5,000, which means it cannot know how long the request will occupy memory or how much of it. Every memory-management decision in this post is downstream of that uncertainty. A generation ends when the model emits a stop condition; in vLLM the recorded finish reasons are `stop` (EOS token or stop string), `length` (hit the token limit), and `abort` ([docs/design/metrics.md](https://github.com/vllm-project/vllm/blob/main/docs/design/metrics.md)).
 
@@ -159,7 +159,7 @@ where the leading 2 counts K and V, $$H_{kv}$$ is the number of KV heads, and $$
 |---|---|---|
 | 8B | $$2 \cdot 32 \cdot 8 \cdot 128 \cdot 2$$ = **128 KiB** | 1.0 GiB |
 | 70B | $$2 \cdot 80 \cdot 8 \cdot 128 \cdot 2$$ = **320 KiB** | 2.5 GiB |
-| 405B | $$2 \cdot 126 \cdot 8 \cdot 128 \cdot 2$$ = **504 KiB** | 4.0 GiB |
+| 405B | $$2 \cdot 126 \cdot 8 \cdot 128 \cdot 2$$ = **504 KiB** | 3.9 GiB |
 
 These are the numbers to keep loaded. A single long-context request on the 70B model carries gigabytes of state, and note what the formula does *not* contain: the number of query heads. GQA is why: 64 query heads share 8 KV heads on the 70B model, an 8x saving already baked in. With full multi-head attention ($$H_{kv} = 64$$), the 70B figure would be 2.5 MiB per token and 20 GiB per 8K request, which is the difference between a GPU holding a healthy batch of requests in cache and holding a handful.
 
@@ -173,9 +173,9 @@ This is [Kaplan et al., Eq. 2.2](https://arxiv.org/abs/2001.08361), and both ter
 
 **The $$2N$$ term.** Start from the general matmul count: multiplying an $$m \times k$$ matrix by a $$k \times n$$ matrix costs $$2mnk$$ FLOPs, the 2 counting the multiply and the add of each multiply-accumulate. A single token passing through a linear layer is the $$m = 1$$ case: a $$1 \times k$$ row times a $$k \times n$$ weight matrix costs $$2kn$$ FLOPs, and $$kn$$ is exactly the number of parameters in that weight matrix. So one token through one linear layer costs **2 FLOPs per parameter**, and since a forward pass is one trip through every weight matrix in the model (the QKV and output projections, the FFN matrices, all $$L$$ layers of them), the totals just add up: roughly 2 FLOPs per parameter overall, hence $$2N$$. If you want the op-by-op ledger behind this, block by block with the bytes counted too, I've worked through it in the [transformer block accounting post](/blog/2026/transformer-block-accounting/).
 
-**What $$N$$ is.** $$N$$ is the parameter count *excluding the embedding table*, and the exclusion has a mechanical justification: the input embedding is a table lookup, not a matmul, so its parameters contribute zero FLOPs. The output side is different, and worth being precise about since it's a common point of confusion: the final logits projection (hidden state times the $$d_{model} \times V$$ unembedding matrix) *is* a real matmul. The $$\approx$$ absorbs it because it's one matrix against the $$L$$ layers' worth in $$N$$: for Llama 3 8B it's $$2 \cdot 4096 \cdot 128256 \approx 1.1$$ GFLOP per token against $$2N \approx 16$$ GFLOP, about 7%, and the fraction shrinks as models grow (about 1.5% at 70B).
+**What $$N$$ is.** $$N$$ is the parameter count *excluding the embedding table*, and the exclusion has a mechanical justification: the input embedding is a table lookup, not a matmul, so its parameters contribute zero FLOPs. The output side is different, and worth being precise about since it's a common point of confusion: the final logits projection (hidden state times the $$d_{model} \times V$$ unembedding matrix) *is* a real matmul. The $$\approx$$ absorbs it because it's one matrix against the $$L$$ layers' worth in $$N$$: for Llama 3 8B it's $$2 \cdot 4096 \cdot 128256 \approx 1.05$$ GFLOP per token against $$2N \approx 14$$ GFLOP (the non-embedding count is $$N \approx 6.98$$B, 32 layers of about 218M parameters each), about 7.5%, and the fraction shrinks as models grow (about 1.5% at 70B).
 
-**The attention term.** Attention against the cached context is the one part of the forward pass that is *not* a multiply through a fixed weight matrix; its operand is the KV cache, and its cost grows with context. Per layer, the new token's query is dotted against all $$n_{ctx}$$ cached keys and the resulting weights are applied to the $$n_{ctx}$$ values, work proportional to $$n_{ctx} \, d_{model}$$; Kaplan's accounting puts the total at $$2 \, L \, n_{ctx} \, d_{model}$$ per token. It stays small until contexts get long: at 8K context on Llama 3 8B it's $$2 \cdot 32 \cdot 8192 \cdot 4096 \approx 2.1$$ GFLOP against the 16 GFLOP of $$2N$$, about 13%, but it scales linearly with $$n_{ctx}$$ while $$2N$$ stays fixed.
+**The attention term.** Attention against the cached context is the one part of the forward pass that is *not* a multiply through a fixed weight matrix; its operand is the KV cache, and its cost grows with context. Per layer, the new token's query is dotted against all $$n_{ctx}$$ cached keys and the resulting weights are applied to the $$n_{ctx}$$ values, work proportional to $$n_{ctx} \, d_{model}$$. Kaplan's accounting puts the term at $$2 \, L \, n_{ctx} \, d_{model}$$ per token, the row "Attention: Mask" in its Table 1; that is the size of the $$QK^\top$$ products alone, and applying the weights to the values adds about the same again. It stays small until contexts get long: at 8K context on Llama 3 8B Kaplan's term is $$2 \cdot 32 \cdot 8192 \cdot 4096 \approx 2.1$$ GFLOP against the 14 GFLOP of $$2N$$, about 15%, but it scales linearly with $$n_{ctx}$$ while $$2N$$ stays fixed.
 
 **And the $$6N$$ you'll see quoted for training.** Same $$N$$, different pass structure. Training costs roughly $$6N$$ per token: the $$2N$$ forward, plus a backward pass that costs about twice the forward, because each layer's backward computes *two* matmul-shaped quantities, the gradient with respect to the weights and the gradient with respect to the input, each about a forward's worth of work. (Those are exactly the outer-product and transposed-matmul shapes derived in the [MLP forward and backward post](/blog/2026/mlp-forward-backward/).) Inference has no backward pass, so it's the $$2N$$ forward only.
 
@@ -187,13 +187,13 @@ $$
 \text{minimum decode step time} = \frac{\text{weight bytes}}{\text{memory bandwidth}}
 $$
 
-Worked example, Llama 3 8B in bf16 on one H100: 16 GB of weights over 3.35 TB/s gives
+Worked example, Llama 3 8B in bf16 on one H100: 16 GB of weights (the full checkpoint) over 3.35 TB/s gives
 
 $$
 \frac{16 \times 10^9}{3.35 \times 10^{12}} \approx 4.8 \text{ ms per step}
 $$
 
-so single-stream decode is capped at roughly **210 tokens/s regardless of kernel quality**. Now compare the arithmetic for that same step: $$2N = 16 \times 10^9$$ FLOPs at $$10^{15}$$ FLOP/s is about **16 µs**, roughly 300x less than the memory time. The compute is essentially free; the step *is* the weight read. Every decode-latency technique in this post, batching, speculative decoding, tensor parallelism, quantization, is an attack on this one number: more useful tokens per weight read, or fewer weight bytes per read, or the read split across more GPUs.
+so single-stream decode is capped at roughly **210 tokens/s regardless of kernel quality**. (Strictly, a step reads about 15 GB: the 1 GB input embedding table is a lookup of one row per token, so most of it is never read; that gives about 4.5 ms.) Now compare the arithmetic for that same step: $$2N$$ plus the logits is about $$15 \times 10^9$$ FLOPs, which at $$10^{15}$$ FLOP/s is about **15 µs**, roughly 300x less than the memory time. The compute is essentially free; the step *is* the weight read. Every decode-latency technique in this post, batching, speculative decoding, tensor parallelism, quantization, is an attack on this one number: more useful tokens per weight read, or fewer weight bytes per read, or the read split across more GPUs.
 
 ##### **Constants and defaults worth pinning**
 
@@ -235,7 +235,7 @@ The definitions:
 | TPOT | time per output token | $$(\text{E2EL} - \text{TTFT}) / (\text{output tokens} - 1)$$ | a per-request average; hides stalls |
 | E2EL | end-to-end latency | request sent to last token | $$= \text{TTFT} + \sum \text{ITL}$$ |
 | Throughput | | tokens/s or requests/s completed | meaningless without a latency constraint |
-| Goodput | | requests/s meeting **all** stated SLOs | the comparable headline number ([DistServe](https://arxiv.org/abs/2401.09670)) |
+| Goodput | | the request rate served within the stated SLOs (definitions below) | the comparable headline number ([DistServe](https://arxiv.org/abs/2401.09670)) |
 
 ##### **ITL versus TPOT**
 
@@ -251,7 +251,7 @@ The throughput row lists two units because they answer different questions. **To
 
 Raw throughput has a flaw that makes benchmark headlines misleading: **any engine can buy tokens/s with batch size, at the cost of latency**. One decode step reads the weights once and yields one token per sequence, so a bigger batch means more tokens per step; but the step also gets slower as the batch grows, so every user's ITL worsens at the same time (a decoding user gets exactly one token per step, so their ITL *is* the step time, and each added sequence makes the step longer by adding its own KV reads, sampling work, and FLOPs on top of the fixed weight read). The same engine on the same GPU can report 3000 or 5000 tok/s depending on how much latency it is configured to inflict, which is why a tokens/s number with no latency constraint attached is not comparable across systems.
 
-Goodput is the fix ([DistServe](https://arxiv.org/abs/2401.09670)): state the latency requirements first, then count only the requests that met *all* of them. With requirements "TTFT under 500 ms and TPOT under 50 ms," a request that finished but took 900 ms to first token counts **zero**. Now push batch size up: raw throughput keeps rising, but more and more requests miss their bounds and drop out of the count, so goodput rises, peaks, and then falls. That peak is the honest operating point, and goodput, together with the exact requirements behind it, is the number to ask for when someone quotes a benchmark.
+Goodput is the fix. DistServe defines per-GPU goodput as the maximum request rate that can be served while meeting an SLO attainment goal (say, 90% of requests within their SLOs), per GPU provisioned ([DistServe](https://arxiv.org/abs/2401.09670)). The simpler counting form, which `vllm bench serve --goodput` reports, is: state the latency requirements first, then count only the requests that met *all* of them. With requirements "TTFT under 500 ms and TPOT under 50 ms," a request that finished but took 900 ms to first token counts **zero**. Now push batch size up: raw throughput keeps rising, but more and more requests miss their bounds and drop out of the count, so goodput rises, peaks, and then falls. That peak is the honest operating point, and goodput, together with the exact requirements behind it, is the number to ask for when someone quotes a benchmark.
 
 ##### **SLOs**
 
@@ -286,7 +286,7 @@ Batching is the first and biggest lever on the decode floor, and its history in 
 
 **Static batching** is the naive version: assemble a batch of requests, run it until every request finishes, then assemble the next one. Two things are wasted. Requests that finish early leave dead slots in the batch, doing nothing until the longest request drains; and arriving requests wait for the entire batch to complete before they can start. With generation lengths varying by orders of magnitude across requests, both wastes are large.
 
-**Continuous batching** fixes this by re-forming the batch *every step*. This is Orca's iteration-level scheduling ([Yu et al., OSDI '22](https://www.usenix.org/conference/osdi22/presentation/yu)), and the name says exactly what changed: the unit the scheduler hands to the GPU shrinks from "a whole generation" to "one iteration," a single forward pass producing one token per sequence. After every iteration, control returns to the scheduler, which removes sequences that just finished and admits waiting ones before launching the next iteration. A finished request's slot is refilled at the very next step instead of idling until the batch drains, and a new arrival waits at most one step to start rather than one full batch.
+**Continuous batching** fixes this by re-forming the batch *every step*. This is Orca's iteration-level scheduling ([Yu et al., OSDI '22](https://www.usenix.org/conference/osdi22/presentation/yu)), and the name says exactly what changed: the unit the scheduler hands to the GPU shrinks from "a whole generation" to "one iteration," a single forward pass producing one token per sequence. After every iteration, control returns to the scheduler, which removes sequences that just finished and admits waiting ones before launching the next iteration. A finished request's slot is refilled at the very next step instead of idling until the batch drains, and a new arrival, if a slot and KV memory are free and nothing is queued ahead of it, waits at most one step to start rather than one full batch.
 
 The two diagrams below (from [Anyscale's continuous batching post](https://www.anyscale.com/blog/continuous-batching-llm-inference)) are the cleanest mental model I've seen for this. Read each grid as: one row per batch slot, one column per model step ($$T_1, T_2, \ldots$$), yellow cells are prompt tokens, blue cells are generated tokens, red is the end-of-sequence token, and a white cell is a step that slot spent doing nothing.
 
@@ -296,7 +296,7 @@ The two diagrams below (from [Anyscale's continuous batching post](https://www.a
     </div>
 </div>
 <div class="caption">
-    Static batching. Left: the batch mid-flight. Right: S3 finishes at T5 and S1 at T6, but their slots sit empty (white) until the longest sequence, S2, finally finishes at T8; only then can the next batch start. Credits: <a href="https://www.anyscale.com/blog/continuous-batching-llm-inference">Anyscale, "How continuous batching enables 23x throughput in LLM inference"</a>.
+    Static batching. Left: the batch mid-flight. Right: S3 finishes at T5 and S1 at T6, but their slots sit empty (white) until the longest sequence, S2, finally finishes at T8; only then can the next batch start. Credits: <a href="https://www.anyscale.com/blog/continuous-batching-llm-inference">Anyscale, "How continuous batching enables 23x throughput in LLM inference while reducing p50 latency"</a>.
 </div>
 
 <div class="row justify-content-center">
@@ -305,14 +305,14 @@ The two diagrams below (from [Anyscale's continuous batching post](https://www.a
     </div>
 </div>
 <div class="caption">
-    Continuous batching, same workload. The moment a sequence emits END, its slot is handed to a waiting request at the next step: S5, S6, and S7 begin their (yellow) prefills in slots that static batching left idle. No white cells. Credits: <a href="https://www.anyscale.com/blog/continuous-batching-llm-inference">Anyscale</a>.
+    Continuous batching, same workload. The moment a sequence emits END, its slot is handed to a waiting request at the next step: S5, S6, and S7 begin their (yellow) prefills in slots that static batching left idle. No white cells in the right panel. Credits: <a href="https://www.anyscale.com/blog/continuous-batching-llm-inference">Anyscale</a>.
 </div>
 
 Making one forward pass serve this mixed population takes one more idea, and it's Orca's second contribution: **selective batching**. The obstacle is that the sequences in a step are at different lengths and even different phases, one slot might be prefilling 512 prompt tokens while three others decode 1 token each, and tensors of such ragged shapes don't stack into the neat batched matmul that batching normally relies on. Orca's observation is that the ops in a transformer layer split into two classes, and only one of them cares. The linear layers, norms, and activations are *per-token*: they apply the same weights to each token's vector independently, with no interaction between tokens, so the raggedness is irrelevant; flatten all the tokens from all sequences into one long $$[\text{total tokens} \times d_{model}]$$ matrix and run them as a single fused matmul, exactly as if they were one sequence. Attention is the exception: each token must attend over *its own sequence's* K and V, of its own length, so sequences can't be flattened together there. Hence "selective": batch every op except attention across the flattened tokens, then split at the attention boundary and let each sequence attend against its own cache. This is precisely the shape of vLLM's fused step from the previous section, prompt chunks and decodes flattened into one forward pass, with the per-sequence work pushed into the attention kernel (the kernels section shows how PagedAttention handles the raggedness).
 
 **Chunked prefill** addresses the tension continuous batching creates. Once prompts and decodes share steps, a 10K-token prompt entering the batch means one step must process 10K tokens instead of a few dozen, and every co-batched decode inherits that multi-hundred-millisecond step as a frozen token stream; this is exactly the ITL-tail pathology from the metrics section. Sarathi-Serve's fix ([Agrawal et al.](https://arxiv.org/abs/2403.02310)) is to stop treating a prompt as atomic. vLLM V1 has it on by default ([docs/configuration/optimization.md](https://github.com/vllm-project/vllm/blob/main/docs/configuration/optimization.md)), built from three interlocking pieces:
 
-- **A per-step token budget.** Each step may run at most `max_num_batched_tokens` tokens through the fused forward pass (the numbers section's defaults: 2048 to 16384 depending on GPU and entrypoint). Since step time grows with tokens processed, capping tokens per step caps the duration of every step, and a bound on step time is a bound on every ITL sample: the budget is the knob that decides the worst-case gap any user can experience.
+- **A per-step token budget.** Each step may run at most `max_num_batched_tokens` tokens through the fused forward pass (defaults from 2048 to 16384 depending on GPU and entrypoint, listed in the scheduling section). Since step time grows with tokens processed, capping tokens per step caps the duration of every step, and a bound on step time is a bound on every ITL sample: the budget is the knob that decides the worst-case gap any user can experience.
 - **Decodes are scheduled first.** Within a step's budget, every running sequence gets its 1 decode token before any prompt gets anything. Decodes are tiny (a batch of 200 running requests consumes just 200 tokens of budget), so this is cheap, and it guarantees in-flight streams never stall behind a newcomer's prompt: their ITL is protected by construction.
 - **Prefill gets the leftovers, in chunks.** Whatever budget remains after the decodes goes to waiting prompts, and a prompt larger than the leftover is *chunked*: it runs partway this step and continues next step. With a budget of 8192 and 200 running decodes, a 20K-token prompt gets 7992 tokens processed in its first step, then continues across the following steps until done; the KV cache accumulates across chunks exactly as it would have in one shot, so nothing is recomputed.
 
@@ -362,7 +362,7 @@ kv_cache_memory  = requested - weights - peak_activation - non_torch
 num_blocks       = kv_cache_memory / page_size_bytes
 ```
 
-Two details matter. `gpu_memory_utilization` multiplies **total** device memory, not free memory, so a GPU shared with another process will overcommit unless the setting is lowered (or `kv_cache_memory_bytes` is set to bypass the calculation entirely). And peak activation memory is *measured by running an actual dummy forward pass* (`profile_run()`), not modeled, which is the robust choice given how many configuration knobs affect it.
+Two details matter. `gpu_memory_utilization` multiplies **total** device memory, not free memory, so on a GPU shared with another process, startup fails with an error when free memory is below that amount (`request_memory`, `vllm/v1/worker/utils.py`, as of 2026-10-13), unless the setting is lowered (or `kv_cache_memory_bytes` is set to bypass the calculation entirely). And peak activation memory is *measured by running an actual dummy forward pass* (`profile_run()`), not modeled, which is the robust choice given how many configuration knobs affect it.
 
 The per-block byte cost follows the KV formula from the numbers section, restated per block per layer (`page_size_bytes`, `FullAttentionSpec` in `vllm/v1/kv_cache_interface.py`):
 
@@ -445,9 +445,9 @@ Two closing notes for completeness. Hybrid models (mixing full attention, slidin
 
 ##### **What and why**
 
-Prefix caching is the observation that the KV cache is a pure function of the token sequence: same tokens after the same prefix produce the same K and V, always. So when a new request's prompt shares a prefix with something the engine has already computed, recomputing that prefix's KV is pure waste; reuse the blocks instead and start prefill at the first novel token. Correctness is exact, the same tokens yield the same KV, so it cannot change model outputs; vLLM's design doc calls it "almost a free lunch" ([docs/design/prefix_caching.md](https://github.com/vllm-project/vllm/blob/main/docs/design/prefix_caching.md)), and it is **on by default** (`enable_prefix_caching: bool = True`, `vllm/config/cache.py`).
+Prefix caching is the observation that the KV cache is a pure function of the token sequence: same tokens after the same prefix produce the same K and V, always. So when a new request's prompt shares a prefix with something the engine has already computed, recomputing that prefix's KV is pure waste; reuse the blocks instead and start prefill at the first novel token. Correctness is exact, the same tokens yield the same KV, so it does not change the model's output distribution; vLLM's design doc calls it "almost a free lunch" ([docs/design/prefix_caching.md](https://github.com/vllm-project/vllm/blob/main/docs/design/prefix_caching.md)), and it is **on by default** (`enable_prefix_caching: bool = True`, `vllm/config/cache.py`).
 
-The workloads it wins on are the workloads that dominate production: a system prompt shared across every request to a service, multi-turn chat where each turn re-sends the whole conversation so far, and few-shot prompts sharing their examples. One granularity caveat: only **full** blocks are cached, since a partial block's KV would depend on tokens still being appended, so hits come in multiples of the block size. The design doc's example: a 14-token shared prefix with block size 4 hits only 2 blocks, 8 tokens.
+The workloads it wins on are the workloads that dominate production: a system prompt shared across every request to a service, multi-turn chat where each turn re-sends the whole conversation so far, and few-shot prompts sharing their examples. One granularity caveat: only **full** blocks are cached, since a partial block's KV would depend on tokens still being appended, so hits come in multiples of the block size. The design doc's example: with block size 4, a 14-token prompt whose first 10 tokens match an earlier request hits only 2 blocks, 8 tokens, because the third block matches just 2 of its 4 tokens.
 
 ##### **The hash chain**
 
@@ -499,10 +499,10 @@ The output of a scheduling step is a `SchedulerOutput`: for each scheduled reque
 
 ##### **Budgets and limits**
 
-| Knob | Meaning | Defaults (as of 2026-08-21) |
+| Knob | Meaning | Defaults (as of 2026-10-13) |
 |---|---|---|
-| `max_num_batched_tokens` | token budget per step | class default 2048 (`vllm/config/scheduler.py`); auto-tuned by usage context and GPU in `vllm/engine/arg_utils.py`: GPUs with 70+ GiB get 8192 (API server) or 16384 (`LLM` class), smaller GPUs 2048 / 8192 |
-| `max_num_seqs` | max concurrently running requests | class default 128; auto-tuned to 1024 (big GPUs) or 256 |
+| `max_num_batched_tokens` | token budget per step | class default 2048 (`vllm/config/scheduler.py`); auto-tuned by usage context and GPU in `vllm/engine/arg_utils.py`: GPUs with 160+ GiB (B200, B300) get 16384 for both entrypoints; other GPUs with 70+ GiB, except A100, get 8192 (API server) or 16384 (`LLM` class); everything else, A100 80GB included, gets 2048 / 8192 |
+| `max_num_seqs` | max concurrently running requests | class default 128; auto-tuned to 1024 (the same 160+ GiB and non-A100 70+ GiB tiers) or 256 |
 | `long_prefill_token_threshold` | cap on prompt tokens one request may take in one step | 0 = off |
 | `max_model_len` | positions cap per request | model-dependent |
 
@@ -541,7 +541,7 @@ Seen from a distance, the V1 scheduler is a synthesis of the decade's two big sc
 
 ##### **Spending FLOPs that were idle anyway**
 
-Recall the decode floor: a decode step reads all 16 GB of weights to produce one token per sequence, using about 16 µs of arithmetic against 4.8 ms of memory time. The compute units are idle 99% of the step. Speculative decoding is the technique that spends that idle compute: let a cheap **draft** mechanism propose $$k$$ tokens, then have the target model **verify all $$k$$ in a single forward pass**, which is possible because given the draft tokens, all $$k$$ positions can be computed in parallel, exactly like prefill. A rejection rule then keeps only the longest correct prefix of the draft.
+Recall the decode floor: a decode step reads about 15 GB of weights to produce one token per sequence, using about 15 µs of arithmetic against about 4.5 ms of memory time. The compute units are idle 99% of the step. Speculative decoding is the technique that spends that idle compute: let a cheap **draft** mechanism propose $$k$$ tokens, then have the target model **verify all $$k$$ in a single forward pass**, which is possible because given the draft tokens, all $$k$$ positions can be computed in parallel, exactly like prefill. A rejection rule then keeps only the longest correct prefix of the draft.
 
 The remarkable property, and the reason the technique is everywhere, is that **the output distribution is exactly the target model's** ([Leviathan et al., ICML 2023](https://arxiv.org/abs/2211.17192)); the paper's claim is identical outputs, with no change to the distribution. This is a pure latency optimization, not an approximation, in contrast to lossy accelerations like quantization. The catch is scoping: vLLM's docs recommend it for reducing inter-token latency in memory-bound, medium-to-low QPS regimes ([docs/features/speculative_decoding/README.md](https://github.com/vllm-project/vllm/blob/main/docs/features/speculative_decoding/README.md)). At high QPS the batch is already large, decode's arithmetic intensity approaches the ridge point, the idle FLOPs the technique feeds on disappear, and drafting becomes added load.
 
@@ -595,7 +595,7 @@ This is where the V1 scheduler's phaseless design pays off again: speculative de
 
 The numbers section ended on an observation: Llama 3 70B is 140 GB of bf16 weights, and an H100 has 80 GB. Some models simply do not fit on one GPU, and even when they do, the decode floor may be too high; 140 GB over 3.35 TB/s is a 42 ms step, about 24 tokens/s single-stream, if the model fit at all. Parallelism answers both problems, and the four flavors answer them differently.
 
-vLLM's docs give a clean decision rule worth quoting in spirit ([parallelism_scaling.md](https://github.com/vllm-project/vllm/blob/main/docs/serving/parallelism_scaling.md)): if the model fits on one GPU, use no parallelism; too big for one GPU, use tensor parallelism across the GPUs of one node; too big for one node, tensor parallelism within each node times pipeline parallelism across nodes; uneven GPU counts or no NVLink, prefer pipeline over tensor; and if throughput is the problem rather than fit, add whole replicas (data parallelism).
+vLLM's docs give a clean decision rule worth quoting in spirit ([parallelism_scaling.md](https://github.com/vllm-project/vllm/blob/main/docs/serving/parallelism_scaling.md)): if the model fits on one GPU, use no parallelism; too big for one GPU, use tensor parallelism across the GPUs of one node; too big for one node, tensor parallelism within each node times pipeline parallelism across nodes; uneven GPU counts or no NVLink, prefer pipeline over tensor. When the reported KV capacity is below the throughput requirement, the docs say to add more GPUs or nodes; adding whole replicas (data parallelism, below) is one way to do that.
 
 ##### **Tensor parallelism: split every matrix**
 
@@ -603,9 +603,9 @@ Tensor parallelism (TP) splits each weight matrix across ranks, and vLLM impleme
 
 Both halves of a transformer layer have exactly this two-matmul shape. In vLLM's Llama implementation (`vllm/model_executor/models/llama.py`, as of 2026-08-21): attention is `QKVParallelLinear` (column-parallel, which also splits the heads across ranks) into `o_proj` as `RowParallelLinear`; the MLP is `MergedColumnParallelLinear` (the fused gate/up projection) into `down_proj` as `RowParallelLinear`. `RowParallelLinear.forward` ends with `tensor_model_parallel_all_reduce` (`vllm/model_executor/layers/linear.py`), so a decoder layer costs **exactly 2 all-reduces per forward pass**, each synchronizing the $$d_{model}$$ hidden state per token.
 
-Run the numbers for Llama 3 70B: 80 layers times 2 gives **160 all-reduces per token position per step**, each carrying a $$8192 \times 2$$-byte = 16 KiB vector per token. That is a torrent of tiny, latency-sensitive messages, the worst possible shape for a network, and it's why TP effectively requires NVLink and why vLLM ships a family of custom all-reduce kernels rather than relying on NCCL alone (`vllm/distributed/device_communicators/`: `custom_all_reduce.py` for NVLink peer-to-peer, plus `quick_all_reduce.py`, `flashinfer_all_reduce.py`, `symm_mem.py`, `pynccl.py`).
+Run the numbers for Llama 3 70B: 80 layers times 2 gives **160 all-reduces per step in the decoder layers** (the vocab-parallel input embedding adds one more, as in Megatron), each carrying a $$8192 \times 2$$-byte = 16 KiB vector per token. That is a torrent of tiny, latency-sensitive messages, the worst possible shape for a network, and it's why TP effectively requires NVLink and why vLLM ships a family of custom all-reduce kernels rather than relying on NCCL alone (`vllm/distributed/device_communicators/`: `custom_all_reduce.py` for NVLink peer-to-peer, plus `quick_all_reduce.py`, `flashinfer_all_reduce.py`, `symm_mem.py`, `pynccl.py`).
 
-What TP buys is twofold, and the second part is the one people miss: it divides weight **memory** per rank, and it divides the per-step weight *read* per rank, which means it is the one parallelism that directly **lowers the decode floor**. The 70B model's 42 ms floor becomes roughly 10.5 ms at TP4; the 8B model's 16 GB read becomes 2 GB per rank at TP8. Pipeline parallelism, next, does neither.
+What TP buys is twofold, and the second part is the one people miss: it divides weight **memory** per rank, and it divides the per-step weight *read* per rank, which means it is the one parallelism that directly **lowers the decode floor**. The 70B model's 42 ms floor becomes roughly 10.5 ms at TP4; the 8B model's roughly 15 GB read becomes under 2 GB per rank at TP8. Pipeline parallelism, next, does neither.
 
 The KV cache shards too, with two traps. KV heads per GPU is $$\max(1,\; H_{kv} / \text{TP})$$ (`ModelConfig.get_num_kv_heads`, `vllm/config/model.py`), so with Llama 3's 8 KV heads, TP8 gives 1 head per rank, and **TP16 replicates**: beyond 8 ranks the per-rank KV footprint stops shrinking. And the code comment adds that MLA (covered in the kernels section) decodes as MQA with a single KV head regardless of TP. Nothing about TP is free, either: as TP grows, there are more and smaller collectives, the per-rank GEMMs get thinner and less efficient, and efficiency per GPU falls.
 
@@ -652,11 +652,11 @@ Everything so far bounded prefill's interference with decode; disaggregation rem
 1. **Tune TTFT and ITL independently.** Each instance gets its own parallelism and sizing: give the prefill fleet more TP to cut TTFT without touching the decode fleet's ITL, or vice versa.
 2. **Control tail ITL by construction.** Chunked prefill bounds the interference but leaves a chunk-size knob that the docs concede is hard to set correctly; disaggregation eliminates the interference class, since no decode step ever shares a GPU with a prefill.
 
-And one warning the docs put in bold that deserves repeating: disaggregated prefill **does not improve throughput**. You pay a KV transfer per request and you run two fleets; the win is SLO attainment, goodput, which is DistServe's framing of the whole problem ([DistServe](https://arxiv.org/abs/2401.09670)). The deeper rationale is the roofline again: prefill is compute-bound and decode is memory-bound, so the phases want different quantities of hardware and arguably different hardware generations entirely; Splitwise makes that argument explicitly, noting token generation doesn't need the compute capability of the newest GPUs ([Splitwise](https://arxiv.org/abs/2311.18677)). The production proof point is Mooncake, the serving system behind Kimi, a "KVCache-centric disaggregated architecture" with separate prefill and decode clusters and a cache pooled across CPU, DRAM, and SSD; the paper reports up to 525% throughput gains in simulation and 75% more requests served in production under SLOs, plus prediction-based early rejection under overload ([Mooncake](https://arxiv.org/abs/2407.00079)).
+And one warning the docs put in capitals that deserves repeating: disaggregated prefill **does not improve throughput**. You pay a KV transfer per request and you run two fleets; the win is SLO attainment, goodput, which is DistServe's framing of the whole problem ([DistServe](https://arxiv.org/abs/2401.09670)). The deeper rationale is the roofline again: prefill is compute-bound and decode is memory-bound, so the phases want different quantities of hardware and arguably different hardware generations entirely; Splitwise makes that argument explicitly, noting token generation doesn't need the compute capability of the newest GPUs ([Splitwise](https://arxiv.org/abs/2311.18677)). The production proof point is Mooncake, the serving system behind Kimi, a "KVCache-centric disaggregated architecture" with separate prefill and decode clusters and a cache pooled across CPU, DRAM, and SSD; the paper reports up to 525% throughput gains in simulation and 75% more requests served in production under SLOs, plus prediction-based early rejection under overload ([Mooncake](https://arxiv.org/abs/2407.00079)).
 
 ##### **The transfer problem**
 
-The catch is physics: the thing being shipped is large. One 8K-token request on Llama 3 70B carries 2.5 GiB of KV; moving that in 100 ms needs 25 GB/s of network. A 32K-token context is 10 GiB ($$32{,}768 \times 320$$ KiB), and landing it in under 200 ms needs about 54 GB/s, roughly **430 Gbit/s**. Numbers like that are why the transports are RDMA-class (NIXL over UCX, GPUDirect Storage) and why the API is designed to overlap transfer with compute rather than serialize them.
+The catch is physics: the thing being shipped is large. One 8K-token request on Llama 3 70B carries 2.5 GiB of KV; moving that in 100 ms needs about 27 GB/s (25 GiB/s) of network. A 32K-token context is 10 GiB ($$32{,}768 \times 320$$ KiB), and landing it in under 200 ms needs about 54 GB/s, roughly **430 Gbit/s**. Numbers like that are why the transports are RDMA-class (NIXL over UCX, GPUDirect Storage) and why the API is designed to overlap transfer with compute rather than serialize them.
 
 ##### **How vLLM implements it**
 
@@ -706,9 +706,9 @@ The performance problem, independent of paging, is memory traffic: naive attenti
 
 ##### **FlashAttention, briefly**
 
-FlashAttention ([Dao et al., 2022](https://arxiv.org/abs/2205.14135)) is IO-aware *exact* attention: tile Q, K, V so the working set stays in on-chip SRAM, and compute the softmax *online*, tracking a running maximum $$m$$ and running denominator $$l$$ per row as tiles stream through. When a new tile raises the maximum, all previously accumulated exponentials are too large by a factor of $$\exp(m_{old} - m_{new})$$, so the accumulator is rescaled by exactly that factor; this rescaling is what makes single-pass exact softmax possible, and the $$n \times n$$ matrix is never written to HBM. In roofline terms, FlashAttention saves **bytes, not FLOPs**: the arithmetic is unchanged, the $$O(n^2)$$ HBM traffic is eliminated, and the op's arithmetic intensity rises accordingly.
+FlashAttention ([Dao et al., 2022](https://arxiv.org/abs/2205.14135)) is IO-aware *exact* attention: tile Q, K, V so the working set stays in on-chip SRAM, and compute the softmax *online*, tracking a running maximum $$m$$ and running denominator $$l$$ per row as tiles stream through. When a new tile raises the maximum, all previously accumulated exponentials are too large by a factor of $$\exp(m_{old} - m_{new})$$, so the accumulator is rescaled by exactly that factor; this rescaling is what makes single-pass exact softmax possible, and the $$n \times n$$ matrix is never written to HBM. In roofline terms, FlashAttention saves **bytes, not FLOPs**: the arithmetic is unchanged, the $$n \times n$$ score and probability matrices never travel to or from HBM (the paper's Theorem 2 takes HBM accesses from $$\Theta(nd + n^2)$$ to $$\Theta(n^2 d^2 / M)$$ for head dimension $$d$$ and SRAM size $$M$$, and it measures up to 9x fewer), and the op's arithmetic intensity rises accordingly.
 
-FlashAttention-2 ([Dao, 2023](https://arxiv.org/abs/2307.08691)) keeps the math and fixes the mapping: fewer non-matmul FLOPs on the hot path, parallelization across the *sequence* dimension even within a single head, and work split across warps to cut shared-memory traffic, for roughly 2x over FA1 and 50-73% of peak FLOP/s on A100. The sequence-dimension parallelism is the part that matters for inference specifically: a decode or small-batch workload has only batch-times-heads independent work items, too few to fill an H100's 132 SMs, and splitting along the sequence restores the missing parallelism.
+FlashAttention-2 ([Dao, 2023](https://arxiv.org/abs/2307.08691)) keeps the math and fixes the mapping: fewer non-matmul FLOPs on the hot path, parallelization across the *sequence* dimension even within a single head, and work split across warps to cut shared-memory traffic, for roughly 2x over FA1 and 50-73% of peak FLOP/s on A100. The sequence-dimension parallelism (in the forward pass, each thread block takes a block of query rows) matters for long sequences at small batch, where batch-times-heads alone gives too few thread blocks to fill the SMs (the paper's A100 has 108). It does not help decode, where each sequence has a single query row; decode kernels split along the KV length instead.
 
 ##### **The PagedAttention kernel**
 
@@ -716,10 +716,10 @@ The decode kernel that reads a paged cache is worth knowing at the block-diagram
 
 1. Fetch the request's block table and loop over the physical blocks it names.
 2. For each block, dot the query against its keys (the QK stage).
-3. Run the online-softmax bookkeeping: track the running max, then the exponential sum, normalizing as tiles arrive.
+3. Compute the softmax over all those QK values: the logits for the whole context sit in shared memory, so the kernel reduces the max, then the exponential sum, then normalizes (a max-then-sum softmax over the stored logits, not FlashAttention's online one).
 4. Weight the values and accumulate (the LV stage), then write the output row.
 
-The contribution of the PagedAttention paper was co-designing this kernel with the block allocator: attention pays one level of indirection through the block table, and in exchange the memory system gets the OS-paging model from earlier. The indirection is cheap precisely because the kernel was built around it.
+The contribution of the PagedAttention paper was co-designing this kernel with the block allocator: attention pays one level of indirection through the block table, and in exchange the memory system gets the OS-paging model from earlier. The indirection is not free: the paper measures 20 to 26% higher attention kernel latency than FasterTransformer's kernel. It pays off because it only affects the attention operator, while the reclaimed memory enlarges the batch for every operator.
 
 ##### **The backend zoo, and two integration seams**
 
@@ -745,7 +745,7 @@ DeepSeek's Multi-head Latent Attention stores a low-rank latent compression of K
 
 Which quantization scheme helps depends entirely on which regime you're in, and the roofline makes the decision mechanical.
 
-- **Weight-only 4-bit (W4A16)** cuts weight bytes 4x while computing in 16-bit. That's a direct attack on memory-bound decode: the 16 GB weight read becomes 4 GB and the decode floor drops proportionally, while the extra dequantization arithmetic is free because the FLOPs were idle. But it does roughly nothing for compute-bound prefill or large-batch throughput, where bytes weren't the bottleneck.
+- **Weight-only 4-bit (W4A16)** cuts weight bytes 4x while computing in 16-bit. That's a direct attack on memory-bound decode: for Llama 3 8B, the 4-bit layer weights plus group-128 scales are about 3.6 GB, and with the lm_head left in bf16 a step reads about 4.6 GB instead of about 15 GB, so the decode floor drops about 3.2x, while the extra dequantization arithmetic is free because the FLOPs were idle. But it does roughly nothing for compute-bound prefill or large-batch throughput, where bytes weren't the bottleneck.
 - **W8A8 (FP8 or INT8)** quantizes activations too, so the GEMMs themselves run on the 8-bit tensor cores at double the 16-bit rate ([Hopper in-depth](https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/)). That attacks the compute-bound regime as well, and it's the scheme that helps prefill.
 - **KV-cache quantization** attacks the third byte stream, the one that grows with context and, unlike weights, does not amortize with batch.
 
@@ -760,7 +760,7 @@ The methods behind the checkpoints ([vLLM quantization docs](https://github.com/
 
 AWQ's insight generalizes: quantization error is not uniform, a small set of salient channels (identified by activation magnitude, not weight magnitude) dominates end quality, and protecting just those preserves accuracy at 4-bit. The rule-of-thumb from both papers' results: weight-only 4-bit is near-lossless at 7B+ scale, while activation quantization is the hard part (outlier channels), which is why W8A8 needs calibration and scales while W4A16 barely does. On the kernel side, quantized weights need dequantization *fused inside* the GEMM, a dedicated kernel family: vLLM's hardware table lists Marlin kernels for GPTQ/AWQ/FP8/FP4 on Ampere and newer, with sources under `csrc/quantization/`. vLLM ingests checkpoints from AutoAWQ, BitsAndBytes, GPTQModel, LLM Compressor, NVIDIA ModelOpt, TorchAO, Quark, and GGUF, plus online quantization.
 
-The KV-cache variant ([quantized_kvcache.md](https://github.com/vllm-project/vllm/blob/main/docs/features/quantization/quantized_kvcache.md)): `kv_cache_dtype="fp8"` (E4M3 on CUDA and ROCm, E5M2 optional on CUDA), with per-tensor or per-head scales. One default to know before flipping it on: **calibration is off by default and all scales are 1.0** (`calculate_kv_scales=False`), which assumes the K/V values fit E4M3's range as-is; real outliers will clip or lose precision silently. The alternatives are dynamic scale computation (`calculate_kv_scales=True`) or a checkpoint with calibrated scales. The capacity payoff is exactly the block-pool formula from earlier with $$b$$ going from 2 to 1: half the page size, double the blocks, roughly double the maximum concurrency or context.
+The KV-cache variant ([quantized_kvcache.md](https://github.com/vllm-project/vllm/blob/main/docs/features/quantization/quantized_kvcache.md)): `kv_cache_dtype="fp8"` (E4M3 on CUDA and ROCm, E5M2 optional on CUDA), with per-tensor or per-head scales. One default to know before flipping it on: **without calibration, all scales are 1.0**, which assumes the K/V values fit E4M3's range as-is; real outliers will clip or lose precision silently. The docs' recommended alternative is a checkpoint with scales calibrated on a dataset via LLM Compressor (as of 2026-10-13; the older runtime option `calculate_kv_scales` was removed in [vllm#49389](https://github.com/vllm-project/vllm/pull/49389)). The capacity payoff is exactly the block-pool formula from earlier with $$b$$ going from 2 to 1: half the page size, double the blocks, roughly double the maximum concurrency or context.
 
 ##### **MoE essentials**
 
@@ -966,7 +966,7 @@ The extra token appended when all $$\gamma$$ drafts are accepted, sampled from t
 The column-parallel output stays sharded and feeds the row-parallel input with no communication; only the row-parallel output needs an all-reduce. Attention plus MLP gives 2 all-reduces per layer.
 
 **2. What per-token communication does TP8 decode on Llama 3 70B incur, and why NVLink?**
-$$2 \times 80 = 160$$ all-reduces per token, each on a 16 KiB hidden vector: small, frequent, latency-bound messages, exactly what NVLink and custom all-reduce kernels exist for.
+$$2 \times 80 = 160$$ all-reduces per step in the layers, each on a 16 KiB hidden vector per token: small, frequent, latency-bound messages, exactly what NVLink and custom all-reduce kernels exist for.
 
 **3. TP vs PP: which reduces per-token latency, and why?**
 TP: each rank reads $$1/\text{TP}$$ of the weights per step, so the memory-bound floor drops. PP doesn't: every token still crosses all layers serially; PP adds capacity and throughput only.
@@ -1035,16 +1035,16 @@ Is its arithmetic intensity above or below the ridge point? Below: cut bytes (fu
 ##### **Attention kernels**
 
 **1. What does FlashAttention save, FLOPs or bytes?**
-Bytes. The attention is exact, FLOPs unchanged; tiling keeps the $$n \times n$$ scores in SRAM, eliminating $$O(n^2)$$ HBM traffic and lifting the op's arithmetic intensity.
+Bytes. The attention is exact, FLOPs unchanged; tiling keeps the $$n \times n$$ scores in SRAM, so they never travel to or from HBM, which cuts HBM accesses (up to 9x in the paper) and lifts the op's arithmetic intensity.
 
 **2. Walk through online softmax: which two scalars, and why rescale?**
 A running max $$m$$ (numerical stability) and running denominator $$l$$. A new tile can raise $$m$$, making all previously accumulated exponentials too large by $$\exp(m_{old} - m_{new})$$; rescaling by that factor keeps the single-pass accumulation exact.
 
-**3. What did FA2 change, and why does within-head parallelism matter for inference?**
-Fewer non-matmul FLOPs, parallelism across sequence blocks within a head, warp-level partitioning to cut shared-memory traffic; ~2x FA1. Decode and small-batch have too few batch-times-heads work items to fill the SMs, so sequence-dimension parallelism is what keeps them busy.
+**3. What did FA2 change, and why does within-head parallelism matter for long-context prefill?**
+Fewer non-matmul FLOPs, parallelism across sequence blocks within a head, warp-level partitioning to cut shared-memory traffic; ~2x FA1. Long sequences at small batch have too few batch-times-heads thread blocks to fill the SMs, so splitting query rows keeps them busy. Decode has one query row, so it needs a split along the KV length instead.
 
 **4. How does the PagedAttention kernel find its KV?**
-Through the request's block table: logical position to physical block id to contents, looping over the table's blocks doing QK, online softmax, then value accumulation.
+Through the request's block table: logical position to physical block id to contents, looping over the table's blocks doing QK into shared-memory logits, a max-then-sum softmax over them, then value accumulation.
 
 **5. Why does attention break CUDA-graph capture and torch.compile tracing, and how does vLLM wall it off?**
 Ragged lengths, block tables, and paged gathers are data-dependent control that capture and tracing can't specialize. torch.compile hides it behind the `unified_attention_with_output` custom op; CUDA graphs exclude it via piecewise capture (or require a backend like FlashAttention 3 for full capture).
@@ -1061,7 +1061,7 @@ W4A16 cuts weight bytes: memory-bound decode. Compute still runs 16-bit, so comp
 It scales weight channels by activation magnitude: the ~1% of channels with large activations dominate quantization error, and protecting them preserves accuracy at 4-bit with no backprop.
 
 **3. vLLM's default fp8 KV scales are 1.0. Why is that risky?**
-Unit scales assume values fit E4M3's range; real outliers clip or lose precision silently. Alternatives: `calculate_kv_scales=True` or a checkpoint with calibrated scales.
+Unit scales assume values fit E4M3's range; real outliers clip or lose precision silently. Alternative: a checkpoint with scales calibrated on a dataset (LLM Compressor).
 
 **4. What does fp8 KV do to max concurrency, via which formula?**
 Bytes per element drops 2 to 1 in the KV-per-token formula, halving `page_size_bytes`, doubling `num_blocks`, and roughly doubling max concurrency.
