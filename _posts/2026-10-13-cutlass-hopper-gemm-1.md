@@ -14,7 +14,7 @@ toc:
 
 Hello all. This is part 1 of a series on the Hopper GEMM, written two times: once in CUTLASS 3.x C++ and once in the CuTe Python DSL. Each part reads one piece of the C++ kernel and then shows the same piece in the CuTe DSL. The series builds on the [CuTe DSL fundamentals post](/blog/2026/fa3-cute/). That post explains the Hopper primitives one at a time: layouts, TMA, mbarriers, pipelines, WGMMA and warp specialization. This series shows how the primitives fit together in a complete GEMM kernel, in both languages.
 
-The reason for the series is a port. vLLM has a W4A8 GEMM for Hopper, with FP8 activations and INT4 weights, in `csrc/libtorch_stable/quantization/cutlass_w4a8/`. It is written with CUTLASS 3.x in C++. I want to write it again in the CuTe DSL. For that, I need two kinds of knowledge:
+The reason for the series is a port. vLLM has a W4A8 GEMM for Hopper, with FP8 activations and INT4 weights, in `csrc/quantization/cutlass_w4a8/`. It is written with CUTLASS 3.x in C++. I want to write it again in the CuTe DSL. For that, I need two kinds of knowledge:
 
 - **What the kernel does.** The warp roles, the mainloop, the INT4 to FP8 conversion, the scales, the epilogue and the tile configurations. The only source for this is the C++ code. The CuTe DSL has no Hopper example of a mixed-input GEMM.
 - **How to write it in the CuTe DSL.** The DSL has no `CollectiveBuilder` and no collective classes, so every choice that the C++ templates make must be written by hand.
@@ -203,7 +203,7 @@ So the C++ dispatch chain becomes plain code in the port. The port does not sele
 - [`include/cutlass/gemm/dispatch_policy.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/dispatch_policy.hpp) (the kernel schedule tags and the mainloop policies)
 - [`include/cutlass/gemm/kernel/sm90_gemm_tma_warpspecialized_cooperative.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/kernel/sm90_gemm_tma_warpspecialized_cooperative.hpp) (the kernel specialization)
 - [`include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl) (the mixed-input policy choice)
-- vLLM, `csrc/libtorch_stable/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the W4A8 schedules)
+- vLLM, `csrc/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the W4A8 schedules)
 - CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py) (the DSL kernel) and [`python/CuTeDSL/cutlass/utils/hopper_helpers.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/utils/hopper_helpers.py) (`make_trivial_tiled_mma`)
 
 ---
@@ -352,7 +352,7 @@ The table lists what must change. It does not say how. The later parts show how,
 - CUTLASS v4.7.1, [`examples/55_hopper_mixed_dtype_gemm/README.md`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/examples/55_hopper_mixed_dtype_gemm/README.md) (the narrow type goes through registers, the implicit swap and the TMA epilogue, the K-major rule, the lookup-table scale mode)
 - PTX ISA, [`wgmma.mma_async`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#asynchronous-warpgroup-level-matrix-instructions-wgmma-mma) (A may be in registers, B must be in shared memory)
 - CUTLASS v4.7.1, [`include/cutlass/gemm/collective/collective_builder_decl.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/collective_builder_decl.hpp) (`StageCountAutoCarveout`), [`include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/gemm/collective/builders/sm90_gmma_builder.inl) (`SwapAB`), [`include/cutlass/epilogue/collective/builders/sm90_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/builders/sm90_builder.inl) (the epilogue builder)
-- vLLM, `csrc/libtorch_stable/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the W4A8 type definitions)
+- vLLM, `csrc/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the W4A8 type definitions)
 - CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py) (`__init__`, `__call__`, `_setup_attributes`, `_compute_stages`)
 
 ---
@@ -466,7 +466,7 @@ The port has no builder, so it must make all six choices in its own `_setup_attr
 - CUTLASS v4.7.1, [`include/cutlass/epilogue/collective/builders/sm90_builder.inl`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/builders/sm90_builder.inl) and [`include/cutlass/epilogue/collective/sm90_epilogue_tma_warpspecialized.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/epilogue/collective/sm90_epilogue_tma_warpspecialized.hpp) (the epilogue tile, its stages and its shared storage)
 - CUTLASS v4.7.1, [`include/cutlass/pipeline/sm90_pipeline.hpp`](https://github.com/NVIDIA/cutlass/blob/v4.7.1/include/cutlass/pipeline/sm90_pipeline.hpp) (`PipelineTmaAsync::SharedStorage`)
 - CUTLASS v4.8.0, [`examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/examples/python/CuTeDSL/cute/hopper/kernel/dense_gemm/dense_gemm_persistent.py), [`python/CuTeDSL/cutlass/utils/hopper_helpers.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/utils/hopper_helpers.py) and [`python/CuTeDSL/cutlass/cutlass_dsl/cutlass.py`](https://github.com/NVIDIA/cutlass/blob/v4.8.0/python/CuTeDSL/cutlass/cutlass_dsl/cutlass.py) (the DSL choices and the capacity map)
-- vLLM, `csrc/libtorch_stable/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the ten tile configurations)
+- vLLM, `csrc/quantization/cutlass_w4a8/w4a8_mm_entry.cu` (the ten tile configurations)
 - PTX ISA, [`wgmma.mma_async`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#asynchronous-warpgroup-level-matrix-instructions-wgmma-mma) (the legal N values)
 
 ---
