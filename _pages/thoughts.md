@@ -23,6 +23,67 @@ As it’s said: this is life, your life, and your only life - so live it to the 
 
 ---
 
+<div class="small-quote">
+  <p>The gardener does not make a plant grow. The job of a gardener is to create optimal conditions.</p>
+  <span class="author">- Sir Ken Robinson</span>
+</div>
+
+<div class="small-quote"><p>The subjectivity of answers to one’s own questions about their life or even the pursuit of it, adds a flavour to one’s existence, thus making up one aspect of our unique lives.</p></div>
+
+<div class="small-quote">
+  <p>And so, part of the reason I still have physical books is because it creates a kind of idea space for you that makes productive collisions more likely to happen.</p>
+  <span class="author">- Patrick Collison</span>
+</div>
+
+<div class="small-quote">
+  <p>You could try to pound your head against the wall and think of original ideas or you can cheat by reading them in books.</p>
+  <span class="author">- Patrick Collison</span>
+</div>
+
+<div class="small-quote">
+  <p>In a world that’s changing so quickly, the biggest risk you can take is not taking any risk.</p>
+  <span class="author">- Mark Zuckerberg</span>
+</div>
+
+<div class="small-quote">
+  <p>An individual has not started living until he can rise above the narrow confines of his individualistic concerns to the broader concerns of all humanity.</p>
+  <span class="author">- Martin Luther King Jr.</span>
+</div>
+
+<div class="small-quote"><p>Construct your own socio-economic reality.</p></div>
+
+<div class="small-quote">
+  <p>How well you treat people is much more important than how smart you are.</p>
+  <span class="author">- Frank Quattrone</span>
+</div>
+
+<div class="small-quote"><p>There are so many unanswered questions in our lives. If you were to ask one question and be certain you get the right answer (not favoured to anyone, not biased to anyone, not bound by any situation/bonds, without any judgements, etc. and just be correct), what would your one question be?</p></div>
+
+<div class="small-quote">
+  <p>If you do not have courage, you may not have the opportunity to use any of your other virtues.</p>
+  <span class="author">- Samuel L. Jackson</span>
+</div>
+
+<div class="small-quote">
+  <p>A king does not abide within his tent while his men bleed and die upon the field. A king does not dine while his men go hungry, nor sleep when they stand at watch upon the wall. A king does not command his men’s loyalty through fear nor purchase it with gold; he earns their love by the sweat of his own back and the pains he endures for their sake. That which comprises the harshest burden, a king lifts first and sets down last. A king does not require service of those he leads but provides it to them... A king does not expend his substance to enslave men, but by his conduct and example makes them free.</p>
+  <span class="author">- Steven Pressfield, Gates of Fire</span>
+</div>
+
+<div class="small-quote">
+  <p>Attention is the rarest and purest form of generosity.</p>
+  <span class="author">- Simone Weil</span>
+</div>
+
+<div class="small-quote">
+  <p>Human existence is so fragile a thing and exposed to such dangers that I cannot love without trembling.</p>
+  <span class="author">- Simone Weil, Gravity and Grace</span>
+</div>
+
+<div class="small-quote">
+  <p>Happiness is peace in motion and peace is happiness at rest.</p>
+  <span class="author">- Anonymous</span>
+</div>
+
 <div class="small-quote"><p>Discern for yourself.</p></div>
 
 <div class="small-quote">
